@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Modern.WindowKit</PackageId>
+    <Version>0.1.0</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/modern-forms/Modern.WindowKit</PackageProjectUrl>
+    <Description>Cross-platform library for creating and interacting with OS windows.</Description>
+    <PackageTags>Modern;WindowKit;GUI;UI;Cross;Platform</PackageTags>
+    <PackageOutputPath>../../nupkg</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.5" />
+    <PackageReference Include="SkiaSharp" Version="2.80.2" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>
