@@ -22,5 +22,10 @@ namespace Modern.WindowKit.Controls
         /// The window is maximized.
         /// </summary>
         Maximized,
+
+        /// <summary>
+        /// The window is fullscreen.
+        /// </summary>
+        FullScreen,
     }
 }

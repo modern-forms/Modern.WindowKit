@@ -5,7 +5,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Shared.PlatformSupport
 {
-    public partial class StandardRuntimePlatform
+    internal partial class StandardRuntimePlatform
     {
         private static readonly Lazy<RuntimePlatformInfo> Info = new Lazy<RuntimePlatformInfo>(() =>
         {

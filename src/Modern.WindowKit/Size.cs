@@ -2,7 +2,9 @@
 
 using System;
 using System.Globalization;
+#if !BUILDTASK
 //using Modern.WindowKit.Animation.Animators;
+#endif
 using Modern.WindowKit.Utilities;
 
 namespace Modern.WindowKit
@@ -10,11 +12,16 @@ namespace Modern.WindowKit
     /// <summary>
     /// Defines a size.
     /// </summary>
-    public readonly struct Size : IEquatable<Size>
+#if !BUILDTASK
+    public
+#endif
+    readonly struct Size : IEquatable<Size>
     {
         static Size()
         {
+#if !BUILDTASK
             //Animation.Animation.RegisterAnimator<SizeAnimator>(prop => typeof(Size).IsAssignableFrom(prop.PropertyType));
+#endif
         }
 
         /// <summary>
@@ -204,6 +211,17 @@ namespace Modern.WindowKit
         }
 
         /// <summary>
+        /// Returns a boolean indicating whether the size is equal to the other given size (numerically).
+        /// </summary>
+        /// <param name="other">The other size to test equality against.</param>
+        /// <returns>True if this size is equal to other; False otherwise.</returns>
+        public bool NearlyEquals(Size other)
+        {
+            return MathUtilities.AreClose(_width, other._width) && 
+                   MathUtilities.AreClose(_height, other._height);
+        }
+
+        /// <summary>
         /// Checks for equality between a size and an object.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -266,6 +284,25 @@ namespace Modern.WindowKit
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}, {1}", _width, _height);
+        }
+
+        /// <summary>
+        /// Deconstructs the size into its Width and Height values.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        public void Deconstruct(out double width, out double height)
+        {
+            width = this._width;
+            height = this._height;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the Width and Height values are zero.
+        /// </summary>
+        public bool IsDefault
+        {
+            get { return (_width == 0) && (_height == 0); }
         }
     }
 }

@@ -134,6 +134,16 @@ namespace Modern.WindowKit
         /// Gets the bottom position of the rectangle.
         /// </summary>
         public double Bottom => _y + _height;
+        
+        /// <summary>
+        /// Gets the left position.
+        /// </summary>
+        public double Left => _x;
+
+        /// <summary>
+        /// Gets the top position.
+        /// </summary>
+        public double Top => _y;
 
         /// <summary>
         /// Gets the top left point of the rectangle.
@@ -202,6 +212,21 @@ namespace Modern.WindowKit
                 rect.Y * scale.Y,
                 rect.Width * scale.X,
                 rect.Height * scale.Y);
+        }
+        
+        /// <summary>
+        /// Multiplies a rectangle by a scale.
+        /// </summary>
+        /// <param name="rect">The rectangle.</param>
+        /// <param name="scale">The scale.</param>
+        /// <returns>The scaled rectangle.</returns>
+        public static Rect operator *(Rect rect, double scale)
+        {
+            return new Rect(
+                rect.X * scale,
+                rect.Y * scale,
+                rect.Width * scale,
+                rect.Height * scale);
         }
 
         /// <summary>

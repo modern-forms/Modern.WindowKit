@@ -10,7 +10,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Shared.PlatformSupport
 {
-    public partial class StandardRuntimePlatform : IRuntimePlatform
+    internal partial class StandardRuntimePlatform : IRuntimePlatform
     {
         public IDisposable StartSystemTimer(TimeSpan interval, Action tick)
         {
@@ -51,12 +51,20 @@ namespace Modern.WindowKit.Shared.PlatformSupport
             
             public UnmanagedBlob(StandardRuntimePlatform plat, int size)
             {
-                if (size <= 0)
-                    throw new ArgumentException("Positive number required", nameof(size));
-                _plat = plat;
-                _address = plat.Alloc(size);
-                GC.AddMemoryPressure(size);
-                Size = size;
+                try
+                {
+                    if (size <= 0)
+                        throw new ArgumentException("Positive number required", nameof(size));
+                    _plat = plat;
+                    _address = plat.Alloc(size);
+                    GC.AddMemoryPressure(size);
+                    Size = size;
+                }
+                catch
+                {
+                    GC.SuppressFinalize(this);
+                    throw;
+                }
 #if DEBUG
                 _backtrace = Environment.StackTrace;
                 lock (_btlock)
@@ -74,7 +82,7 @@ namespace Modern.WindowKit.Shared.PlatformSupport
                         lock (_btlock)
                             Backtraces.Remove(_backtrace);
 #endif
-                        _plat.Free(_address, Size);
+                        _plat?.Free(_address, Size);
                         GC.RemoveMemoryPressure(Size);
                         IsDisposed = true;
                         _address = IntPtr.Zero;
@@ -88,11 +96,15 @@ namespace Modern.WindowKit.Shared.PlatformSupport
 #if DEBUG
                 if (Thread.CurrentThread.ManagedThreadId == GCThread?.ManagedThreadId)
                 {
-                    lock(_lock)
+                    lock (_lock)
+                    {
                         if (!IsDisposed)
+                        {
                             Console.Error.WriteLine("Native blob disposal from finalizer thread\nBacktrace: "
-                                                    + Environment.StackTrace
-                                                    + "\n\nBlob created by " + _backtrace);
+                                                 + Environment.StackTrace
+                                                 + "\n\nBlob created by " + _backtrace);
+                        }
+                    }
                 }
 #endif
                 DoDispose();

@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Modern.WindowKit.Input.Raw;
+//using Modern.WindowKit.Input.TextInput;
 //using Modern.WindowKit.Interactivity;
 //using Modern.WindowKit.VisualTree;
 
@@ -10,9 +11,10 @@ namespace Modern.WindowKit.Input
 {
     public class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
     {
-        //private IInputElement _focusedElement;
+        //private IInputElement? _focusedElement;
+        //private IInputRoot? _focusedRoot;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         //public static IKeyboardDevice Instance => AvaloniaLocator.Current.GetService<IKeyboardDevice>();
 

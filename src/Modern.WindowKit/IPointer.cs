@@ -5,8 +5,8 @@ namespace Modern.WindowKit.Input
     public interface IPointer
     {
         int Id { get; }
-        //void Capture(IInputElement control);
-        //IInputElement Captured { get; }
+        //void Capture(IInputElement? control);
+        //IInputElement? Captured { get; }
         PointerType Type { get; }
         bool IsPrimary { get; }
         

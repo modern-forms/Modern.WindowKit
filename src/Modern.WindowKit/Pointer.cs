@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using Modern.WindowKit.Interactivity;
 //using Modern.WindowKit.VisualTree;
 
 namespace Modern.WindowKit.Input
@@ -22,7 +21,7 @@ namespace Modern.WindowKit.Input
 
         public int Id { get; }
 
-        //IInputElement FindCommonParent(IInputElement control1, IInputElement control2)
+        //IInputElement? FindCommonParent(IInputElement? control1, IInputElement? control2)
         //{
         //    if (control1 == null || control2 == null)
         //        return null;
@@ -30,12 +29,12 @@ namespace Modern.WindowKit.Input
         //    return control2.GetSelfAndVisualAncestors().OfType<IInputElement>().FirstOrDefault(seen.Contains);
         //}
 
-        //protected virtual void PlatformCapture(IInputElement element)
+        //protected virtual void PlatformCapture(IInputElement? element)
         //{
             
         //}
         
-        //public void Capture(IInputElement control)
+        //public void Capture(IInputElement? control)
         //{
         //    if (Captured != null)
         //        Captured.DetachedFromVisualTree -= OnCaptureDetached;
@@ -68,7 +67,7 @@ namespace Modern.WindowKit.Input
         //}
 
 
-        //public IInputElement Captured { get; private set; }
+        //public IInputElement? Captured { get; private set; }
             
         public PointerType Type { get; }
         public bool IsPrimary { get; }

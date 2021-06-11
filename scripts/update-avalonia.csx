@@ -185,7 +185,6 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "using Modern.WindowKit.X11.Glx");
     text = Comment (text, "using JetBrains.Annotations");
     text = Comment (text, "using System.ComponentModel.DataAnnotation");
-    text = Comment (text, "using System.Reactive.Disposables");
     text = Comment (text, "using System.Reactive.Linq");
 
     // We still use Avalonia.Native.Interop for now
