@@ -1,0 +1,40 @@
+name: .NET
+
+# Trigger the workflow on push or pull request
+on: [push]
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-18.04]
+      fail-fast: false
+    
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v1
+      
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release      
+      
+    - name: Test with dotnet
+      if: runner.os == 'Windows'
+      run: dotnet test --configuration Release
+
+    - name: Package NuGet
+      if: runner.os == 'Windows'
+      run: dotnet pack src\Modern.WindowKit\Modern.WindowKit.csproj --configuration Release
+
+    - name: Upload NuGet
+      uses: actions/upload-artifact@v1.0.0
+      if: runner.os == 'Windows'
+      with:
+        name: NuGet Package
+        path: nupkg
