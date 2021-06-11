@@ -79,7 +79,7 @@ namespace Modern.WindowKit.X11
 
             if (_popup)
             {
-                attr.override_redirect = true;
+                attr.override_redirect = 1;
                 valueMask |= SetWindowValuemask.OverrideRedirect;
             }
 
@@ -173,8 +173,8 @@ namespace Modern.WindowKit.X11
             
             Surfaces = surfaces.ToArray();
             UpdateMotifHints();
-            _xic = XCreateIC(_x11.Xim, XNames.XNInputStyle, XIMProperties.XIMPreeditNothing | XIMProperties.XIMStatusNothing,
-                XNames.XNClientWindow, _handle, IntPtr.Zero);
+            _xic = XCreateIC(_x11.Xim, XNames.XNInputStyle, new IntPtr((int)(XIMProperties.XIMPreeditNothing | XIMProperties.XIMStatusNothing)),
+                XNames.XNClientWindow, _handle, XNames.XNFocusWindow, _handle, IntPtr.Zero);
             XFlush(_x11.Display);
             //if(_popup)
             //    PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
@@ -306,7 +306,7 @@ namespace Modern.WindowKit.X11
         //public IRenderer CreateRenderer(IRenderRoot root) =>
         //    new DeferredRenderer(root, AvaloniaLocator.Current.GetService<IRenderLoop>());
 
-        void OnEvent(XEvent ev)
+        void OnEvent(ref XEvent ev)
         {
             lock (SyncRoot)
                 OnEventSync(ev);
@@ -401,7 +401,7 @@ namespace Modern.WindowKit.X11
                     return;
                 var needEnqueue = (_configure == null);
                 _configure = ev.ConfigureEvent;
-                if (ev.ConfigureEvent.override_redirect || ev.ConfigureEvent.send_event)
+                if (ev.ConfigureEvent.override_redirect != 0 || ev.ConfigureEvent.send_event != 0)
                     _configurePoint = new PixelPoint(ev.ConfigureEvent.x, ev.ConfigureEvent.y);
                 else
                 {
@@ -890,7 +890,7 @@ namespace Modern.WindowKit.X11
                 ClientMessageEvent =
                 {
                     type = XEventName.ClientMessage,
-                    send_event = true,
+                    send_event = 1,
                     window = _handle,
                     message_type = message_type,
                     format = 32,

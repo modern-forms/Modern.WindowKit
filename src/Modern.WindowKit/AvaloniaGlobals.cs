@@ -31,8 +31,8 @@ namespace Modern.WindowKit
                 InitializeWindows ();
             else if (runtime.OperatingSystem == OperatingSystemType.Linux)
                 InitializeLinux ();
-            else if (runtime.OperatingSystem == OperatingSystemType.OSX)
-                InitializeOSX ();
+            //else if (runtime.OperatingSystem == OperatingSystemType.OSX)
+            //    InitializeOSX ();
             else
                 throw new InvalidOperationException ("Unrecognized Operating System");
         }
@@ -49,16 +49,16 @@ namespace Modern.WindowKit
             ClipboardInterface = new X11Clipboard (x11);
         }
 
-        private static void InitializeOSX ()
-        {
-            var platform = Native.AvaloniaNativePlatform.Initialize ();
+        //private static void InitializeOSX ()
+        //{
+        //    var platform = Native.AvaloniaNativePlatform.Initialize ();
 
-            WindowingInterface = platform;
-            PlatformThreadingInterface = new Native.PlatformThreadingInterface (platform.Factory.CreatePlatformThreadingInterface ());
-            StandardCursorFactory = new Native.CursorFactory (platform.Factory.CreateCursorFactory ());
-            SystemDialogImplementation = new Native.SystemDialogs (platform.Factory.CreateSystemDialogs ());
-            ClipboardInterface = new Native.ClipboardImpl (platform.Factory.CreateClipboard ());
-        }
+        //    WindowingInterface = platform;
+        //    PlatformThreadingInterface = new Native.PlatformThreadingInterface (platform.Factory.CreatePlatformThreadingInterface ());
+        //    StandardCursorFactory = new Native.CursorFactory (platform.Factory.CreateCursorFactory ());
+        //    SystemDialogImplementation = new Native.SystemDialogs (platform.Factory.CreateSystemDialogs ());
+        //    ClipboardInterface = new Native.ClipboardImpl (platform.Factory.CreateClipboard ());
+        //}
 
         private static void InitializeWindows ()
         {

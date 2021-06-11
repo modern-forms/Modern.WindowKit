@@ -992,6 +992,12 @@ namespace Modern.WindowKit.Win32.Interop
         [DllImport("user32.dll")]
         internal static extern IntPtr SetClipboardData(ClipboardFormat uFormat, IntPtr hMem);
 
+        [DllImport("ole32.dll", PreserveSig = false)]
+        public static extern int OleGetClipboard(out IOleDataObject dataObject);
+
+        [DllImport("ole32.dll", PreserveSig = true)]
+        public static extern int OleSetClipboard(IOleDataObject dataObject);
+
         [DllImport("kernel32.dll", ExactSpelling = true)]
         internal static extern IntPtr GlobalLock(IntPtr handle);
 

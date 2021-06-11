@@ -73,7 +73,7 @@ namespace Modern.WindowKit.X11
                 XRRSelectInput(_x11.Display, _window, RandrEventMask.RRScreenChangeNotify);
             }
 
-            private void OnEvent(XEvent ev)
+            private void OnEvent(ref XEvent ev)
             {
                 // Invalidate cache on RRScreenChangeNotify
                 if ((int)ev.type == _x11.RandrEventBase + (int)RandrEvent.RRScreenChangeNotify)

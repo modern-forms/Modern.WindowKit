@@ -5,7 +5,7 @@ using System;
 namespace Modern.WindowKit.X11
 {
 
-    internal enum Status
+    public enum Status
     {
         Success = 0, /* everything's okay */
         BadRequest = 1, /* bad request code */
@@ -40,7 +40,7 @@ namespace Modern.WindowKit.X11
     }
 
     [Flags]
-    internal enum XEventMask : int
+    public enum XEventMask : int
     {
         NoEventMask = 0,
         KeyPressMask = (1 << 0),
@@ -71,7 +71,7 @@ namespace Modern.WindowKit.X11
     }
 
     [Flags]
-    internal enum XModifierMask
+    public enum XModifierMask
     {
         ShiftMask = (1 << 0),
         LockMask = (1 << 1),
@@ -91,7 +91,7 @@ namespace Modern.WindowKit.X11
     }
     
     [Flags]
-    internal enum XCreateWindowFlags
+    public enum XCreateWindowFlags
     {
         CWBackPixmap = (1 << 0),
         CWBackPixel = (1 << 1),

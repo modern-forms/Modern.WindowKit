@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Modern.WindowKit.Platform.Interop
 {
-    internal class Utf8Buffer : SafeHandle
+    public class Utf8Buffer : SafeHandle
     {
         private GCHandle _gcHandle;
         private byte[] _data;

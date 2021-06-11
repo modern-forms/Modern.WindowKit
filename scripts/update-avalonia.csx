@@ -20,11 +20,15 @@ string avalonia_path = Path.Combine (avalonia_repo_path, "src");
 string modern_windowkit_path = Path.Combine (modern_windowkit_repo_path, "src", "Modern.WindowKit");
 
 //CopyFile ("Avalonia.Input/Cursors.cs", "Cursors.cs");
+CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
+CopyFile ("Avalonia.Input/DataFormats.cs", "DataFormats.cs");
+CopyFile ("Avalonia.Input/DataObject.cs", "DataObject.cs");
 CopyFile ("Avalonia.Base/Threading/Dispatcher.cs", "Dispatcher.cs");
 CopyFile ("Avalonia.Base/Threading/DispatcherPriority.cs", "DispatcherPriority.cs");
 CopyFile ("Avalonia.Visuals/Platform/IBitmapImpl.cs", "IBitmapImpl.cs");
 CopyFile ("Avalonia.Input/Platform/IClipboard.cs", "IClipboard.cs");
 CopyFile ("Avalonia.Input/ICloseable.cs", "ICloseable.cs");
+CopyFile ("Avalonia.Input/IDataObject.cs", "IDataObject.cs");
 CopyFile ("Avalonia.Base/Threading/IDispatcher.cs", "IDispatcher.cs");
 CopyFile ("Avalonia.Controls/Platform/Surfaces/IFramebufferPlatformSurface.cs", "IFramebufferPlatformSurface.cs");
 CopyFile ("Avalonia.Input/IInputDevice.cs", "IInputDevice.cs");
@@ -94,10 +98,13 @@ CopyFile ("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
 CopyFile ("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
 
 // Windows Backend
+CopyFile ("Windows/Avalonia.Win32/ClipboardFormats.cs", "Avalonia.Win32/ClipboardFormats.cs");
 CopyFile ("Windows/Avalonia.Win32/ClipboardImpl.cs", "Avalonia.Win32/ClipboardImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/CursorFactory.cs", "Avalonia.Win32/CursorFactory.cs");
+CopyFile ("Windows/Avalonia.Win32/DataObject.cs", "Avalonia.Win32/DataObject.cs");
 CopyFile ("Windows/Avalonia.Win32/FramebufferManager.cs", "Avalonia.Win32/FramebufferManager.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/KeyInterop.cs", "Avalonia.Win32/KeyInterop.cs");
+CopyFile ("Windows/Avalonia.Win32/OleDataObject.cs", "Avalonia.Win32/OleDataObject.cs");
 CopyFile ("Windows/Avalonia.Win32/PlatformConstants.cs", "Avalonia.Win32/PlatformConstants.cs");
 CopyFile ("Windows/Avalonia.Win32/PopupImpl.cs", "Avalonia.Win32/PopupImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/ScreenImpl.cs", "Avalonia.Win32/ScreenImpl.cs");
@@ -164,6 +171,8 @@ private void CopyFile (string src, string dst)
     text = text.Replace ("namespace Avalonia", "namespace Modern.WindowKit");
     text = text.Replace ("using Avalonia", "using Modern.WindowKit");
     text = text.Replace ("using static Avalonia", "using static Modern.WindowKit");
+    text = text.Replace ("using IDataObject = Avalonia.Input.IDataObject", "using IDataObject = Modern.WindowKit.Input.IDataObject");
+    text = text.Replace ("class OleDataObject : Avalonia.Input.IDataObject", "class OleDataObject : Modern.WindowKit.Input.IDataObject");
 
     // Some namespaces we do not use
     text = Comment (text, "using Modern.WindowKit.Animation");
@@ -179,6 +188,9 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "using System.Reactive.Disposables");
     text = Comment (text, "using System.Reactive.Linq");
 
+    // We still use Avalonia.Native.Interop for now
+    text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Avalonia.Native.Interop");
+
     // We don't use Avalonia's DI
     text = text.Replace ("AvaloniaLocator.Current.GetService<IStandardCursorFactory>()", "AvaloniaGlobals.StandardCursorFactory");
     text = text.Replace ("AvaloniaLocator.Current.GetService<IPlatformThreadingInterface>()", "AvaloniaGlobals.PlatformThreadingInterface");
@@ -190,7 +202,7 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "Contract.Requires");
     text = Comment (text, "Animation.Animation.RegisterAnimator");
     text = Comment (text, "[Pure]");
-
+    
     text = text.Replace("////using Modern.WindowKit", "//using Modern.WindowKit");
 
     var dest_lines = File.Exists (full_dst) ? CommentDiffs (text, full_dst) : new[] { text };

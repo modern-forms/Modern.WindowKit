@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace Modern.WindowKit.Input
 {
     //[Flags, Obsolete("Use KeyModifiers and PointerPointProperties")]
-    //internal enum InputModifiers
+    //public enum InputModifiers
     //{
     //    None = 0,
     //    Alt = 1,
