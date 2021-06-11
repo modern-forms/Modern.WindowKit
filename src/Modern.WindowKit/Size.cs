@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using System;
 using System.Globalization;
 //using Modern.WindowKit.Animation.Animators;
@@ -194,7 +191,7 @@ namespace Modern.WindowKit
         }
 
         /// <summary>
-        /// Returns a boolean indicating whether the size is equal to the other given size.
+        /// Returns a boolean indicating whether the size is equal to the other given size (bitwise).
         /// </summary>
         /// <param name="other">The other size to test equality against.</param>
         /// <returns>True if this size is equal to other; False otherwise.</returns>

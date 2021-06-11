@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using Modern.WindowKit.Platform;
 using SkiaSharp;
 
@@ -11,7 +8,7 @@ namespace Modern.WindowKit.Skia.Helpers
     /// <summary>
     /// Helps with resolving pixel formats to Skia color types.
     /// </summary>
-    internal static class PixelFormatHelper
+    public static class PixelFormatHelper
     {
         /// <summary>
         /// Resolve given format to Skia color type.

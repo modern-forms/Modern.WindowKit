@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using System;
 using System.Collections.Generic;
 using Modern.WindowKit.Platform;
@@ -11,9 +8,9 @@ using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32
 {
-    internal class ScreenImpl : IScreenImpl
+    public class ScreenImpl : IScreenImpl
     {
-        public  int ScreenCount
+        public int ScreenCount
         {
             get => GetSystemMetrics(SystemMetric.SM_CMONITORS);
         }
@@ -38,7 +35,7 @@ namespace Modern.WindowKit.Win32
                                 var shcore = LoadLibrary("shcore.dll");
                                 var method = GetProcAddress(shcore, nameof(GetDpiForMonitor));
                                 if (method != IntPtr.Zero)
-                                { 
+                                {
                                     GetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out var x, out _);
                                     dpi = (double)x;
                                 }

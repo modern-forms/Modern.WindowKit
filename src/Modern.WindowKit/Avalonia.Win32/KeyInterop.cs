@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using System.Collections.Generic;
 using System.Text;
 using Modern.WindowKit.Input;
@@ -213,7 +210,7 @@ namespace Modern.WindowKit.Win32.Input
             { 31, Key.ImeModeChange },
             { 32, Key.Space },
             { 33, Key.PageUp },
-            { 34, Key.Next },
+            { 34, Key.PageDown },
             { 35, Key.End },
             { 36, Key.Home },
             { 37, Key.Left },

@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +11,7 @@ namespace Modern.WindowKit.Threading
     /// <summary>
     /// A main loop in a <see cref="Dispatcher"/>.
     /// </summary>
-    public class JobRunner
+    internal class JobRunner
     {
         private IPlatformThreadingInterface _platform;
 

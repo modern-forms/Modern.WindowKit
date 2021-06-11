@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Skia
@@ -10,7 +7,7 @@ namespace Modern.WindowKit.Skia
     /// <summary>
     /// Skia platform initializer.
     /// </summary>
-    internal static class SkiaPlatform
+    public static class SkiaPlatform
     {
         /// <summary>
         /// Initialize Skia platform.

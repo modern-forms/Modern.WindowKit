@@ -5,7 +5,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Win32
 {
-    internal class WinScreen : Screen
+    public class WinScreen : Screen
     {
         private readonly IntPtr _hMonitor;
 

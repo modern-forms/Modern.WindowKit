@@ -6,7 +6,7 @@ using Modern.WindowKit.Platform;
 using static Modern.WindowKit.X11.XLib;
 namespace Modern.WindowKit.X11
 {
-    internal class X11FramebufferSurface : IFramebufferPlatformSurface
+    public class X11FramebufferSurface : IFramebufferPlatformSurface
     {
         private readonly IntPtr _display;
         private readonly IntPtr _xid;

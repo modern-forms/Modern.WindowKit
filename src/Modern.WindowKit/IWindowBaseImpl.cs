@@ -9,7 +9,7 @@ namespace Modern.WindowKit.Platform
     public interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
-        /// Shows the top level.
+        /// Shows the window.
         /// </summary>
         void Show();
 

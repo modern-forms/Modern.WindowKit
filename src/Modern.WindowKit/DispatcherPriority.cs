@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 namespace Modern.WindowKit.Threading
 {
     /// <summary>
@@ -22,7 +19,7 @@ namespace Modern.WindowKit.Threading
         SystemIdle = 1,
 
         /// <summary>
-        /// The job will be processed when the application sis idle.
+        /// The job will be processed when the application is idle.
         /// </summary>
         ApplicationIdle = 2,
 

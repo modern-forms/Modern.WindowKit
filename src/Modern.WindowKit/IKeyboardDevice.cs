@@ -1,8 +1,5 @@
 ﻿#nullable disable
 
-// Copyright (c) The Avalonia Project. All rights reserved.
-// Licensed under the MIT license. See licence.md file in the project root for full license information.
-
 using System;
 using System.ComponentModel;
 
@@ -55,7 +52,7 @@ namespace Modern.WindowKit.Input
         KeyboardMask = Alt | Control | Shift | Meta
     }
 
-    public static class KeyModifiersUtils
+    internal static class KeyModifiersUtils
     {
         public static KeyModifiers ConvertToKey(RawInputModifiers modifiers) =>
             (KeyModifiers)(modifiers & RawInputModifiers.KeyboardMask);

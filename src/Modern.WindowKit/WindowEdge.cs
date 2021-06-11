@@ -2,7 +2,7 @@
 
 namespace Modern.WindowKit.Controls
 {
-
+    
     public enum WindowEdge
     {
         //Please don't reorder stuff here, I was lazy to write proper conversion code
