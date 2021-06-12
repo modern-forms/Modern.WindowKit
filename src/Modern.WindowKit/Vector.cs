@@ -102,21 +102,21 @@ namespace Modern.WindowKit
         public static Vector operator /(Vector vector, double scale)
             => Divide(vector, scale);
 
-        ///// <summary>
-        ///// Parses a <see cref="Vector"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The <see cref="Vector"/>.</returns>
-        //public static Vector Parse(string s)
-        //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Vector."))
-        //    {
-        //        return new Vector(
-        //            tokenizer.ReadDouble(),
-        //            tokenizer.ReadDouble()
-        //        );
-        //    }
-        //}
+        /// <summary>
+        /// Parses a <see cref="Vector"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="Vector"/>.</returns>
+        public static Vector Parse(string s)
+        {
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Vector."))
+            {
+                return new Vector(
+                    tokenizer.ReadDouble(),
+                    tokenizer.ReadDouble()
+                );
+            }
+        }
 
         /// <summary>
         /// Length of the vector.

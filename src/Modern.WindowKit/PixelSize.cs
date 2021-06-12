@@ -64,20 +64,20 @@ namespace Modern.WindowKit
             return !(left == right);
         }
 
-        ///// <summary>
-        ///// Parses a <see cref="PixelSize"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The <see cref="PixelSize"/>.</returns>
-        //public static PixelSize Parse(string s)
-        //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelSize."))
-        //    {
-        //        return new PixelSize(
-        //            tokenizer.ReadInt32(),
-        //            tokenizer.ReadInt32());
-        //    }
-        //}
+        /// <summary>
+        /// Parses a <see cref="PixelSize"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="PixelSize"/>.</returns>
+        public static PixelSize Parse(string s)
+        {
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelSize."))
+            {
+                return new PixelSize(
+                    tokenizer.ReadInt32(),
+                    tokenizer.ReadInt32());
+            }
+        }
 
         /// <summary>
         /// Returns a boolean indicating whether the size is equal to the other given size.

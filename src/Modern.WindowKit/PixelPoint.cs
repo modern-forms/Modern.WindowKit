@@ -112,20 +112,20 @@ namespace Modern.WindowKit
         //    return new PixelPoint(a.X - b.X, a.Y - b.Y);
         //}
 
-        ///// <summary>
-        ///// Parses a <see cref="PixelPoint"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The <see cref="PixelPoint"/>.</returns>
-        //public static PixelPoint Parse(string s)
-        //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelPoint."))
-        //    {
-        //        return new PixelPoint(
-        //            tokenizer.ReadInt32(),
-        //            tokenizer.ReadInt32());
-        //    }
-        //}
+        /// <summary>
+        /// Parses a <see cref="PixelPoint"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="PixelPoint"/>.</returns>
+        public static PixelPoint Parse(string s)
+        {
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelPoint."))
+            {
+                return new PixelPoint(
+                    tokenizer.ReadInt32(),
+                    tokenizer.ReadInt32());
+            }
+        }
 
         /// <summary>
         /// Returns a boolean indicating whether the point is equal to the other given point.

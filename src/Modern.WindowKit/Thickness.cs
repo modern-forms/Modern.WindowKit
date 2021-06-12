@@ -202,35 +202,35 @@ namespace Modern.WindowKit
                 size.Height - (thickness.Top + thickness.Bottom));
         }
 
-        ///// <summary>
-        ///// Parses a <see cref="Thickness"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The <see cref="Thickness"/>.</returns>
-        //public static Thickness Parse(string s)
-        //{
-        //    const string exceptionMessage = "Invalid Thickness.";
+        /// <summary>
+        /// Parses a <see cref="Thickness"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="Thickness"/>.</returns>
+        public static Thickness Parse(string s)
+        {
+            const string exceptionMessage = "Invalid Thickness.";
 
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage))
-        //    {
-        //        if (tokenizer.TryReadDouble(out var a))
-        //        {
-        //            if (tokenizer.TryReadDouble(out var b))
-        //            {
-        //                if (tokenizer.TryReadDouble(out var c))
-        //                {
-        //                    return new Thickness(a, b, c, tokenizer.ReadDouble());
-        //                }
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage))
+            {
+                if (tokenizer.TryReadDouble(out var a))
+                {
+                    if (tokenizer.TryReadDouble(out var b))
+                    {
+                        if (tokenizer.TryReadDouble(out var c))
+                        {
+                            return new Thickness(a, b, c, tokenizer.ReadDouble());
+                        }
 
-        //                return new Thickness(a, b);
-        //            }
+                        return new Thickness(a, b);
+                    }
 
-        //            return new Thickness(a);
-        //        }
+                    return new Thickness(a);
+                }
 
-        //        throw new FormatException(exceptionMessage);
-        //    }
-        //}
+                throw new FormatException(exceptionMessage);
+            }
+        }
 
         /// <summary>
         /// Returns a boolean indicating whether the thickness is equal to the other given point.

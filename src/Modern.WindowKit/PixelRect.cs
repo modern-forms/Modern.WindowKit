@@ -426,23 +426,23 @@ namespace Modern.WindowKit
                 Height);
         }
 
-        ///// <summary>
-        ///// Parses a <see cref="PixelRect"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The parsed <see cref="PixelRect"/>.</returns>
-        //public static PixelRect Parse(string s)
-        //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelRect."))
-        //    {
-        //        return new PixelRect(
-        //            tokenizer.ReadInt32(),
-        //            tokenizer.ReadInt32(),
-        //            tokenizer.ReadInt32(),
-        //            tokenizer.ReadInt32()
-        //        );
-        //    }
-        //}
+        /// <summary>
+        /// Parses a <see cref="PixelRect"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The parsed <see cref="PixelRect"/>.</returns>
+        public static PixelRect Parse(string s)
+        {
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelRect."))
+            {
+                return new PixelRect(
+                    tokenizer.ReadInt32(),
+                    tokenizer.ReadInt32(),
+                    tokenizer.ReadInt32(),
+                    tokenizer.ReadInt32()
+                );
+            }
+        }
 
         private static PixelPoint FromPointCeiling(Point point, Vector scale)
         {

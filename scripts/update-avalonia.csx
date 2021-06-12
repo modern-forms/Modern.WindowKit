@@ -72,6 +72,7 @@ CopyFile ("Avalonia.Controls/Platform/Screen.cs", "Screen.cs");
 CopyFile ("Avalonia.Controls/Screens.cs", "Screens.cs");
 CopyFile ("Avalonia.Visuals/Size.cs", "Size.cs");
 CopyFile ("Shared/PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
+CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
 CopyFile ("Avalonia.Controls/SystemDialog.cs", "SystemDialog.cs");
 CopyFile ("Avalonia.Visuals/Thickness.cs", "Thickness.cs");
 CopyFile ("Avalonia.Visuals/Vector.cs", "Vector.cs");

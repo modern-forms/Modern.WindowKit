@@ -177,21 +177,21 @@ namespace Modern.WindowKit
         //        (point.X * matrix.M12) + (point.Y * matrix.M22) + matrix.M32);
         //}
 
-        ///// <summary>
-        ///// Parses a <see cref="Point"/> string.
-        ///// </summary>
-        ///// <param name="s">The string.</param>
-        ///// <returns>The <see cref="Point"/>.</returns>
-        //public static Point Parse(string s)
-        //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Point."))
-        //    {
-        //        return new Point(
-        //            tokenizer.ReadDouble(),
-        //            tokenizer.ReadDouble()
-        //        );
-        //    }
-        //}
+        /// <summary>
+        /// Parses a <see cref="Point"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="Point"/>.</returns>
+        public static Point Parse(string s)
+        {
+            using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Point."))
+            {
+                return new Point(
+                    tokenizer.ReadDouble(),
+                    tokenizer.ReadDouble()
+                );
+            }
+        }
 
         /// <summary>
         /// Returns a boolean indicating whether the point is equal to the other given point.
