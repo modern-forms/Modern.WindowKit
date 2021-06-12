@@ -379,7 +379,7 @@ namespace Modern.WindowKit
         /// <returns>The device-independent rect.</returns>
         public static PixelRect FromRect(Rect rect, double scale) => new PixelRect(
             PixelPoint.FromPoint(rect.Position, scale),
-            PixelSize.FromSize(rect.Size, scale));
+            FromPointCeiling(rect.BottomRight, new Vector(scale, scale)));
 
         /// <summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified scaling factor.
@@ -389,7 +389,7 @@ namespace Modern.WindowKit
         /// <returns>The device-independent point.</returns>
         public static PixelRect FromRect(Rect rect, Vector scale) => new PixelRect(
             PixelPoint.FromPoint(rect.Position, scale),
-            PixelSize.FromSize(rect.Size, scale));
+            FromPointCeiling(rect.BottomRight, scale));
 
         /// <summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified dots per inch (DPI).
@@ -399,7 +399,7 @@ namespace Modern.WindowKit
         /// <returns>The device-independent point.</returns>
         public static PixelRect FromRectWithDpi(Rect rect, double dpi) => new PixelRect(
             PixelPoint.FromPointWithDpi(rect.Position, dpi),
-            PixelSize.FromSizeWithDpi(rect.Size, dpi));
+            FromPointCeiling(rect.BottomRight, new Vector(dpi / 96, dpi / 96)));
 
         /// <summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified dots per inch (DPI).
@@ -409,7 +409,7 @@ namespace Modern.WindowKit
         /// <returns>The device-independent point.</returns>
         public static PixelRect FromRectWithDpi(Rect rect, Vector dpi) => new PixelRect(
             PixelPoint.FromPointWithDpi(rect.Position, dpi),
-            PixelSize.FromSizeWithDpi(rect.Size, dpi));
+            FromPointCeiling(rect.BottomRight, dpi / 96));
 
         /// <summary>
         /// Returns the string representation of the rectangle.
@@ -443,5 +443,12 @@ namespace Modern.WindowKit
         //        );
         //    }
         //}
+
+        private static PixelPoint FromPointCeiling(Point point, Vector scale)
+        {
+            return new PixelPoint(
+                (int)Math.Ceiling(point.X * scale.X),
+                (int)Math.Ceiling(point.Y * scale.Y));
+        }
     }
 }

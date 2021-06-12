@@ -65,6 +65,6 @@ namespace Modern.WindowKit.Input
     //    void SetFocusedElement(
     //        IInputElement? element, 
     //        NavigationMethod method,
-    //        InputModifiers modifiers);
+    //        KeyModifiers modifiers);
     }
 }

@@ -1,5 +1,4 @@
 ﻿#nullable disable
-#pragma warning disable CS0414
 
 using System;
 using System.Linq;

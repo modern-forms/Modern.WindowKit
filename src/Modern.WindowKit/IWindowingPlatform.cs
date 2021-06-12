@@ -5,7 +5,7 @@ namespace Modern.WindowKit.Platform
     public interface IWindowingPlatform
     {
         IWindowImpl CreateWindow();
-        //IEmbeddableWindowImpl CreateEmbeddableWindow();
+        //IWindowImpl CreateEmbeddableWindow();
         IPopupImpl CreatePopup();
     }
 }

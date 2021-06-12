@@ -1,5 +1,4 @@
 ﻿#nullable disable
-#pragma warning disable CS1574
 
 namespace Modern.WindowKit.Controls
 {

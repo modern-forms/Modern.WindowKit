@@ -119,7 +119,7 @@ namespace Modern.WindowKit
         //}
 
         /// <summary>
-        /// Length of the vector
+        /// Length of the vector.
         /// </summary>
         public double Length => Math.Sqrt(SquaredLength);
 
