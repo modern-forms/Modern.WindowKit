@@ -12,8 +12,6 @@ using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Input;
 using Modern.WindowKit.Win32.Interop;
-using Modern.Forms;
-using Modern.WindowKit;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32

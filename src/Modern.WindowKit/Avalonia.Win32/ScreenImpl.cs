@@ -53,11 +53,8 @@ namespace Modern.WindowKit.Win32
 
                                 RECT bounds = monitorInfo.rcMonitor;
                                 RECT workingArea = monitorInfo.rcWork;
-                                PixelRect avaloniaBounds = new PixelRect(bounds.left, bounds.top, bounds.right - bounds.left,
-                                    bounds.bottom - bounds.top);
-                                PixelRect avaloniaWorkArea =
-                                    new PixelRect(workingArea.left, workingArea.top, workingArea.right - workingArea.left,
-                                        workingArea.bottom - workingArea.top);
+                                PixelRect avaloniaBounds = bounds.ToPixelRect();
+                                PixelRect avaloniaWorkArea = workingArea.ToPixelRect();
                                 screens[index] =
                                     new WinScreen(dpi / 96.0d, avaloniaBounds, avaloniaWorkArea, monitorInfo.dwFlags == 1,
                                         monitor);

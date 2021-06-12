@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Modern.Forms
+namespace Modern.WindowKit
 {
     /// <summary>
     /// Represents a class that can be closed.

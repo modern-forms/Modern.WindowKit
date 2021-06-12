@@ -1,7 +1,6 @@
 ﻿#nullable disable
 
 using System.Collections.Generic;
-using System.Text;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Win32.Interop;
 
@@ -363,19 +362,89 @@ namespace Modern.WindowKit.Win32.Input
             { 254, Key.OemClear },
         };
 
+        /// <summary>
+        /// Indicates whether the key is an extended key, such as the right-hand ALT and CTRL keys.
+        /// According to https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keydown.
+        /// </summary>
+        private static bool IsExtended(int keyData)
+        {
+            const int extendedMask = 1 << 24;
+
+            return (keyData & extendedMask) != 0;
+        }
+
+        private static int GetVirtualKey(int virtualKey, int keyData)
+        {
+            // Adapted from https://github.com/dotnet/wpf/blob/master/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/InterOp/HwndKeyboardInputProvider.cs.
+
+            if (virtualKey == (int)UnmanagedMethods.VirtualKeyStates.VK_SHIFT)
+            {
+                // Bits from 16 to 23 represent scan code.
+                const int scanCodeMask = 0xFF0000;
+
+                var scanCode = (keyData & scanCodeMask) >> 16;
+
+                virtualKey = (int)UnmanagedMethods.MapVirtualKey((uint)scanCode, (uint)UnmanagedMethods.MapVirtualKeyMapTypes.MAPVK_VSC_TO_VK_EX);
+
+                if (virtualKey == 0)
+                {
+                    virtualKey = (int)UnmanagedMethods.VirtualKeyStates.VK_LSHIFT;
+                }
+            }
+
+            if (virtualKey == (int)UnmanagedMethods.VirtualKeyStates.VK_MENU)
+            {
+                bool isRight = IsExtended(keyData);
+
+                if (isRight)
+                {
+                    virtualKey = (int)UnmanagedMethods.VirtualKeyStates.VK_RMENU;
+                }
+                else
+                {
+                    virtualKey = (int)UnmanagedMethods.VirtualKeyStates.VK_LMENU;
+                }
+            }
+            
+            if (virtualKey == (int)UnmanagedMethods.VirtualKeyStates.VK_CONTROL)
+            {
+                bool isRight = IsExtended(keyData);
+
+                if (isRight)
+                {
+                    virtualKey = (int)UnmanagedMethods.VirtualKeyStates.VK_RCONTROL;
+                }
+                else
+                {
+                    virtualKey = (int)UnmanagedMethods.VirtualKeyStates.VK_LCONTROL;
+                }
+            }
+
+            return virtualKey;
+        }
+
+        public static Key KeyFromVirtualKey(int virtualKey, int keyData)
+        {
+            virtualKey = GetVirtualKey(virtualKey, keyData);
+
+            s_keyFromVirtualKey.TryGetValue(virtualKey, out var result);
+
+            return result;
+        }
+
         public static Key KeyFromVirtualKey(int virtualKey)
         {
             Key result;
             s_keyFromVirtualKey.TryGetValue(virtualKey, out result);
+
             return result;
         }
 
         public static int VirtualKeyFromKey(Key key)
         {
-            int result;
-            s_virtualKeyFromKey.TryGetValue(key, out result);
+            s_virtualKeyFromKey.TryGetValue(key, out var result);
+
             return result;
         }
-
     }
 }
