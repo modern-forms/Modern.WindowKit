@@ -20,10 +20,12 @@ namespace Modern.WindowKit.Skia
         public static void Initialize(SkiaOptions options)
         {
             //var customGpu = options.CustomGpuFactory?.Invoke();
-            //var renderInterface = new PlatformRenderInterface(customGpu);
+            //var renderInterface = new PlatformRenderInterface(customGpu, options.MaxGpuResourceSizeBytes);
 
             //AvaloniaLocator.CurrentMutable
-            //    .Bind<IPlatformRenderInterface>().ToConstant(renderInterface);
+            //    .Bind<IPlatformRenderInterface>().ToConstant(renderInterface)
+            //    .Bind<IFontManagerImpl>().ToConstant(new FontManagerImpl())
+            //    .Bind<ITextShaperImpl>().ToConstant(new TextShaperImpl());
         }
 
         /// <summary>
