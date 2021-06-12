@@ -21,30 +21,32 @@ namespace Modern.WindowKit.Input
 
         private readonly Pointer _pointer;
         private bool _disposed;
+        private PixelPoint? _position; 
 
-        public MouseDevice(Pointer pointer = null)
+        public MouseDevice(Pointer? pointer = null)
         {
             _pointer = pointer ?? new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
         }
         
-        ///// <summary>
-        ///// Gets the control that is currently capturing by the mouse, if any.
-        ///// </summary>
-        ///// <remarks>
-        ///// When an element captures the mouse, it receives mouse input whether the cursor is 
-        ///// within the control's bounds or not. To set the mouse capture, call the 
-        ///// <see cref="Capture"/> method.
-        ///// </remarks>
+        /// <summary>
+        /// Gets the control that is currently capturing by the mouse, if any.
+        /// </summary>
+        /// <remarks>
+        /// When an element captures the mouse, it receives mouse input whether the cursor is 
+        /// within the control's bounds or not. To set the mouse capture, call the 
+        /// <see cref="Capture"/> method.
+        /// </remarks>
         //[Obsolete("Use IPointer instead")]
-        //public IInputElement Captured => _pointer.Captured;
+        //public IInputElement? Captured => _pointer.Captured;
 
         /// <summary>
         /// Gets the mouse position, in screen coordinates.
         /// </summary>
+        [Obsolete("Use events instead")]
         public PixelPoint Position
         {
-            get;
-            protected set;
+            get => _position ?? new PixelPoint(-1, -1);
+            protected set => _position = value;
         }
 
         ///// <summary>
@@ -56,7 +58,7 @@ namespace Modern.WindowKit.Input
         ///// within the control's bounds or not. The current mouse capture control is exposed
         ///// by the <see cref="Captured"/> property.
         ///// </remarks>
-        //public void Capture(IInputElement control)
+        //public void Capture(IInputElement? control)
         //{
         //    _pointer.Capture(control);
         //}
@@ -68,7 +70,7 @@ namespace Modern.WindowKit.Input
         ///// <returns>The mouse position in the control's coordinates.</returns>
         //public Point GetPosition(IVisual relativeTo)
         //{
-        //    //Contract.Requires<ArgumentNullException>(relativeTo != null);
+        //    relativeTo = relativeTo ?? throw new ArgumentNullException(nameof(relativeTo));
 
         //    if (relativeTo.VisualRoot == null)
         //    {
@@ -77,7 +79,7 @@ namespace Modern.WindowKit.Input
 
         //    var rootPoint = relativeTo.VisualRoot.PointToClient(Position);
         //    var transform = relativeTo.VisualRoot.TransformToVisual(relativeTo);
-        //    return rootPoint * transform.Value;
+        //    return rootPoint * transform!.Value;
         //}
 
         public void ProcessRawEvent(RawInputEventArgs e)
@@ -93,7 +95,16 @@ namespace Modern.WindowKit.Input
 
         //public void SceneInvalidated(IInputRoot root, Rect rect)
         //{
-        //    var clientPoint = root.PointToClient(Position);
+        //    // Pointer is outside of the target area
+        //    if (_position == null )
+        //    {
+        //        if (root.PointerOverElement != null)
+        //            ClearPointerOver(this, 0, root, PointerPointProperties.None, KeyModifiers.None);
+        //        return;
+        //     }
+            
+            
+        //    var clientPoint = root.PointToClient(_position.Value);
 
         //    if (rect.Contains(clientPoint))
         //    {
@@ -128,13 +139,13 @@ namespace Modern.WindowKit.Input
         
         //private void ProcessRawEvent(RawPointerEventArgs e)
         //{
-        //    //Contract.Requires<ArgumentNullException>(e != null);
+        //    e = e ?? throw new ArgumentNullException(nameof(e));
 
         //    var mouse = (MouseDevice)e.Device;
         //    if(mouse._disposed)
         //        return;
 
-        //    Position = e.Root.PointToScreen(e.Position);
+        //    _position = e.Root.PointToScreen(e.Position);
         //    var props = CreateProperties(e);
         //    var keyModifiers = KeyModifiersUtils.ConvertToKey(e.InputModifiers);
         //    switch (e.Type)
@@ -175,9 +186,10 @@ namespace Modern.WindowKit.Input
         //private void LeaveWindow(IMouseDevice device, ulong timestamp, IInputRoot root, PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
+        //    _position = null;
         //    ClearPointerOver(this, timestamp, root, properties, inputModifiers);
         //}
 
@@ -216,8 +228,8 @@ namespace Modern.WindowKit.Input
         //    PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var hit = HitTest(root, p);
 
@@ -252,10 +264,10 @@ namespace Modern.WindowKit.Input
         //private bool MouseMove(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    IInputElement source;
+        //    IInputElement? source;
 
         //    if (_pointer.Captured == null)
         //    {
@@ -267,18 +279,23 @@ namespace Modern.WindowKit.Input
         //        source = _pointer.Captured;
         //    }
 
-        //    var e = new PointerEventArgs(InputElement.PointerMovedEvent, source, _pointer, root,
-        //        p, timestamp, properties, inputModifiers);
+        //    if (source is object)
+        //    {
+        //        var e = new PointerEventArgs(InputElement.PointerMovedEvent, source, _pointer, root,
+        //            p, timestamp, properties, inputModifiers);
 
-        //    source?.RaiseEvent(e);
-        //    return e.Handled;
+        //        source.RaiseEvent(e);
+        //        return e.Handled;
+        //    }
+
+        //    return false;
         //}
 
         //private bool MouseUp(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties props,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var hit = HitTest(root, p);
 
@@ -300,8 +317,8 @@ namespace Modern.WindowKit.Input
         //    PointerPointProperties props,
         //    Vector delta, KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var hit = HitTest(root, p);
 
@@ -319,21 +336,21 @@ namespace Modern.WindowKit.Input
 
         //private IInteractive GetSource(IVisual hit)
         //{
-        //    //Contract.Requires<ArgumentNullException>(hit != null);
+        //    hit = hit ?? throw new ArgumentNullException(nameof(hit));
 
         //    return _pointer.Captured ??
         //        (hit as IInteractive) ??
         //        hit.GetSelfAndVisualAncestors().OfType<IInteractive>().FirstOrDefault();
         //}
 
-        //private IInputElement HitTest(IInputElement root, Point p)
+        //private IInputElement? HitTest(IInputElement root, Point p)
         //{
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    return _pointer.Captured ?? root.InputHitTest(p);
         //}
 
-        //PointerEventArgs CreateSimpleEvent(RoutedEvent ev, ulong timestamp, IInteractive source,
+        //PointerEventArgs CreateSimpleEvent(RoutedEvent ev, ulong timestamp, IInteractive? source,
         //    PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
@@ -345,8 +362,8 @@ namespace Modern.WindowKit.Input
         //    PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var element = root.PointerOverElement;
         //    var e = CreateSimpleEvent(InputElement.PointerLeaveEvent, timestamp, element, properties, inputModifiers);
@@ -362,7 +379,7 @@ namespace Modern.WindowKit.Input
         //        e.Source = element;
         //        e.Handled = false;
         //        element.RaiseEvent(e);
-        //        element = (IInputElement)element.VisualParent;
+        //        element = (IInputElement?)element.VisualParent;
         //    }
             
         //    root.PointerOverElement = null;
@@ -386,12 +403,12 @@ namespace Modern.WindowKit.Input
         //    }
         //}
 
-        //private IInputElement SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, Point p, 
+        //private IInputElement? SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, Point p, 
         //    PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var element = root.InputHitTest(p);
 
@@ -414,13 +431,13 @@ namespace Modern.WindowKit.Input
         //    PointerPointProperties properties,
         //    KeyModifiers inputModifiers)
         //{
-        //    //Contract.Requires<ArgumentNullException>(device != null);
-        //    //Contract.Requires<ArgumentNullException>(root != null);
-        //    //Contract.Requires<ArgumentNullException>(element != null);
+        //    device = device ?? throw new ArgumentNullException(nameof(device));
+        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        //    element = element ?? throw new ArgumentNullException(nameof(element));
 
-        //    IInputElement branch = null;
+        //    IInputElement? branch = null;
 
-        //    var el = element;
+        //    IInputElement? el = element;
 
         //    while (el != null)
         //    {
@@ -429,7 +446,7 @@ namespace Modern.WindowKit.Input
         //            branch = el;
         //            break;
         //        }
-        //        el = (IInputElement)el.VisualParent;
+        //        el = (IInputElement?)el.VisualParent;
         //    }
 
         //    el = root.PointerOverElement;
@@ -445,7 +462,7 @@ namespace Modern.WindowKit.Input
         //        e.Source = el;
         //        e.Handled = false;
         //        el.RaiseEvent(e);
-        //        el = (IInputElement)el.VisualParent;
+        //        el = (IInputElement?)el.VisualParent;
         //    }            
 
         //    el = root.PointerOverElement = element;
@@ -456,14 +473,14 @@ namespace Modern.WindowKit.Input
         //        e.Source = el;
         //        e.Handled = false;
         //        el.RaiseEvent(e);
-        //        el = (IInputElement)el.VisualParent;
+        //        el = (IInputElement?)el.VisualParent;
         //    }
         //}
 
         public void Dispose()
         {
             _disposed = true;
-            //_pointer?.Dispose();
+            _pointer?.Dispose();
         }
     }
 }

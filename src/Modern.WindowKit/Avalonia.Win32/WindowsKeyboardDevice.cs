@@ -1,5 +1,4 @@
 ﻿#nullable disable
-#pragma warning disable CS0109
 
 using System.Text;
 using Modern.WindowKit.Controls;
