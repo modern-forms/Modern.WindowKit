@@ -3,11 +3,46 @@ using System.Collections.Generic;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
+//using Modern.WindowKit.Layout;
 //using Modern.WindowKit.Rendering;
 //using JetBrains.Annotations;
 
 namespace Modern.WindowKit.Platform
 {
+    /// <summary>
+    /// Describes the reason for a <see cref="ITopLevelImpl.Resized"/> message.
+    /// </summary>
+    public enum PlatformResizeReason
+    {
+        /// <summary>
+        /// The resize reason is unknown or unspecified.
+        /// </summary>
+        Unspecified,
+
+        /// <summary>
+        /// The resize was due to the user resizing the window, for example by dragging the
+        /// window frame.
+        /// </summary>
+        User,
+
+        /// <summary>
+        /// The resize was initiated by the application, for example by setting one of the sizing-
+        /// related properties on <see cref="Window"/> such as <see cref="Layoutable.Width"/> or
+        /// <see cref="Layoutable.Height"/>.
+        /// </summary>
+        Application,
+
+        /// <summary>
+        /// The resize was initiated by the layout system.
+        /// </summary>
+        Layout,
+
+        /// <summary>
+        /// The resize was due to a change in DPI.
+        /// </summary>
+        DpiChange,
+    }
+
     /// <summary>
     /// Defines a platform-specific top-level window implementation.
     /// </summary>
@@ -21,6 +56,11 @@ namespace Modern.WindowKit.Platform
         /// Gets the client size of the toplevel.
         /// </summary>
         Size ClientSize { get; }
+
+        /// <summary>
+        /// Gets the total size of the toplevel, excluding shadows.
+        /// </summary>
+        Size? FrameSize { get; }
 
         /// <summary>
         /// Gets the scaling factor for the toplevel. This is used for rendering.
@@ -52,12 +92,17 @@ namespace Modern.WindowKit.Platform
         /// <summary>
         /// Gets or sets a method called when the toplevel is resized.
         /// </summary>
-        Action<Size> Resized { get; set; }
+        Action<Size, PlatformResizeReason> Resized { get; set; }
 
         /// <summary>
         /// Gets or sets a method called when the toplevel's scaling changes.
         /// </summary>
         Action<double> ScalingChanged { get; set; }
+
+        /// <summary>
+        /// Gets or sets a method called when the toplevel's TransparencyLevel changes.
+        /// </summary>
+        Action<WindowTransparencyLevel> TransparencyLevelChanged { get; set; }
 
         ///// <summary>
         ///// Creates a new renderer for the toplevel.
@@ -93,12 +138,17 @@ namespace Modern.WindowKit.Platform
         /// Sets the cursor associated with the toplevel.
         /// </summary>
         /// <param name="cursor">The cursor. Use null for default cursor</param>
-        void SetCursor(IPlatformHandle? cursor);
+        void SetCursor(ICursorImpl cursor);
 
         /// <summary>
         /// Gets or sets a method called when the underlying implementation is destroyed.
         /// </summary>
         Action Closed { get; set; }
+        
+        /// <summary>
+        /// Gets or sets a method called when the input focus is lost.
+        /// </summary>
+        Action LostFocus { get; set; }
 
         /// <summary>
         /// Gets a mouse device associated with toplevel
@@ -107,5 +157,22 @@ namespace Modern.WindowKit.Platform
         //IMouseDevice MouseDevice { get; }
 
         Size ScaledClientSize { get; }
+
+        IPopupImpl CreatePopup();
+
+        /// <summary>
+        /// Sets the <see cref="WindowTransparencyLevel"/> hint of the TopLevel.
+        /// </summary>
+        void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel);
+
+        /// <summary>
+        /// Gets the current <see cref="WindowTransparencyLevel"/> of the TopLevel.
+        /// </summary>
+        WindowTransparencyLevel TransparencyLevel { get; }
+
+        /// <summary>
+        /// Gets the <see cref="AcrylicPlatformCompensationLevels"/> for the platform.        
+        /// </summary>
+        AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; }
     }
 }

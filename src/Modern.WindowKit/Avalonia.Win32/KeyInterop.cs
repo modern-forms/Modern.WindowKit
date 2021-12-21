@@ -430,14 +430,6 @@ namespace Modern.WindowKit.Win32.Input
             return result;
         }
 
-        public static Key KeyFromVirtualKey(int virtualKey)
-        {
-            Key result;
-            s_keyFromVirtualKey.TryGetValue(virtualKey, out result);
-
-            return result;
-        }
-
         public static int VirtualKeyFromKey(Key key)
         {
             s_virtualKeyFromKey.TryGetValue(key, out var result);

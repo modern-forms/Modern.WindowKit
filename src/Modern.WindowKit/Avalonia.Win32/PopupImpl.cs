@@ -17,7 +17,7 @@ namespace Modern.WindowKit.Win32
         [ThreadStatic]
         private static IntPtr s_parentHandle;
 
-        public override void Show(bool activate)
+        public override void Show(bool activate, bool isDialog)
         {
             // Popups are always shown non-activated.
             UnmanagedMethods.ShowWindow(Handle.Handle, UnmanagedMethods.ShowWindowCommand.ShowNoActivate);
@@ -115,7 +115,7 @@ namespace Modern.WindowKit.Win32
         // One fabulous design decision leads to another, I guess
         static IWindowBaseImpl SaveParentHandle(IWindowBaseImpl parent)
         {
-            s_parentHandle = parent?.Handle.Handle ?? OffscreenParentWindow.Handle;
+            s_parentHandle = parent?.Handle?.Handle ?? IntPtr.Zero;
             return parent;
         }
 
@@ -135,7 +135,7 @@ namespace Modern.WindowKit.Win32
         private void MoveResize(PixelPoint position, Size size, double scaling)
         {
             Move(position);
-            Resize(size);
+            Resize(size, PlatformResizeReason.Layout);
             //TODO: We ignore the scaling override for now
         }
 

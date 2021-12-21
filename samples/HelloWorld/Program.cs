@@ -6,7 +6,7 @@ public class Program
     static void Main(string[] args)
     {
         var window = AvaloniaGlobals.WindowingInterface.CreateWindow();
-        window.Show();
+        window.Show(true, false);
         var _mainLoopCancellationTokenSource = new CancellationTokenSource();
 
         Dispatcher.UIThread.MainLoop(_mainLoopCancellationTokenSource.Token);

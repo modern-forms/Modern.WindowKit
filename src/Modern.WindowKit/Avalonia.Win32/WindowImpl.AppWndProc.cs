@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Text;
 using Modern.WindowKit.Controls;
-using Modern.WindowKit.Controls.Platform;
+//using Modern.WindowKit.Controls.Remote;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
+using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Input;
-using Modern.WindowKit.Win32.Interop;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32
@@ -19,7 +20,6 @@ namespace Modern.WindowKit.Win32
         {
             const double wheelDelta = 120.0;
             uint timestamp = unchecked((uint)GetMessageTime());
-
             RawInputEventArgs e = null;
             var shouldTakeFocus = false;
 
@@ -35,6 +35,7 @@ namespace Modern.WindowKit.Win32
                             case WindowActivate.WA_CLICKACTIVE:
                                 {
                                     Activated?.Invoke();
+                                    UpdateInputMethod(GetKeyboardLayout(0));
                                     break;
                                 }
 
@@ -95,14 +96,19 @@ namespace Modern.WindowKit.Win32
                         var newDisplayRect = Marshal.PtrToStructure<RECT>(lParam);
                         _scaling = dpi / 96.0;
                         ScalingChanged?.Invoke(_scaling);
-                        SetWindowPos(hWnd,
-                            IntPtr.Zero,
-                            newDisplayRect.left,
-                            newDisplayRect.top,
-                            newDisplayRect.right - newDisplayRect.left,
-                            newDisplayRect.bottom - newDisplayRect.top,
-                            SetWindowPosFlags.SWP_NOZORDER |
-                            SetWindowPosFlags.SWP_NOACTIVATE);
+                        
+                        using (SetResizeReason(PlatformResizeReason.DpiChange))
+                        { 
+                            SetWindowPos(hWnd,
+                                IntPtr.Zero,
+                                newDisplayRect.left,
+                                newDisplayRect.top,
+                                newDisplayRect.right - newDisplayRect.left,
+                                newDisplayRect.bottom - newDisplayRect.top,
+                                SetWindowPosFlags.SWP_NOZORDER |
+                                SetWindowPosFlags.SWP_NOACTIVATE);
+                        }
+
                         return IntPtr.Zero;
                     }
 
@@ -118,6 +124,12 @@ namespace Modern.WindowKit.Win32
                             WindowsKeyboardDevice.Instance.Modifiers);
                         break;
                     }
+
+                case WindowsMessage.WM_SYSCOMMAND:
+                    // Disable system handling of Alt/F10 menu keys.
+                    if ((SysCommands)wParam == SysCommands.SC_KEYMENU && HighWord(ToInt32(lParam)) <= 0)
+                        return IntPtr.Zero;
+                    break;
 
                 case WindowsMessage.WM_MENUCHAR:
                     {
@@ -140,11 +152,11 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_CHAR:
                     {
                         // Ignore control chars
-                        //if (ToInt32(wParam) >= 32)
-                        //{
-                        //    e = new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, _owner,
-                        //        new string((char)ToInt32(wParam), 1, WindowsKeyboardDevice.Instance.Modifiers));
-                        //}
+                        if (ToInt32(wParam) >= 32)
+                        {
+                            e = new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, _owner,
+                                new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);
+                        }
 
                         break;
                     }
@@ -154,7 +166,7 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_MBUTTONDOWN:
                 case WindowsMessage.WM_XBUTTONDOWN:
                     {
-                        //shouldTakeFocus = ShouldTakeFocusOnClick;
+                        shouldTakeFocus = ShouldTakeFocusOnClick;
                         if (ShouldIgnoreTouchEmulatedMessage())
                         {
                             break;
@@ -183,7 +195,6 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_MBUTTONUP:
                 case WindowsMessage.WM_XBUTTONUP:
                     {
-                        //shouldTakeFocus = ShouldTakeFocusOnClick;
                         if (ShouldIgnoreTouchEmulatedMessage())
                         {
                             break;
@@ -349,17 +360,26 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_PAINT:
                 {
-                        UnmanagedMethods.PAINTSTRUCT ps;
-                        if (UnmanagedMethods.BeginPaint(_hwnd, out ps) != IntPtr.Zero)
+                    //using(NonPumpingSyncContext.Use())
+                    //using (_rendererLock.Lock())
+                    //{
+                        if (BeginPaint(_hwnd, out PAINTSTRUCT ps) != IntPtr.Zero)
                         {
                             var f = RenderScaling;
                             var r = ps.rcPaint;
-                            Paint?.Invoke(new Rect(r.left / f, r.top / f, (r.right - r.left) / f, (r.bottom - r.top) / f));
-                            UnmanagedMethods.EndPaint(_hwnd, ref ps);
+                            Paint?.Invoke(new Rect(r.left / f, r.top / f, (r.right - r.left) / f,
+                                (r.bottom - r.top) / f));
+                            EndPaint(_hwnd, ref ps);
                         }
+                    //}
 
-                        return IntPtr.Zero;
-                    }
+                    return IntPtr.Zero;
+                }
+
+
+                case WindowsMessage.WM_ENTERSIZEMOVE:
+                    _resizeReason = PlatformResizeReason.User;
+                    break;
 
                 case WindowsMessage.WM_SIZE:
                     {
@@ -376,7 +396,7 @@ namespace Modern.WindowKit.Win32
                              size == SizeCommand.Maximized))
                         {
                             var clientSize = new Size(ToInt32(lParam) & 0xffff, ToInt32(lParam) >> 16);
-                            Resized(clientSize / RenderScaling);
+                            Resized(clientSize / RenderScaling, _resizeReason);
                         }
 
                         var windowState = size == SizeCommand.Maximized ?
@@ -399,6 +419,10 @@ namespace Modern.WindowKit.Win32
 
                         return IntPtr.Zero;
                     }
+
+                case WindowsMessage.WM_EXITSIZEMOVE:
+                    _resizeReason = PlatformResizeReason.Unspecified;
+                    break;
 
                 case WindowsMessage.WM_MOVE:
                     {
@@ -450,6 +474,35 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_KILLFOCUS:
                     LostFocus?.Invoke();
                     break;
+
+                case WindowsMessage.WM_INPUTLANGCHANGE:
+                    {
+                        UpdateInputMethod(lParam);
+                        // call DefWindowProc to pass to all children
+                        break;
+                    }
+                case WindowsMessage.WM_IME_SETCONTEXT:
+                    {
+                        // TODO if we implement preedit, disable the composition window:
+                        // lParam = new IntPtr((int)(((uint)lParam.ToInt64()) & ~ISC_SHOWUICOMPOSITIONWINDOW));
+                        UpdateInputMethod(GetKeyboardLayout(0));
+                        break;
+                    }
+                case WindowsMessage.WM_IME_CHAR:
+                case WindowsMessage.WM_IME_COMPOSITION:
+                case WindowsMessage.WM_IME_COMPOSITIONFULL:
+                case WindowsMessage.WM_IME_CONTROL:
+                case WindowsMessage.WM_IME_KEYDOWN:
+                case WindowsMessage.WM_IME_KEYUP:
+                case WindowsMessage.WM_IME_NOTIFY:
+                case WindowsMessage.WM_IME_SELECT:
+                    break;
+                //case WindowsMessage.WM_IME_STARTCOMPOSITION:
+                //    Imm32InputMethod.Current.IsComposing = true;
+                //    break;
+                //case WindowsMessage.WM_IME_ENDCOMPOSITION:
+                //    Imm32InputMethod.Current.IsComposing = false;
+                //    break;
             }
 
 #if USE_MANAGED_DRAG
@@ -476,6 +529,20 @@ namespace Modern.WindowKit.Win32
             //{
                 return DefWindowProc(hWnd, msg, wParam, lParam);
             //}
+        }
+
+        private void UpdateInputMethod(IntPtr hkl)
+        {
+            // note: for non-ime language, also create it so that emoji panel tracks cursor
+            var langid = LGID(hkl);
+            //if (langid == _langid && Imm32InputMethod.Current.HWND == Hwnd)
+            //{
+            //    return;
+            //} 
+            //_langid = langid;
+
+            //Imm32InputMethod.Current.SetLanguageAndWindow(this, Hwnd, hkl);
+            
         }
 
         private static int ToInt32(IntPtr ptr)

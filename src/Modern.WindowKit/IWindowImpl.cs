@@ -102,22 +102,6 @@ namespace Modern.WindowKit.Platform
         Thickness OffScreenMargin { get; }
 
         /// <summary>
-        /// Starts moving a window with left button being held. Should be called from left mouse button press event handler.
-        /// </summary>
-        void BeginMoveDrag(PointerPressedEventArgs e);
-
-        /// <summary>
-        /// Starts resizing a window. This function is used if an application has window resizing controls. 
-        /// Should be called from left mouse button press event handler
-        /// </summary>
-        void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e);
-
-        /// <summary>
-        /// Sets the client size of the top level.
-        /// </summary>
-        void Resize(Size clientSize);
-
-        /// <summary>
         /// Sets the client size of the top level.
         /// </summary>
         void Move(PixelPoint point);

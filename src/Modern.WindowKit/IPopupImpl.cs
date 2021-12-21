@@ -1,4 +1,4 @@
-//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+﻿//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 
 namespace Modern.WindowKit.Platform
 {

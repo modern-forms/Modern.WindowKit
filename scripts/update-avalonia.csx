@@ -73,6 +73,7 @@ CopyFile ("Avalonia.Visuals/Rect.cs", "Rect.cs");
 //CopyFile ("Avalonia.Input/RuntimeInfo.cs", "RuntimeInfo.cs");
 CopyFile ("Avalonia.Controls/Platform/Screen.cs", "Screen.cs");
 CopyFile ("Avalonia.Controls/Screens.cs", "Screens.cs");
+CopyFile ("Avalonia.Controls/ApplicationLifetimes/ShutdownRequestedEventArgs.cs", "ShutdownRequestedEventArgs.cs");
 CopyFile ("Avalonia.Visuals/Size.cs", "Size.cs");
 CopyFile ("Shared/PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
@@ -107,6 +108,7 @@ CopyFile ("Windows/Avalonia.Win32/ClipboardImpl.cs", "Avalonia.Win32/ClipboardIm
 CopyFile ("Windows/Avalonia.Win32/CursorFactory.cs", "Avalonia.Win32/CursorFactory.cs");
 CopyFile ("Windows/Avalonia.Win32/DataObject.cs", "Avalonia.Win32/DataObject.cs");
 CopyFile ("Windows/Avalonia.Win32/FramebufferManager.cs", "Avalonia.Win32/FramebufferManager.cs");
+CopyFile ("Windows/Avalonia.Win32/WinRT/IBlurHost.cs", "Avalonia.Win32/IBlurHost.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/KeyInterop.cs", "Avalonia.Win32/KeyInterop.cs");
 CopyFile ("Windows/Avalonia.Win32/OleDataObject.cs", "Avalonia.Win32/OleDataObject.cs");
 CopyFile ("Windows/Avalonia.Win32/PlatformConstants.cs", "Avalonia.Win32/PlatformConstants.cs");

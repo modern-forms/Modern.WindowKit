@@ -80,7 +80,7 @@ namespace Modern.WindowKit.Skia
                 Dpi = SkiaPlatform.DefaultDpi;
             }
         }
-
+        
         /// <summary>
         /// Create new writeable bitmap.
         /// </summary>
@@ -95,9 +95,9 @@ namespace Modern.WindowKit.Skia
 
             SKColorType colorType = format.ToSkColorType();
             SKAlphaType alphaType = alphaFormat.ToSkAlphaType();
-
+            
             var runtimePlatform = AvaloniaGlobals.RuntimePlatform;
-
+            
             if (runtimePlatform != null)
             {
                 _bitmap = new SKBitmap();

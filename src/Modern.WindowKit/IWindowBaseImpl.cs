@@ -9,7 +9,9 @@ namespace Modern.WindowKit.Platform
         /// <summary>
         /// Shows the window.
         /// </summary>
-        void Show();
+        /// <param name="activate">Whether to activate the shown window.</param>
+        /// <param name="isDialog">Whether the window is being shown as a dialog.</param>
+        void Show(bool activate, bool isDialog);
 
         /// <summary>
         /// Hides the window.
@@ -26,6 +28,11 @@ namespace Modern.WindowKit.Platform
         /// Should be called from left mouse button press event handler
         /// </summary>
         void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e);
+
+        /// <summary>
+        /// Gets the scaling factor for Window positioning and sizing.
+        /// </summary>
+        double DesktopScaling { get; }
 
         /// <summary>
         /// Gets the position of the window in device pixels.
@@ -56,22 +63,18 @@ namespace Modern.WindowKit.Platform
         /// Gets the platform window handle.
         /// </summary>
         IPlatformHandle Handle { get; }
-       
-        /// <summary>
-        /// Gets the maximum size of a window on the system.
-        /// </summary>
-        Size MaxClientSize { get; }
 
         /// <summary>
         /// Sets the client size of the top level.
         /// </summary>
-        void Resize(Size clientSize);
-
+        /// <param name="clientSize">The new client size.</param>
+        /// <param name="reason">The reason for the resize.</param>
+        void Resize(Size clientSize, PlatformResizeReason reason = PlatformResizeReason.Application);
+       
         /// <summary>
-        /// Minimum width of the window.
+        /// Gets a maximum client size hint for an auto-sizing window, in device-independent pixels.
         /// </summary>
-        /// 
-        void SetMinMaxSize(Size minSize, Size maxSize);
+        Size MaxAutoSizeHint { get; }
 
         /// <summary>
         /// Sets whether this window appears on top of all other windows
