@@ -32,13 +32,5 @@ namespace Modern.WindowKit.Win32.Input
             //        UnmanagedMethods.ReleaseCapture();
             //}
         }
-
-        public static WindowsMouseDevice Instance { get; } = new WindowsMouseDevice();
-        
-        public WindowImpl CurrentWindow
-        {
-            get;
-            set;
-        }
     }
 }

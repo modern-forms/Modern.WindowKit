@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -35,7 +36,7 @@ namespace Modern.WindowKit.Win32.Interop
         public static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = new IntPtr(-3);
         public static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
 
-        internal enum Cursor
+        public enum Cursor
         {
             IDC_ARROW = 32512,
             IDC_IBEAM = 32513,
@@ -55,7 +56,7 @@ namespace Modern.WindowKit.Win32.Interop
             IDC_HELP = 32651
         }
 
-        internal enum MouseActivate : int
+        public enum MouseActivate : int
         {
             MA_ACTIVATE = 1,
             MA_ACTIVATEANDEAT = 2,
@@ -64,7 +65,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [Flags]
-        internal enum SetWindowPosFlags : uint
+        public enum SetWindowPosFlags : uint
         {
             SWP_ASYNCWINDOWPOS = 0x4000,
             SWP_DEFERERASE = 0x2000,
@@ -85,7 +86,7 @@ namespace Modern.WindowKit.Win32.Interop
             SWP_RESIZE = SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER
         }
 
-        internal static class WindowPosZOrder
+        public static class WindowPosZOrder
         {
             public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
             public static readonly IntPtr HWND_TOP = new IntPtr(0);
@@ -93,7 +94,7 @@ namespace Modern.WindowKit.Win32.Interop
             public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         }
 
-        internal enum SizeCommand
+        public enum SizeCommand
         {
             Restored,
             Minimized,
@@ -102,7 +103,7 @@ namespace Modern.WindowKit.Win32.Interop
             MaxHide,
         }
 
-        internal enum ShowWindowCommand
+        public enum ShowWindowCommand
         {
             Hide = 0,
             Normal = 1,
@@ -119,7 +120,7 @@ namespace Modern.WindowKit.Win32.Interop
             ForceMinimize = 11
         }
 
-        internal enum SystemMetric
+        public enum SystemMetric
         {
             SM_CXSCREEN = 0,  // 0x00
             SM_CYSCREEN = 1,  // 0x01
@@ -221,7 +222,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [Flags]
-        internal enum ModifierKeys
+        public enum ModifierKeys
         {
             MK_CONTROL = 0x0008,
 
@@ -404,14 +405,14 @@ namespace Modern.WindowKit.Win32.Interop
             VK_OEM_CLEAR = 0xFE
         }
 
-        internal enum WindowActivate
+        public enum WindowActivate
         {
             WA_INACTIVE,
             WA_ACTIVE,
             WA_CLICKACTIVE,
         }
 
-        internal enum HitTestValues
+        public enum HitTestValues
         {
             HTERROR = -2,
             HTTRANSPARENT = -1,
@@ -440,7 +441,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [Flags]
-        internal enum WindowStyles : uint
+        public enum WindowStyles : uint
         {
             WS_BORDER = 0x800000,
             WS_CAPTION = 0xc00000,
@@ -462,10 +463,12 @@ namespace Modern.WindowKit.Win32.Interop
             WS_SIZEFRAME = 0x40000,
             WS_SYSMENU = 0x80000,
             WS_TABSTOP = 0x10000,
+            WS_THICKFRAME = 0x40000,
             WS_VISIBLE = 0x10000000,
             WS_VSCROLL = 0x200000,
             WS_EX_DLGMODALFRAME = 0x00000001,
             WS_EX_NOPARENTNOTIFY = 0x00000004,
+            WS_EX_NOREDIRECTIONBITMAP = 0x00200000,
             WS_EX_TOPMOST = 0x00000008,
             WS_EX_ACCEPTFILES = 0x00000010,
             WS_EX_TRANSPARENT = 0x00000020,
@@ -493,7 +496,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [Flags]
-        internal enum ClassStyles : uint
+        public enum ClassStyles : uint
         {
             CS_VREDRAW = 0x0001,
             CS_HREDRAW = 0x0002,
@@ -510,7 +513,7 @@ namespace Modern.WindowKit.Win32.Interop
             CS_DROPSHADOW = 0x00020000
         }
 
-        internal enum WindowsMessage : uint
+        public enum WindowsMessage : uint
         {
             WM_NULL = 0x0000,
             WM_CREATE = 0x0001,
@@ -744,7 +747,7 @@ namespace Modern.WindowKit.Win32.Interop
             WM_DISPATCH_WORK_ITEM = WM_USER,
         }
 
-        internal enum MapVirtualKeyMapTypes : uint
+        public enum MapVirtualKeyMapTypes : uint
         {
             MAPVK_VK_TO_VSC = 0x00,
             MAPVK_VSC_TO_VK = 0x01,
@@ -752,7 +755,7 @@ namespace Modern.WindowKit.Win32.Interop
             MAPVK_VSC_TO_VK_EX = 0x03,
         }
 
-        internal enum BitmapCompressionMode : uint
+        public enum BitmapCompressionMode : uint
         {
             BI_RGB = 0,
             BI_RLE8 = 1,
@@ -762,13 +765,13 @@ namespace Modern.WindowKit.Win32.Interop
             BI_PNG = 5
         }
 
-        internal enum DIBColorTable
+        public enum DIBColorTable
         {
             DIB_RGB_COLORS = 0,     /* color table in RGBs */
             DIB_PAL_COLORS          /* color table in palette indices */
         }
 
-        internal enum WindowLongParam
+        public enum WindowLongParam
         {
             GWL_WNDPROC = -4,
             GWL_HINSTANCE = -6,
@@ -779,7 +782,7 @@ namespace Modern.WindowKit.Win32.Interop
             GWL_USERDATA = -21
         }
 
-        internal enum MenuCharParam
+        public enum MenuCharParam
         {
             MNC_IGNORE = 0,
             MNC_CLOSE = 1,
@@ -788,7 +791,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct RGBQUAD
+        public struct RGBQUAD
         {
             public byte rgbBlue;
             public byte rgbGreen;
@@ -797,7 +800,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct BITMAPINFOHEADER
+        public struct BITMAPINFOHEADER
         {
             public uint biSize;
             public int biWidth;
@@ -818,12 +821,12 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct BITMAPINFO
+        public struct BITMAPINFO
         {
             // C# cannot inlay structs in structs so must expand directly here
             //
             //[StructLayout(LayoutKind.Sequential)]
-            //internal struct BITMAPINFOHEADER
+            //public struct BITMAPINFOHEADER
             //{
             public uint biSize;
             public int biWidth;
@@ -843,7 +846,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct MINMAXINFO
+        public struct MINMAXINFO
         {
             public POINT ptReserved;
             public POINT ptMaxSize;
@@ -855,35 +858,35 @@ namespace Modern.WindowKit.Win32.Interop
         public const int SizeOf_BITMAPINFOHEADER = 40;
 
         [DllImport("user32.dll")]
-        internal static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip,
+        public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip,
                                                       MonitorEnumDelegate lpfnEnum, IntPtr dwData);
         
         public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Rect lprcMonitor, IntPtr dwData);
         
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr GetDC(IntPtr hWnd);
+        public static extern IntPtr GetDC(IntPtr hWnd);
 
         [DllImport("gdi32.dll")]
-        internal static extern int SetDIBitsToDevice(IntPtr hdc, int XDest, int YDest,
+        public static extern int SetDIBitsToDevice(IntPtr hdc, int XDest, int YDest,
             uint dwWidth, uint dwHeight,
             int XSrc, int YSrc,
             uint uStartScan, uint cScanLines,
            IntPtr lpvBits, [In] ref BITMAPINFO lpbmi, uint fuColorUse);
 
         [DllImport("user32.dll")]
-        internal static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool AdjustWindowRectEx(ref RECT lpRect, uint dwStyle, bool bMenu, uint dwExStyle);
+        public static extern bool AdjustWindowRectEx(ref RECT lpRect, uint dwStyle, bool bMenu, uint dwExStyle);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
+        public static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
 
         [DllImport("user32.dll")]
-        internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr CreateWindowEx(
+        public static extern IntPtr CreateWindowEx(
            int dwExStyle,
            uint lpClassName,
            string lpWindowName,
@@ -898,55 +901,55 @@ namespace Modern.WindowKit.Win32.Interop
            IntPtr lpParam);
 
         [DllImport("user32.dll", EntryPoint = "DefWindowProcW")]
-        internal static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", EntryPoint = "DispatchMessageW")]
-        internal static extern IntPtr DispatchMessage(ref MSG lpmsg);
+        public static extern IntPtr DispatchMessage(ref MSG lpmsg);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool DestroyWindow(IntPtr hwnd);
+        public static extern bool DestroyWindow(IntPtr hwnd);
 
         [DllImport("user32.dll")]
-        internal static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
         [DllImport("user32.dll")]
-        internal static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT lpPaint);
+        public static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT lpPaint);
 
         [DllImport("user32.dll")]
-        internal static extern uint GetCaretBlinkTime();
+        public static extern uint GetCaretBlinkTime();
 
         [DllImport("user32.dll")]
-        internal static extern bool GetClientRect(IntPtr hwnd, out RECT lpRect);
+        public static extern bool GetClientRect(IntPtr hwnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
-        internal static extern bool GetCursorPos(out POINT lpPoint);
+        public static extern bool GetCursorPos(out POINT lpPoint);
 
         [DllImport("user32.dll")]
-        internal static extern uint GetDoubleClickTime();
+        public static extern uint GetDoubleClickTime();
 
         [DllImport("user32.dll")]
-        internal static extern bool GetKeyboardState(byte[] lpKeyState);
-
-        [DllImport("user32.dll", EntryPoint = "GetMessageW")]
-        internal static extern sbyte GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+        public static extern bool GetKeyboardState(byte[] lpKeyState);
 
         [DllImport("user32.dll", EntryPoint = "MapVirtualKeyW")]
-        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll", EntryPoint = "GetMessageW", SetLastError = true)]
+        public static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport("user32.dll")]
-        internal static extern int GetMessageTime();
+        public static extern int GetMessageTime();
 
         [DllImport("kernel32.dll")]
-        internal static extern IntPtr GetModuleHandle(string lpModuleName);
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
 
         [DllImport("user32.dll")]
-        internal static extern int GetSystemMetrics(SystemMetric smIndex);
+        public static extern int GetSystemMetrics(SystemMetric smIndex);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern uint GetWindowLongPtr(IntPtr hWnd, int nIndex);
+        public static extern uint GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "GetWindowLong")]
-        internal static extern uint GetWindowLong32b(IntPtr hWnd, int nIndex);
+        public static extern uint GetWindowLong32b(IntPtr hWnd, int nIndex);
 
         public static uint GetWindowLong(IntPtr hWnd, int nIndex)
         {
@@ -990,79 +993,119 @@ namespace Modern.WindowKit.Win32.Interop
             }
         }
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+        public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("user32.dll")]
-        internal static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
-        internal static extern bool GetUpdateRect(IntPtr hwnd, out RECT lpRect, bool bErase);
+        public static extern bool GetUpdateRect(IntPtr hwnd, out RECT lpRect, bool bErase);
 
         [DllImport("user32.dll")]
-        internal static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+        public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+
 
         [DllImport("user32.dll")]
-        internal static extern bool IsWindowEnabled(IntPtr hWnd);
+        public static extern bool InvalidateRect(IntPtr hWnd, RECT* lpRect, bool bErase);
+        
+        
+        [DllImport("user32.dll")]
+        public static extern bool ValidateRect(IntPtr hWnd, IntPtr lpRect);
 
         [DllImport("user32.dll")]
-        internal static extern bool IsWindowUnicode(IntPtr hWnd);
+        public static extern bool IsWindow(IntPtr hWnd);
+        
+        [DllImport("user32.dll")]
+        public static extern bool IsWindowEnabled(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        internal static extern bool IsWindowVisible(IntPtr hWnd);
+        public static extern bool IsWindowUnicode(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        internal static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
+        public static extern bool IsWindowVisible(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
+        public static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
 
         [DllImport("user32.dll")]
-        internal static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+        public static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CreateIconIndirect([In] ref ICONINFO iconInfo);
+
+        [DllImport("user32.dll")]
+        public static extern bool DestroyIcon(IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        public static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
         [DllImport("user32")]
-        internal static extern IntPtr GetMessageExtraInfo();
+        public static extern IntPtr GetMessageExtraInfo();
         
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassExW")]
-        internal static extern ushort RegisterClassEx(ref WNDCLASSEX lpwcx);
+        public static extern ushort RegisterClassEx(ref WNDCLASSEX lpwcx);
 
         [DllImport("user32.dll")]
-        internal static extern void RegisterTouchWindow(IntPtr hWnd, int flags);
+        public static extern void RegisterTouchWindow(IntPtr hWnd, int flags);
         
         [DllImport("user32.dll")]
-        internal static extern bool ReleaseCapture();
+        public static extern bool ReleaseCapture();
 
         [DllImport("user32.dll")]
-        internal static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+        public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr SetActiveWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        internal static extern IntPtr SetCapture(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        internal static extern IntPtr SetTimer(IntPtr hWnd, IntPtr nIDEvent, uint uElapse, TimerProc lpTimerFunc);
+        public static extern IntPtr GetActiveWindow();
+        
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
         [DllImport("user32.dll")]
-        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
+        public static extern IntPtr SetCapture(IntPtr hWnd);
+
         [DllImport("user32.dll")]
-        internal static extern bool SetFocus(IntPtr hWnd);
+        public static extern IntPtr SetTimer(IntPtr hWnd, IntPtr nIDEvent, uint uElapse, TimerProc lpTimerFunc);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
         [DllImport("user32.dll")]
-        internal static extern bool SetParent(IntPtr hWnd, IntPtr hWndNewParent);
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
         [DllImport("user32.dll")]
-        internal static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommand nCmdShow);
+        public static extern bool SetFocus(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetFocus();
+        [DllImport("user32.dll")]
+        public static extern bool SetParent(IntPtr hWnd, IntPtr hWndNewParent);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
+        public enum GetAncestorFlags
+        {
+            GA_PARENT = 1,
+            GA_ROOT = 2,
+            GA_ROOTOWNER = 3
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetAncestor(IntPtr hwnd, GetAncestorFlags gaFlags);
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommand nCmdShow);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern IntPtr CreateTimerQueue();
+        public static extern IntPtr CreateTimerQueue();
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern bool DeleteTimerQueueEx(IntPtr TimerQueue, IntPtr CompletionEvent);
+        public static extern bool DeleteTimerQueueEx(IntPtr TimerQueue, IntPtr CompletionEvent);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool CreateTimerQueueTimer(
+        public static extern bool CreateTimerQueueTimer(
             out IntPtr phNewTimer,
             IntPtr TimerQueue,
             WaitOrTimerCallback Callback,
@@ -1072,10 +1115,10 @@ namespace Modern.WindowKit.Win32.Interop
             uint Flags);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern bool DeleteTimerQueueTimer(IntPtr TimerQueue, IntPtr Timer, IntPtr CompletionEvent);
+        public static extern bool DeleteTimerQueueTimer(IntPtr TimerQueue, IntPtr Timer, IntPtr CompletionEvent);
 
         [DllImport("user32.dll")]
-        internal static extern int ToUnicode(
+        public static extern int ToUnicode(
             uint virtualKeyCode,
             uint scanCode,
             byte[] keyboardState,
@@ -1085,18 +1128,18 @@ namespace Modern.WindowKit.Win32.Interop
             uint flags);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
 
         [DllImport("user32.dll")]
-        internal static extern bool TranslateMessage(ref MSG lpMsg);
+        public static extern bool TranslateMessage(ref MSG lpMsg);
 
         [DllImport("user32.dll")]
-        internal static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
+        public static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW")]
-        internal static extern bool SetWindowText(IntPtr hwnd, string lpString);
+        public static extern bool SetWindowText(IntPtr hwnd, string lpString);
 
-        internal enum ClassLongIndex : int
+        public enum ClassLongIndex : int
         {
             GCLP_MENUNAME = -8,
             GCLP_HBRBACKGROUND = -10,
@@ -1136,10 +1179,10 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [DllImport("user32.dll", EntryPoint = "GetClassLong")]
-        internal static extern uint GetClassLongPtr32(IntPtr hWnd, int nIndex);
+        public static extern uint GetClassLongPtr32(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", EntryPoint = "GetClassLongPtr")]
-        internal static extern IntPtr GetClassLongPtr64(IntPtr hWnd, int nIndex);
+        public static extern IntPtr GetClassLongPtr64(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", EntryPoint = "SetCursor")]
         internal static extern IntPtr SetCursor(IntPtr hCursor);
@@ -1148,24 +1191,27 @@ namespace Modern.WindowKit.Win32.Interop
         internal static extern int CoCreateInstance(ref Guid clsid,
             IntPtr ignore1, int ignore2, ref Guid iid, [MarshalAs(UnmanagedType.IUnknown), Out] out object pUnkOuter);
 
-        
+        [DllImport("ole32.dll", PreserveSig = true)]
+        internal static extern int CoCreateInstance(ref Guid clsid,
+            IntPtr ignore1, int ignore2, ref Guid iid, [Out] out IntPtr pUnkOuter);
+
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool OpenClipboard(IntPtr hWndOwner);
+        public static extern bool OpenClipboard(IntPtr hWndOwner);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool CloseClipboard();
+        public static extern bool CloseClipboard();
 
         [DllImport("user32.dll")]
-        internal static extern bool EmptyClipboard();
+        public static extern bool EmptyClipboard();
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr GetClipboardData(ClipboardFormat uFormat);
+        public static extern IntPtr GetClipboardData(ClipboardFormat uFormat);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr SetClipboardData(ClipboardFormat uFormat, IntPtr hMem);
+        public static extern IntPtr SetClipboardData(ClipboardFormat uFormat, IntPtr hMem);
 
         [DllImport("ole32.dll", PreserveSig = false)]
         public static extern int OleGetClipboard(out IOleDataObject dataObject);
@@ -1174,67 +1220,70 @@ namespace Modern.WindowKit.Win32.Interop
         public static extern int OleSetClipboard(IOleDataObject dataObject);
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        internal static extern IntPtr GlobalLock(IntPtr handle);
+        public static extern IntPtr GlobalLock(IntPtr handle);
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        internal static extern bool GlobalUnlock(IntPtr handle);
+        public static extern bool GlobalUnlock(IntPtr handle);
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        internal static extern IntPtr GlobalAlloc(int uFlags, int dwBytes);
+        public static extern IntPtr GlobalAlloc(int uFlags, int dwBytes);
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        internal static extern IntPtr GlobalFree(IntPtr hMem);
+        public static extern IntPtr GlobalFree(IntPtr hMem);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern IntPtr LoadLibrary(string fileName);
+        public static extern IntPtr LoadLibrary(string fileName);
+        
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr LoadLibraryEx(string fileName, IntPtr hFile, int flags);
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
-        internal static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
         [DllImport("comdlg32.dll", CharSet = CharSet.Unicode, EntryPoint = "GetSaveFileNameW")]
-        internal static extern bool GetSaveFileName(IntPtr lpofn);
+        public static extern bool GetSaveFileName(IntPtr lpofn);
 
         [DllImport("comdlg32.dll", CharSet = CharSet.Unicode, EntryPoint = "GetOpenFileNameW")]
-        internal static extern bool GetOpenFileName(IntPtr lpofn);
+        public static extern bool GetOpenFileName(IntPtr lpofn);
 
         [DllImport("comdlg32.dll")]
-        internal static extern int CommDlgExtendedError();
+        public static extern int CommDlgExtendedError();
 
         public static bool ShCoreAvailable => LoadLibrary("shcore.dll") != IntPtr.Zero;
 
         [DllImport("shcore.dll")]
-        internal static extern void SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
+        public static extern void SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool SetProcessDpiAwarenessContext(IntPtr dpiAWarenessContext);
+        public static extern bool SetProcessDpiAwarenessContext(IntPtr dpiAWarenessContext);
 
         [DllImport("shcore.dll")]
-        internal static extern long GetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY);
+        public static extern long GetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY);
 
         [DllImport("gdi32.dll")]
-        internal static extern int GetDeviceCaps(IntPtr hdc, DEVICECAP nIndex);
+        public static extern int GetDeviceCaps(IntPtr hdc, DEVICECAP nIndex);
 
         [DllImport("shcore.dll")]
-        internal static extern void GetScaleFactorForMonitor(IntPtr hMon, out uint pScale);
+        public static extern void GetScaleFactorForMonitor(IntPtr hMon, out uint pScale);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool SetProcessDPIAware();
+        public static extern bool SetProcessDPIAware();
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr MonitorFromPoint(POINT pt, MONITOR dwFlags);
+        public static extern IntPtr MonitorFromPoint(POINT pt, MONITOR dwFlags);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr MonitorFromRect(RECT rect, MONITOR dwFlags);
+        public static extern IntPtr MonitorFromRect(RECT rect, MONITOR dwFlags);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr MonitorFromWindow(IntPtr hwnd, MONITOR dwFlags);
+        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, MONITOR dwFlags);
         
         [DllImport("user32", EntryPoint = "GetMonitorInfoW", ExactSpelling = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, ref MONITORINFO lpmi);
+        public static extern bool GetMonitorInfo([In] IntPtr hMonitor, ref MONITORINFO lpmi);
 
         [DllImport("user32")]
-        internal static extern unsafe bool GetTouchInputInfo(
+        public static extern unsafe bool GetTouchInputInfo(
             IntPtr hTouchInput,
             uint        cInputs,
             TOUCHINPUT* pInputs,
@@ -1242,31 +1291,66 @@ namespace Modern.WindowKit.Win32.Interop
         );
         
         [DllImport("user32")]
-        internal static extern bool CloseTouchInputHandle(IntPtr hTouchInput);
+        public static extern bool CloseTouchInputHandle(IntPtr hTouchInput);
         
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "PostMessageW")]
-        internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("gdi32.dll")]
-        internal static extern int SetDIBitsToDevice(IntPtr hdc, int XDest, int YDest, uint
+        public static extern int SetDIBitsToDevice(IntPtr hdc, int XDest, int YDest, uint
                 dwWidth, uint dwHeight, int XSrc, int YSrc, uint uStartScan, uint cScanLines,
             IntPtr lpvBits, [In] ref BITMAPINFOHEADER lpbmi, uint fuColorUse);
         
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool CloseHandle(IntPtr hObject);
+        public static extern bool CloseHandle(IntPtr hObject);
         [DllImport("gdi32.dll", SetLastError = true)]
-        internal static extern IntPtr CreateDIBSection(IntPtr hDC, ref BITMAPINFOHEADER pBitmapInfo, int un, out IntPtr lplpVoid, IntPtr handle, int dw);
+        public static extern IntPtr CreateDIBSection(IntPtr hDC, ref BITMAPINFOHEADER pBitmapInfo, int un, out IntPtr lplpVoid, IntPtr handle, int dw);
         [DllImport("gdi32.dll")]
-        internal static extern int DeleteObject(IntPtr hObject);
+        public static extern int DeleteObject(IntPtr hObject);
         [DllImport("gdi32.dll", SetLastError = true)]
-        internal static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+        public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
         [DllImport("gdi32.dll")]
-        internal static extern IntPtr SelectObject(IntPtr hdc, IntPtr hObject);
+        public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        public static extern int ChoosePixelFormat(IntPtr hdc, ref PixelFormatDescriptor pfd);
+        
+        [DllImport("gdi32.dll")]
+        public static extern int DescribePixelFormat(IntPtr hdc, ref PixelFormatDescriptor pfd);
+
+        [DllImport("gdi32.dll")]
+        public static extern int SetPixelFormat(IntPtr hdc, int iPixelFormat, ref PixelFormatDescriptor pfd);
+        
+        
+        [DllImport("gdi32.dll")]
+        public static extern int DescribePixelFormat(IntPtr hdc, int iPixelFormat, int bytes, ref PixelFormatDescriptor pfd);
+        
+        [DllImport("gdi32.dll")]
+        public static extern bool SwapBuffers(IntPtr hdc);
+
+        [DllImport("opengl32.dll")]
+        public static extern IntPtr wglCreateContext(IntPtr hdc);
+        
+        [DllImport("opengl32.dll")]
+        public static extern bool wglDeleteContext(IntPtr context);
+
+        
+        [DllImport("opengl32.dll")]
+        public static extern bool wglMakeCurrent(IntPtr hdc, IntPtr context);
+
+        [DllImport("opengl32.dll")]
+        public static extern IntPtr wglGetCurrentContext();
+
+        [DllImport("opengl32.dll")]
+        public static extern IntPtr wglGetCurrentDC();
+
+        [DllImport("opengl32.dll", CharSet = CharSet.Ansi)]
+        public static extern IntPtr wglGetProcAddress(string name);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern IntPtr CreateFileMapping(IntPtr hFile,
+        public static extern IntPtr CreateFileMapping(IntPtr hFile,
             IntPtr lpFileMappingAttributes,
             uint flProtect,
             uint dwMaximumSizeHigh,
@@ -1274,38 +1358,176 @@ namespace Modern.WindowKit.Win32.Interop
             string lpName);
 
         [DllImport("msvcrt.dll", EntryPoint="memcpy", SetLastError = false, CallingConvention=CallingConvention.Cdecl)]
-        internal static extern IntPtr CopyMemory(IntPtr dest, IntPtr src, UIntPtr count); 
+        public static extern IntPtr CopyMemory(IntPtr dest, IntPtr src, UIntPtr count); 
         
         [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        internal static extern HRESULT RegisterDragDrop(IntPtr hwnd, IDropTarget target);
+        public static extern HRESULT RegisterDragDrop(IntPtr hwnd, IDropTarget target);
 
         [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        internal static extern HRESULT RevokeDragDrop(IntPtr hwnd);
+        public static extern HRESULT RevokeDragDrop(IntPtr hwnd);
 
         [DllImport("ole32.dll", EntryPoint = "OleInitialize")]
-        internal static extern HRESULT OleInitialize(IntPtr val);
+        public static extern HRESULT OleInitialize(IntPtr val);
 
         [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         internal static extern void ReleaseStgMedium(ref STGMEDIUM medium);
 
         [DllImport("user32.dll", BestFitMapping = false, CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern int GetClipboardFormatName(int format, StringBuilder lpString, int cchMax);
+        public static extern int GetClipboardFormatName(int format, StringBuilder lpString, int cchMax);
 
         [DllImport("user32.dll", BestFitMapping = false, CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern int RegisterClipboardFormat(string format);
+        public static extern int RegisterClipboardFormat(string format);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
-        internal static extern IntPtr GlobalSize(IntPtr hGlobal);
+        public static extern IntPtr GlobalSize(IntPtr hGlobal);
 
         [DllImport("shell32.dll", BestFitMapping = false, CharSet = CharSet.Auto)]
-        internal static extern int DragQueryFile(IntPtr hDrop, int iFile, StringBuilder lpszFile, int cch);
+        public static extern int DragQueryFile(IntPtr hDrop, int iFile, StringBuilder lpszFile, int cch);
 
         [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true, PreserveSig = false)]
         internal static extern void DoDragDrop(IOleDataObject dataObject, IDropSource dropSource, int allowedEffects, out int finalEffect);
 
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
 
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(out bool enabled);
 
-        internal enum MONITOR
+        [DllImport("dwmapi.dll")]
+        public static extern void DwmFlush();
+        
+        [DllImport("dwmapi.dll")]
+        public static extern bool DwmDefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref IntPtr plResult);
+        
+        [DllImport("dwmapi.dll")]
+        public static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
+
+        [Flags]
+        public enum DWM_BB
+        {
+            Enable = 1,
+            BlurRegion = 2,
+            TransitionMaximized = 4
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct DWM_BLURBEHIND
+        {
+            public DWM_BB dwFlags;
+            public bool fEnable;
+            public IntPtr hRgnBlur;
+            public bool fTransitionOnMaximized;
+
+            public DWM_BLURBEHIND(bool enabled)
+            {
+                fEnable = enabled ? true : false;
+                hRgnBlur = IntPtr.Zero;
+                fTransitionOnMaximized = false;
+                dwFlags = DWM_BB.Enable;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct RTL_OSVERSIONINFOEX
+        {
+            internal uint dwOSVersionInfoSize;
+            internal uint dwMajorVersion;
+            internal uint dwMinorVersion;
+            internal uint dwBuildNumber;
+            internal uint dwPlatformId;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            internal string szCSDVersion;
+        }
+
+        [DllImport("ntdll")]
+        private static extern int RtlGetVersion(ref RTL_OSVERSIONINFOEX lpVersionInformation);
+
+        internal static Version RtlGetVersion()
+        {
+            RTL_OSVERSIONINFOEX v = new RTL_OSVERSIONINFOEX();
+            v.dwOSVersionInfoSize = (uint)Marshal.SizeOf(v);
+            if (RtlGetVersion(ref v) == 0)
+            {
+                return new Version((int)v.dwMajorVersion, (int)v.dwMinorVersion, (int)v.dwBuildNumber);
+            }
+            else
+            {
+                throw new Exception("RtlGetVersion failed!");
+            }
+        }
+        
+        [DllImport("kernel32", EntryPoint="WaitForMultipleObjectsEx", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern int IntWaitForMultipleObjectsEx(int nCount, IntPtr[] pHandles, bool bWaitAll, int dwMilliseconds, bool bAlertable);
+
+        public const int WAIT_FAILED = unchecked((int)0xFFFFFFFF);
+
+        internal static int WaitForMultipleObjectsEx(int nCount, IntPtr[] pHandles, bool bWaitAll, int dwMilliseconds, bool bAlertable)
+        {
+            int result = IntWaitForMultipleObjectsEx(nCount, pHandles, bWaitAll, dwMilliseconds, bAlertable);
+            if(result ==  WAIT_FAILED)
+            {
+                throw new Win32Exception();
+            }
+
+            return result;
+        }
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WindowCompositionAttributeData
+        {
+            public WindowCompositionAttribute Attribute;
+            public IntPtr Data;
+            public int SizeOfData;
+        }
+
+        internal enum WindowCompositionAttribute
+        {
+            // ...
+            WCA_ACCENT_POLICY = 19
+            // ...
+        }
+
+        internal enum AccentState
+        {
+            ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_ENABLE_ACRYLIC = 4, //1703 and above
+            ACCENT_ENABLE_HOSTBACKDROP = 5,        // RS5 1809
+            ACCENT_INVALID_STATE = 6
+        }
+
+        internal enum AccentFlags
+        {
+            DrawLeftBorder = 0x20,
+            DrawTopBorder = 0x40,
+            DrawRightBorder = 0x80,
+            DrawBottomBorder = 0x100,            
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct AccentPolicy
+        {
+            public AccentState AccentState;
+            public int AccentFlags;
+            public int GradientColor;
+            public int AnimationId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        public enum MONITOR
         {
             MONITOR_DEFAULTTONULL = 0x00000000,
             MONITOR_DEFAULTTOPRIMARY = 0x00000001,
@@ -1325,7 +1547,7 @@ namespace Modern.WindowKit.Win32.Interop
                 return new MONITORINFO() { cbSize = Marshal.SizeOf<MONITORINFO>() };
             }
 
-            internal enum MonitorOptions : uint
+            public enum MonitorOptions : uint
             {
                 MONITOR_DEFAULTTONULL = 0x00000000,
                 MONITOR_DEFAULTTOPRIMARY = 0x00000001,
@@ -1333,20 +1555,20 @@ namespace Modern.WindowKit.Win32.Interop
             }
         }
 
-        internal enum DEVICECAP
+        public enum DEVICECAP
         {
             HORZRES = 8,
             DESKTOPHORZRES = 118
         }
 
-        internal enum PROCESS_DPI_AWARENESS
+        public enum PROCESS_DPI_AWARENESS
         {
             PROCESS_DPI_UNAWARE = 0,
             PROCESS_SYSTEM_DPI_AWARE = 1,
             PROCESS_PER_MONITOR_DPI_AWARE = 2
         }
 
-        internal enum MONITOR_DPI_TYPE
+        public enum MONITOR_DPI_TYPE
         {
             MDT_EFFECTIVE_DPI = 0,
             MDT_ANGULAR_DPI = 1,
@@ -1354,7 +1576,7 @@ namespace Modern.WindowKit.Win32.Interop
             MDT_DEFAULT = MDT_EFFECTIVE_DPI
         } 
 
-        internal enum ClipboardFormat 
+        public enum ClipboardFormat 
         {
             /// <summary>
             /// Text format. Each line ends with a carriage return/linefeed (CR-LF) combination. A null character signals the end of the data. Use this format for ANSI text.
@@ -1378,7 +1600,7 @@ namespace Modern.WindowKit.Win32.Interop
             CF_HDROP = 15,
         }
 
-        internal struct MSG
+        public struct MSG
         {
             public IntPtr hwnd;
             public uint message;
@@ -1389,7 +1611,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct PAINTSTRUCT
+        public struct PAINTSTRUCT
         {
             public IntPtr hdc;
             public bool fErase;
@@ -1400,13 +1622,19 @@ namespace Modern.WindowKit.Win32.Interop
             public byte[] rgbReserved;
         }
 
-        internal struct POINT
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+        
+        public struct SIZE
         {
             public int X;
             public int Y;
         }
 
-        internal struct RECT
+        public struct RECT
         {
             public int left;
             public int top;
@@ -1433,7 +1661,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct WINDOWPOS
+        public struct WINDOWPOS
         {
             public IntPtr hwnd;
             public IntPtr hwndInsertAfter;
@@ -1445,14 +1673,14 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct NCCALCSIZE_PARAMS
+        public struct NCCALCSIZE_PARAMS
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
             public RECT[] rgrc;
             public WINDOWPOS lppos;
         }
 
-        internal struct TRACKMOUSEEVENT
+        public struct TRACKMOUSEEVENT
         {
             public int cbSize;
             public uint dwFlags;
@@ -1461,7 +1689,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct WINDOWPLACEMENT
+        public struct WINDOWPLACEMENT
         {
             /// <summary>
             /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).
@@ -1511,7 +1739,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct WNDCLASSEX
+        public struct WNDCLASSEX
         {
             public int cbSize;
             public int style;
@@ -1528,7 +1756,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct TOUCHINPUT
+        public struct TOUCHINPUT
         {
             public int X;
             public int Y;
@@ -1542,8 +1770,18 @@ namespace Modern.WindowKit.Win32.Interop
             public int CyContact;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct ICONINFO
+        {
+            public bool IsIcon;
+            public int xHotspot;
+            public int yHotspot;
+            public IntPtr MaskBitmap;
+            public IntPtr ColorBitmap;
+        };
+
         [Flags]
-        internal enum TouchInputFlags
+        public enum TouchInputFlags
         {
             /// <summary>
             /// Movement has occurred. Cannot be combined with TOUCHEVENTF_DOWN.
@@ -1582,7 +1820,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [Flags]
-        internal enum OpenFileNameFlags
+        public enum OpenFileNameFlags
         {
             OFN_ALLOWMULTISELECT = 0x00000200,
             OFN_EXPLORER = 0x00080000,
@@ -1591,7 +1829,7 @@ namespace Modern.WindowKit.Win32.Interop
             OFN_OVERWRITEPROMPT = 0x00000002
         }
         
-        internal enum HRESULT : uint
+        public enum HRESULT : uint
         {
             S_FALSE = 0x0001,
             S_OK = 0x0000,
@@ -1601,7 +1839,7 @@ namespace Modern.WindowKit.Win32.Interop
             E_UNEXPECTED = 0x8000FFFF
         }
 
-        internal enum Icons
+        public enum Icons
         {
             ICON_SMALL = 0,
             ICON_BIG = 1
@@ -1610,7 +1848,7 @@ namespace Modern.WindowKit.Win32.Interop
         public const uint SIGDN_FILESYSPATH = 0x80058000;
 
         [Flags]
-        internal enum FOS : uint
+        public enum FOS : uint
         {
             FOS_OVERWRITEPROMPT = 0x00000002,
             FOS_STRICTFILETYPES = 0x00000004,
@@ -1634,16 +1872,18 @@ namespace Modern.WindowKit.Win32.Interop
             FOS_DEFAULTNOMINIMODE = 0x20000000
         }
 
-        internal static class ShellIds
+        public static class ShellIds
         {
             public static readonly Guid OpenFileDialog = Guid.Parse("DC1C5A9C-E88A-4DDE-A5A1-60F82A20AEF7");
             public static readonly Guid SaveFileDialog = Guid.Parse("C0B4E2F3-BA21-4773-8DBA-335EC946EB8B");
             public static readonly Guid IFileDialog = Guid.Parse("42F85136-DB7E-439C-85F1-E4075D135FC8");
             public static readonly Guid IShellItem = Guid.Parse("43826D1E-E718-42EE-BC55-A1E261C37BFE");
+            public static readonly Guid TaskBarList = Guid.Parse("56FDF344-FD6D-11D0-958A-006097C9A090");
+            public static readonly Guid ITaskBarList2 = Guid.Parse("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf");
         }
 
         [ComImport(), Guid("42F85136-DB7E-439C-85F1-E4075D135FC8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        internal interface IFileDialog
+        public interface IFileDialog
         {
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
             [PreserveSig()]
@@ -1722,7 +1962,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [ComImport, Guid("d57c7288-d4ad-4768-be02-9d969532d960"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        internal interface IFileOpenDialog
+        public interface IFileOpenDialog
         {
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
             [PreserveSig()]
@@ -1805,7 +2045,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [ComImport, Guid("B63EA76D-1F85-456F-A19C-48159EFA858B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        internal interface IShellItemArray
+        public interface IShellItemArray
         {
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
             void BindToHandler([In, MarshalAs(UnmanagedType.Interface)] IntPtr pbc, [In] ref Guid rbhid,
@@ -1831,13 +2071,13 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        internal struct PROPERTYKEY
+        public struct PROPERTYKEY
         {
             public Guid fmtid;
             public uint pid;
         }
 
-        internal enum SIATTRIBFLAGS
+        public enum SIATTRIBFLAGS
         {
             SIATTRIBFLAGS_AND = 1,
             SIATTRIBFLAGS_APPCOMPAT = 3,
@@ -1845,7 +2085,7 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [ComImport, Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        internal interface IShellItem
+        public interface IShellItem
         {
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
             uint BindToHandler([In] IntPtr pbc, [In] ref Guid rbhid, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.Interface)] out IntPtr ppvOut);
@@ -1865,12 +2105,28 @@ namespace Modern.WindowKit.Win32.Interop
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct COMDLG_FILTERSPEC
+        public struct COMDLG_FILTERSPEC
         {
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszName;
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszSpec;
+        }
+
+        public delegate void MarkFullscreenWindow(IntPtr This, IntPtr hwnd, [MarshalAs(UnmanagedType.Bool)] bool fullscreen);
+        public delegate HRESULT HrInit(IntPtr This);
+
+        public struct ITaskBarList2VTable
+        {
+            public IntPtr IUnknown1;
+            public IntPtr IUnknown2;
+            public IntPtr IUnknown3;
+            public IntPtr HrInit;
+            public IntPtr AddTab;
+            public IntPtr DeleteTab;
+            public IntPtr ActivateTab;
+            public IntPtr SetActiveAlt;
+            public IntPtr MarkFullscreenWindow;
         }
     }
 
@@ -1940,5 +2196,58 @@ namespace Modern.WindowKit.Win32.Interop
         public Int32 Y;
         public bool fNC;
         public bool fWide;
+    }
+
+    [Flags]
+    internal enum PixelFormatDescriptorFlags : uint
+    {
+        PFD_DOUBLEBUFFER = 0x00000001,
+        PFD_STEREO = 0x00000002,
+        PFD_DRAW_TO_WINDOW = 0x00000004,
+        PFD_DRAW_TO_BITMAP = 0x00000008,
+        PFD_SUPPORT_GDI = 0x00000010,
+        PFD_SUPPORT_OPENGL = 0x00000020,
+        PFD_GENERIC_FORMAT = 0x00000040,
+        PFD_NEED_PALETTE = 0x00000080,
+        PFD_NEED_SYSTEM_PALETTE = 0x00000100,
+        PFD_SWAP_EXCHANGE = 0x00000200,
+        PFD_SWAP_COPY = 0x00000400,
+        PFD_SWAP_LAYER_BUFFERS = 0x00000800,
+        PFD_GENERIC_ACCELERATED = 0x00001000,
+        PFD_SUPPORT_DIRECTDRAW = 0x00002000,
+        PFD_DEPTH_DONTCARE = 0x20000000,
+        PFD_DOUBLEBUFFER_DONTCARE = 0x40000000,
+        PFD_STEREO_DONTCARE = 0x80000000,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct PixelFormatDescriptor
+    {
+        public ushort Size;
+        public ushort Version;
+        public PixelFormatDescriptorFlags Flags;
+        public byte PixelType;
+        public byte ColorBits;
+        public byte RedBits;
+        public byte RedShift;
+        public byte GreenBits;
+        public byte GreenShift;
+        public byte BlueBits;
+        public byte BlueShift;
+        public byte AlphaBits;
+        public byte AlphaShift;
+        public byte AccumBits;
+        public byte AccumRedBits;
+        public byte AccumGreenBits;
+        public byte AccumBlueBits;
+        public byte AccumAlphaBits;
+        public byte DepthBits;
+        public byte StencilBits;
+        public byte AuxBuffers;
+        public byte LayerType;
+        private byte Reserved;
+        public uint LayerMask;
+        public uint VisibleMask;
+        public uint DamageMask;
     }
 }

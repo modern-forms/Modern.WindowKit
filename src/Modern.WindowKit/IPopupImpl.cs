@@ -10,5 +10,7 @@ namespace Modern.WindowKit.Platform
     public interface IPopupImpl : IWindowBaseImpl
     {
         //IPopupPositioner PopupPositioner { get; }
+
+        void SetWindowManagerAddShadowHint(bool enabled);
     }
 }

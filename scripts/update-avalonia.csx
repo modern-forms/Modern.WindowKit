@@ -25,6 +25,7 @@ CopyFile ("Avalonia.Input/DataFormats.cs", "DataFormats.cs");
 CopyFile ("Avalonia.Input/DataObject.cs", "DataObject.cs");
 CopyFile ("Avalonia.Base/Threading/Dispatcher.cs", "Dispatcher.cs");
 CopyFile ("Avalonia.Base/Threading/DispatcherPriority.cs", "DispatcherPriority.cs");
+CopyFile ("Avalonia.Controls/Platform/ExtendClientAreaChromeHints.cs", "ExtendClientAreaChromeHints.cs");
 CopyFile ("Avalonia.Visuals/Platform/IBitmapImpl.cs", "IBitmapImpl.cs");
 CopyFile ("Avalonia.Input/Platform/IClipboard.cs", "IClipboard.cs");
 CopyFile ("Avalonia.Input/ICloseable.cs", "ICloseable.cs");
@@ -84,19 +85,19 @@ CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLev
 CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
 // Mac Backend
-CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
-CopyFile ("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
-CopyFile ("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
-CopyFile ("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
-CopyFile ("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
-CopyFile ("Avalonia.Native/DynLoader.cs", "Avalonia.Mac/DynLoader.cs");
-CopyFile ("Avalonia.Native/Helpers.cs", "Avalonia.Mac/Helpers.cs");
-CopyFile ("Avalonia.Native/PlatformThreadingInterface.cs", "Avalonia.Mac/PlatformThreadingInterface.cs");
-CopyFile ("Avalonia.Native/PopupImpl.cs", "Avalonia.Mac/PopupImpl.cs");
-CopyFile ("Avalonia.Native/ScreenImpl.cs", "Avalonia.Mac/ScreenImpl.cs");
-CopyFile ("Avalonia.Native/SystemDialogs.cs", "Avalonia.Mac/SystemDialogs.cs");
-CopyFile ("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
-CopyFile ("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
+//CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
+//CopyFile ("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
+//CopyFile ("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
+//CopyFile ("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
+//CopyFile ("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
+//CopyFile ("Avalonia.Native/DynLoader.cs", "Avalonia.Mac/DynLoader.cs");
+//CopyFile ("Avalonia.Native/Helpers.cs", "Avalonia.Mac/Helpers.cs");
+//CopyFile ("Avalonia.Native/PlatformThreadingInterface.cs", "Avalonia.Mac/PlatformThreadingInterface.cs");
+//CopyFile ("Avalonia.Native/PopupImpl.cs", "Avalonia.Mac/PopupImpl.cs");
+//CopyFile ("Avalonia.Native/ScreenImpl.cs", "Avalonia.Mac/ScreenImpl.cs");
+//CopyFile ("Avalonia.Native/SystemDialogs.cs", "Avalonia.Mac/SystemDialogs.cs");
+//CopyFile ("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
+//CopyFile ("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
 
 // Windows Backend
 CopyFile ("Windows/Avalonia.Win32/ClipboardFormats.cs", "Avalonia.Win32/ClipboardFormats.cs");
@@ -113,6 +114,7 @@ CopyFile ("Windows/Avalonia.Win32/SystemDialogImpl.cs", "Avalonia.Win32/SystemDi
 CopyFile ("Windows/Avalonia.Win32/Win32Platform.cs", "Avalonia.Win32/Win32Platform.cs");
 //CopyFile ("Windows/Avalonia.Win32/WindowFramebuffer.cs", "Avalonia.Win32/WindowFramebuffer.cs");
 CopyFile ("Windows/Avalonia.Win32/WindowImpl.cs", "Avalonia.Win32/WindowImpl.cs");
+CopyFile ("Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "Avalonia.Win32/WindowImpl.AppWndProc.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win32/WindowsKeyboardDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");

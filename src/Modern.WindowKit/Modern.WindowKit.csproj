@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
@@ -18,8 +18,11 @@
 
   <ItemGroup>
     <Compile Remove="Avalonia.Mac\**" />
+    <Compile Remove="Avalonia.X11\**" />
     <EmbeddedResource Remove="Avalonia.Mac\**" />
+    <EmbeddedResource Remove="Avalonia.X11\**" />
     <None Remove="Avalonia.Mac\**" />
+    <None Remove="Avalonia.X11\**" />
   </ItemGroup>
 
   <ItemGroup>

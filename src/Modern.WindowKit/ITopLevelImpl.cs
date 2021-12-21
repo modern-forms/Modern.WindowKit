@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Rendering;
@@ -26,8 +27,8 @@ namespace Modern.WindowKit.Platform
         /// <summary>
         /// Gets the scaling factor for the toplevel. This is used for rendering.
         /// </summary>
-        double Scaling { get; }
-
+        double RenderScaling { get; }
+        
         /// <summary>
         /// The list of native platform's surfaces that can be consumed by rendering subsystems.
         /// </summary>
