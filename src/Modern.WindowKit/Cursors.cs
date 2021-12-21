@@ -55,7 +55,7 @@ namespace Modern.WindowKit.Input
     {
         public static readonly Cursor Default = new Cursor(StandardCursorType.Arrow);
 
-        internal Cursor(IPlatformHandle platformCursor)
+        internal Cursor(ICursorImpl platformCursor)
         {
             PlatformCursor = platformCursor;
         }
@@ -65,7 +65,7 @@ namespace Modern.WindowKit.Input
         {
         }
 
-        public IPlatformHandle PlatformCursor { get; }
+        public ICursorImpl PlatformCursor { get; }
 
         public static Cursor Parse(string s)
         {
@@ -74,7 +74,7 @@ namespace Modern.WindowKit.Input
                 throw new ArgumentException($"Unrecognized cursor type '{s}'.");
         }
 
-        private static IPlatformHandle GetCursor(StandardCursorType type)
+        private static ICursorImpl GetCursor(StandardCursorType type)
         {
             var platform = AvaloniaGlobals.StandardCursorFactory;
 

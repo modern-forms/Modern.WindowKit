@@ -4,7 +4,7 @@ using System.Threading;
 //using Modern.WindowKit.Media.Imaging;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Skia.Helpers;
-//using Modern.WindowKit.Visuals.Media.Imaging;
+using Modern.WindowKit.Visuals.Media.Imaging;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia
@@ -38,82 +38,82 @@ namespace Modern.WindowKit.Skia
             }
         }
 
-        //public WriteableBitmapImpl(Stream stream, int decodeSize, bool horizontal, BitmapInterpolationMode interpolationMode)
-        //{
-        //    using (var skStream = new SKManagedStream(stream))
-        //    using (var codec = SKCodec.Create(skStream))
-        //    {
-        //        var info = codec.Info;
+        public WriteableBitmapImpl(Stream stream, int decodeSize, bool horizontal, BitmapInterpolationMode interpolationMode)
+        {
+            using (var skStream = new SKManagedStream(stream))
+            using (var codec = SKCodec.Create(skStream))
+            {
+                var info = codec.Info;
 
-        //        // get the scale that is nearest to what we want (eg: jpg returned 512)
-        //        var supportedScale = codec.GetScaledDimensions(horizontal ? ((float)decodeSize / info.Width) : ((float)decodeSize / info.Height));
+                // get the scale that is nearest to what we want (eg: jpg returned 512)
+                var supportedScale = codec.GetScaledDimensions(horizontal ? ((float)decodeSize / info.Width) : ((float)decodeSize / info.Height));
 
-        //        // decode the bitmap at the nearest size
-        //        var nearest = new SKImageInfo(supportedScale.Width, supportedScale.Height);
-        //        var bmp = SKBitmap.Decode(codec, nearest);
+                // decode the bitmap at the nearest size
+                var nearest = new SKImageInfo(supportedScale.Width, supportedScale.Height);
+                var bmp = SKBitmap.Decode(codec, nearest);
 
-        //        // now scale that to the size that we want
-        //        var realScale = horizontal ? ((double)info.Height / info.Width) : ((double)info.Width / info.Height);
+                // now scale that to the size that we want
+                var realScale = horizontal ? ((double)info.Height / info.Width) : ((double)info.Width / info.Height);
 
-        //        SKImageInfo desired;
+                SKImageInfo desired;
 
 
-        //        if (horizontal)
-        //        {
-        //            desired = new SKImageInfo(decodeSize, (int)(realScale * decodeSize));
-        //        }
-        //        else
-        //        {
-        //            desired = new SKImageInfo((int)(realScale * decodeSize), decodeSize);
-        //        }
+                if (horizontal)
+                {
+                    desired = new SKImageInfo(decodeSize, (int)(realScale * decodeSize));
+                }
+                else
+                {
+                    desired = new SKImageInfo((int)(realScale * decodeSize), decodeSize);
+                }
 
-        //        if (bmp.Width != desired.Width || bmp.Height != desired.Height)
-        //        {
-        //            var scaledBmp = bmp.Resize(desired, interpolationMode.ToSKFilterQuality());
-        //            bmp.Dispose();
-        //            bmp = scaledBmp;
-        //        }
+                if (bmp.Width != desired.Width || bmp.Height != desired.Height)
+                {
+                    var scaledBmp = bmp.Resize(desired, interpolationMode.ToSKFilterQuality());
+                    bmp.Dispose();
+                    bmp = scaledBmp;
+                }
 
-        //        _bitmap = bmp;
+                _bitmap = bmp;
 
-        //        PixelSize = new PixelSize(bmp.Width, bmp.Height);
-        //        Dpi = SkiaPlatform.DefaultDpi;
-        //    }
-        //}
-        
-        ///// <summary>
-        ///// Create new writeable bitmap.
-        ///// </summary>
-        ///// <param name="size">The size of the bitmap in device pixels.</param>
-        ///// <param name="dpi">The DPI of the bitmap.</param>
-        ///// <param name="format">The pixel format.</param>
-        ///// <param name="alphaFormat">The alpha format.</param>
-        //public WriteableBitmapImpl(PixelSize size, Vector dpi, PixelFormat format, AlphaFormat alphaFormat)
-        //{
-        //    PixelSize = size;
-        //    Dpi = dpi;
+                PixelSize = new PixelSize(bmp.Width, bmp.Height);
+                Dpi = SkiaPlatform.DefaultDpi;
+            }
+        }
 
-        //    SKColorType colorType = format.ToSkColorType();
-        //    SKAlphaType alphaType = alphaFormat.ToSkAlphaType();
-            
-        //    var runtimePlatform = AvaloniaGlobals.RuntimePlatform;
-            
-        //    if (runtimePlatform != null)
-        //    {
-        //        _bitmap = new SKBitmap();
+        /// <summary>
+        /// Create new writeable bitmap.
+        /// </summary>
+        /// <param name="size">The size of the bitmap in device pixels.</param>
+        /// <param name="dpi">The DPI of the bitmap.</param>
+        /// <param name="format">The pixel format.</param>
+        /// <param name="alphaFormat">The alpha format.</param>
+        public WriteableBitmapImpl(PixelSize size, Vector dpi, PixelFormat format, AlphaFormat alphaFormat)
+        {
+            PixelSize = size;
+            Dpi = dpi;
 
-        //        var nfo = new SKImageInfo(size.Width, size.Height, colorType, alphaType);
-        //        var blob = runtimePlatform.AllocBlob(nfo.BytesSize);
+            SKColorType colorType = format.ToSkColorType();
+            SKAlphaType alphaType = alphaFormat.ToSkAlphaType();
 
-        //        _bitmap.InstallPixels(nfo, blob.Address, nfo.RowBytes, s_releaseDelegate, blob);
-        //    }
-        //    else
-        //    {
-        //        _bitmap = new SKBitmap(size.Width, size.Height, colorType, alphaType);
-        //    }
+            var runtimePlatform = AvaloniaGlobals.RuntimePlatform;
 
-        //    _bitmap.Erase(SKColor.Empty);
-        //}
+            if (runtimePlatform != null)
+            {
+                _bitmap = new SKBitmap();
+
+                var nfo = new SKImageInfo(size.Width, size.Height, colorType, alphaType);
+                var blob = runtimePlatform.AllocBlob(nfo.BytesSize);
+
+                _bitmap.InstallPixels(nfo, blob.Address, nfo.RowBytes, s_releaseDelegate, blob);
+            }
+            else
+            {
+                _bitmap = new SKBitmap(size.Width, size.Height, colorType, alphaType);
+            }
+
+            _bitmap.Erase(SKColor.Empty);
+        }
 
         public Vector Dpi { get; }
 
@@ -135,23 +135,23 @@ namespace Modern.WindowKit.Skia
             _bitmap.Dispose();
         }
 
-        ///// <inheritdoc />
-        //public void Save(Stream stream)
-        //{
-        //    using (var image = GetSnapshot())
-        //    {
-        //        ImageSavingHelper.SaveImage(image, stream);
-        //    }
-        //}
+        /// <inheritdoc />
+        public void Save(Stream stream)
+        {
+            using (var image = GetSnapshot())
+            {
+                ImageSavingHelper.SaveImage(image, stream);
+            }
+        }
 
-        ///// <inheritdoc />
-        //public void Save(string fileName)
-        //{
-        //    using (var image = GetSnapshot())
-        //    {
-        //        ImageSavingHelper.SaveImage(image, fileName);
-        //    }
-        //}
+        /// <inheritdoc />
+        public void Save(string fileName)
+        {
+            using (var image = GetSnapshot())
+            {
+                ImageSavingHelper.SaveImage(image, fileName);
+            }
+        }
 
         /// <inheritdoc />
         public ILockedFramebuffer Lock() => new BitmapFramebuffer(this, _bitmap);

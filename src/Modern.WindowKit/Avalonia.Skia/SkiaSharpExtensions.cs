@@ -1,29 +1,29 @@
 ﻿using System;
 //using Modern.WindowKit.Media;
 using Modern.WindowKit.Platform;
-//using Modern.WindowKit.Visuals.Media.Imaging;
+using Modern.WindowKit.Visuals.Media.Imaging;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia
 {
     public static class SkiaSharpExtensions
     {
-        //public static SKFilterQuality ToSKFilterQuality(this BitmapInterpolationMode interpolationMode)
-        //{
-        //    switch (interpolationMode)
-        //    {
-        //        case BitmapInterpolationMode.LowQuality:
-        //            return SKFilterQuality.Low;
-        //        case BitmapInterpolationMode.MediumQuality:
-        //            return SKFilterQuality.Medium;
-        //        case BitmapInterpolationMode.HighQuality:
-        //            return SKFilterQuality.High;
-        //        case BitmapInterpolationMode.Default:
-        //            return SKFilterQuality.None;
-        //        default:
-        //            throw new ArgumentOutOfRangeException(nameof(interpolationMode), interpolationMode, null);
-        //    }
-        //}
+        public static SKFilterQuality ToSKFilterQuality(this BitmapInterpolationMode interpolationMode)
+        {
+            switch (interpolationMode)
+            {
+                case BitmapInterpolationMode.LowQuality:
+                    return SKFilterQuality.Low;
+                case BitmapInterpolationMode.MediumQuality:
+                    return SKFilterQuality.Medium;
+                case BitmapInterpolationMode.HighQuality:
+                    return SKFilterQuality.High;
+                case BitmapInterpolationMode.Default:
+                    return SKFilterQuality.None;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(interpolationMode), interpolationMode, null);
+            }
+        }
 
         //public static SKBlendMode ToSKBlendMode(this BitmapBlendingMode blendingMode)
         //{
@@ -138,16 +138,16 @@ namespace Modern.WindowKit.Skia
             throw new ArgumentException("Unknown pixel format: " + fmt);
         }
 
-        //public static SKAlphaType ToSkAlphaType(this AlphaFormat fmt)
-        //{
-        //    return fmt switch
-        //    {
-        //        AlphaFormat.Premul => SKAlphaType.Premul,
-        //        AlphaFormat.Unpremul => SKAlphaType.Unpremul,
-        //        AlphaFormat.Opaque => SKAlphaType.Opaque,
-        //        _ => throw new ArgumentException($"Unknown alpha format: {fmt}")
-        //    };
-        //}
+        public static SKAlphaType ToSkAlphaType(this AlphaFormat fmt)
+        {
+            return fmt switch
+            {
+                AlphaFormat.Premul => SKAlphaType.Premul,
+                AlphaFormat.Unpremul => SKAlphaType.Unpremul,
+                AlphaFormat.Opaque => SKAlphaType.Opaque,
+                _ => throw new ArgumentException($"Unknown alpha format: {fmt}")
+            };
+        }
 
         //public static AlphaFormat ToAlphaFormat(this SKAlphaType fmt)
         //{

@@ -19,6 +19,8 @@ string modern_windowkit_repo_path = "..";
 string avalonia_path = Path.Combine (avalonia_repo_path, "src");
 string modern_windowkit_path = Path.Combine (modern_windowkit_repo_path, "src", "Modern.WindowKit");
 
+CopyFile ("Avalonia.Visuals/Platform/AlphaFormat.cs", "AlphaFormat.cs");
+CopyFile ("Avalonia.Visuals/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInterpolationMode.cs");
 //CopyFile ("Avalonia.Input/Cursors.cs", "Cursors.cs");
 CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
 CopyFile ("Avalonia.Input/DataFormats.cs", "DataFormats.cs");
@@ -146,6 +148,7 @@ CopyFile ("Avalonia.X11/XIStructs.cs", "Avalonia.X11/XIStructs.cs");
 CopyFile ("Avalonia.X11/XLib.cs", "Avalonia.X11/XLib.cs");
 
 // Skia Backend
+CopyFile ("Skia/Avalonia.Skia/Helpers/ImageSavingHelper.cs", "Avalonia.Skia/ImageSavingHelper.cs");
 CopyFile ("Skia/Avalonia.Skia/Helpers/PixelFormatHelper.cs", "Avalonia.Skia/PixelFormatHelper.cs");
 CopyFile ("Skia/Avalonia.Skia/SkiaOptions.cs", "Avalonia.Skia/SkiaOptions.cs");
 CopyFile ("Skia/Avalonia.Skia/SkiaPlatform.cs", "Avalonia.Skia/SkiaPlatform.cs");

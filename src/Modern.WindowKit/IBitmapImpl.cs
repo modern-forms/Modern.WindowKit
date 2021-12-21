@@ -23,16 +23,16 @@ namespace Modern.WindowKit.Platform
         /// </summary>
         int Version { get; }
 
-        ///// <summary>
-        ///// Saves the bitmap to a file.
-        ///// </summary>
-        ///// <param name="fileName">The filename.</param>
-        //void Save(string fileName);
+        /// <summary>
+        /// Saves the bitmap to a file.
+        /// </summary>
+        /// <param name="fileName">The filename.</param>
+        void Save(string fileName);
 
-        ///// <summary>
-        ///// Saves the bitmap to a stream in png format.
-        ///// </summary>
-        ///// <param name="stream">The stream.</param>
-        //void Save(Stream stream);
+        /// <summary>
+        /// Saves the bitmap to a stream in png format.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        void Save(Stream stream);
     }
 }

@@ -15,8 +15,8 @@ namespace Modern.WindowKit.Controls.Platform
         /// <param name="dialog">The details of the file dialog to show.</param>
         /// <param name="parent">The parent window.</param>
         /// <returns>A task returning the selected filenames.</returns>
-        Task<string[]> ShowFileDialogAsync(FileDialog dialog, WindowKit.Platform.IWindowBaseImpl parent);
+        Task<string[]?> ShowFileDialogAsync(FileDialog dialog, WindowKit.Platform.IWindowBaseImpl parent);
 
-        Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, WindowKit.Platform.IWindowBaseImpl parent);   
+        Task<string?> ShowFolderDialogAsync(OpenFolderDialog dialog, WindowKit.Platform.IWindowBaseImpl parent);   
     }
 }
