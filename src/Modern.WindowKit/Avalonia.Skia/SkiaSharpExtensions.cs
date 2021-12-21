@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 //using Modern.WindowKit.Media;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Visuals.Media.Imaging;

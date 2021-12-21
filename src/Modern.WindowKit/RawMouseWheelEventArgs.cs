@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-
+﻿
 namespace Modern.WindowKit.Input.Raw
 {
     public class RawMouseWheelEventArgs : RawPointerEventArgs

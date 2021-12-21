@@ -1,6 +1,6 @@
-﻿#nullable disable
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+#nullable enable
 
 namespace Modern.WindowKit.Controls.Platform
 {

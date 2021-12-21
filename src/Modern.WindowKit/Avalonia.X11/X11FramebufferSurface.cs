@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Platform;
 using static Modern.WindowKit.X11.XLib;

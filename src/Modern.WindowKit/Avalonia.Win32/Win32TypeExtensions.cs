@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
+﻿using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32
 {

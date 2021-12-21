@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using Modern.WindowKit.Platform;
+﻿using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Controls.Platform.Surfaces
 {

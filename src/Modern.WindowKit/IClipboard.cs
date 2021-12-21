@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Modern.WindowKit.Input.Platform
 {

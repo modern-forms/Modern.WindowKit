@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using Modern.WindowKit.Input.Raw;
+﻿using Modern.WindowKit.Input.Raw;
 
 namespace Modern.WindowKit.Input
 {

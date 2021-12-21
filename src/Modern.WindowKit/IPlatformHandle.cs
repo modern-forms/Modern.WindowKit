@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 
 namespace Modern.WindowKit.Platform
 {
@@ -17,6 +15,6 @@ namespace Modern.WindowKit.Platform
         /// <summary>
         /// Gets an optional string that describes what <see cref="Handle"/> represents.
         /// </summary>
-        string HandleDescriptor { get; }
+        string? HandleDescriptor { get; }
     }
 }

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using Modern.WindowKit.Input;
+﻿using Modern.WindowKit.Input;
 
 #nullable enable
 

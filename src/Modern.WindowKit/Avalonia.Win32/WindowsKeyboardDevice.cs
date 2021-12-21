@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.Text;
+﻿using System.Text;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Win32.Interop;

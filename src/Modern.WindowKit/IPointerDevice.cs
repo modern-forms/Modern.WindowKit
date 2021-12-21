@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 //using Modern.WindowKit.VisualTree;
 
 namespace Modern.WindowKit.Input

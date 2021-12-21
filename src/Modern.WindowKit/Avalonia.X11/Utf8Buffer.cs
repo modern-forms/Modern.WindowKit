@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,9 +8,9 @@ namespace Modern.WindowKit.Platform.Interop
     public class Utf8Buffer : SafeHandle
     {
         private GCHandle _gcHandle;
-        private byte[] _data;
+        private byte[]? _data;
             
-        public Utf8Buffer(string s) : base(IntPtr.Zero, true)
+        public Utf8Buffer(string? s) : base(IntPtr.Zero, true)
         {
             if (s == null)
                 return;
@@ -21,7 +19,7 @@ namespace Modern.WindowKit.Platform.Interop
             handle = _gcHandle.AddrOfPinnedObject();
         }
 
-        public int ByteLen => _data.Length;
+        public int ByteLen => _data?.Length ?? 0;
 
         protected override bool ReleaseHandle()
         {
@@ -36,7 +34,7 @@ namespace Modern.WindowKit.Platform.Interop
 
         public override bool IsInvalid => handle == IntPtr.Zero;
 
-        public static unsafe string StringFromPtr(IntPtr s)
+        public static unsafe string? StringFromPtr(IntPtr s)
         {
             var pstr = (byte*)s;
             if (pstr == null)

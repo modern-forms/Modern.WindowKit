@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Modern.WindowKit.Controls
+﻿namespace Modern.WindowKit.Controls
 {
     /// <summary>
     /// Defines compensation levels for the platform depending on the transparency level.

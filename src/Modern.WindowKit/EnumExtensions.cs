@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 namespace Modern.WindowKit

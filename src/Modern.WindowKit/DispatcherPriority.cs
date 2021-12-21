@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Modern.WindowKit.Threading
+﻿namespace Modern.WindowKit.Threading
 {
     /// <summary>
     /// Defines the priorities with which jobs can be invoked on a <see cref="Dispatcher"/>.

@@ -1,5 +1,3 @@
-﻿#nullable disable
-
 //using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 
 namespace Modern.WindowKit.Platform

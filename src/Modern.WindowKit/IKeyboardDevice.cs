@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.ComponentModel;
 
 namespace Modern.WindowKit.Input

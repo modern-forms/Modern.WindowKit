@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace Modern.WindowKit.Platform

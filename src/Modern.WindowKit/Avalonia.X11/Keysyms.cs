@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
 namespace Modern.WindowKit.X11

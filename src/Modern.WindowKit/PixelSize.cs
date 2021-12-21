@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Globalization;
 using Modern.WindowKit.Utilities;
 
@@ -96,7 +94,7 @@ namespace Modern.WindowKit
         /// <returns>
         /// True if <paramref name="obj"/> is a size that equals the current size.
         /// </returns>
-        public override bool Equals(object obj) => obj is PixelSize other && Equals(other);
+        public override bool Equals(object? obj) => obj is PixelSize other && Equals(other);
 
         /// <summary>
         /// Returns a hash code for a <see cref="PixelSize"/>.

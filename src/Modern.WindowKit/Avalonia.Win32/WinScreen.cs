@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Win32

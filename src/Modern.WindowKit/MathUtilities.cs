@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 
 namespace Modern.WindowKit.Utilities
 {
@@ -233,6 +231,34 @@ namespace Modern.WindowKit.Utilities
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
+        public static decimal Clamp(decimal val, decimal min, decimal max)
+        {
+            if (min > max)
+            {
+                ThrowCannotBeGreaterThanException(min, max);
+            }
+
+            if (val < min)
+            {
+                return min;
+            }
+            else if (val > max)
+            {
+                return max;
+            }
+            else
+            {
+                return val;
+            }
+        }
+
+        /// <summary>
+        /// Clamps a value between a minimum and maximum value.
+        /// </summary>
+        /// <param name="val">The value.</param>
+        /// <param name="min">The minimum value.</param>
+        /// <param name="max">The maximum value.</param>
+        /// <returns>The clamped value.</returns>
         public static int Clamp(int val, int min, int max)
         {
             if (min > max)
@@ -283,8 +309,8 @@ namespace Modern.WindowKit.Utilities
         {
             return angle * 2 * Math.PI;
         }
-        
-        private static void ThrowCannotBeGreaterThanException(double min, double max)
+
+        private static void ThrowCannotBeGreaterThanException<T>(T min, T max)
         {
             throw new ArgumentException($"{min} cannot be greater than {max}.");
         }

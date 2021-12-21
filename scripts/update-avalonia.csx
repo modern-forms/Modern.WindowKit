@@ -168,9 +168,6 @@ private void CopyFile (string src, string dst)
 
     var text = File.ReadAllText (full_src);
 
-    // Avalonia does not use nullable reference types so we disable checking for these files
-    text = $"#nullable disable{Environment.NewLine}{Environment.NewLine}{text}";
-
     // Convert namespaces to WindowKit
     text = text.Replace ("namespace Avalonia", "namespace Modern.WindowKit");
     text = text.Replace ("using Avalonia", "using Modern.WindowKit");

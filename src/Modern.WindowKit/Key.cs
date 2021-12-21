@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-#if AVALONIA_REMOTE_PROTOCOL
+﻿#if AVALONIA_REMOTE_PROTOCOL
 namespace Modern.WindowKit.Remote.Protocol.Input
 #else
 namespace Modern.WindowKit.Input

@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿#nullable enable
 
 namespace Modern.WindowKit.Platform
 {

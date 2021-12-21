@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 //using Modern.WindowKit.Media.Imaging;

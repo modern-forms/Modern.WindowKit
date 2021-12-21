@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using Modern.WindowKit.Platform;
+﻿using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia.Helpers

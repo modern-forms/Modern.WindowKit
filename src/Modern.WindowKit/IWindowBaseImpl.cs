@@ -1,8 +1,6 @@
-﻿#nullable disable
-
-using System;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
+﻿using System;
 
 namespace Modern.WindowKit.Platform
 {

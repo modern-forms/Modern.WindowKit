@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Modern.WindowKit.Controls
+﻿namespace Modern.WindowKit.Controls
 {
     /// <summary>
     /// Defines the minimized/maximized state of a <see cref="Window"/>.

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Modern.WindowKit.Input
+﻿namespace Modern.WindowKit.Input
 {
     public static class DataFormats
     {

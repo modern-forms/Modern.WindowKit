@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Modern.WindowKit.Controls
+﻿namespace Modern.WindowKit.Controls
 {
     
     public enum WindowEdge

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Globalization;
 #if !BUILDTASK
 //using Modern.WindowKit.Animation.Animators;
@@ -213,7 +211,7 @@ namespace Modern.WindowKit
         /// <returns>
         /// True if <paramref name="obj"/> is a point that equals the current point.
         /// </returns>
-        public override bool Equals(object obj) => obj is Point other && Equals(other);
+        public override bool Equals(object? obj) => obj is Point other && Equals(other);
 
         /// <summary>
         /// Returns a hash code for a <see cref="Point"/>.

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Globalization;
 #if !BUILDTASK
 //using Modern.WindowKit.Animation.Animators;
@@ -177,7 +175,7 @@ namespace Modern.WindowKit
                    MathUtilities.AreClose(_y, other._y);
         }
 
-        public override bool Equals(object obj) => obj is Vector other && Equals(other);
+        public override bool Equals(object? obj) => obj is Vector other && Equals(other);
 
         public override int GetHashCode()
         {

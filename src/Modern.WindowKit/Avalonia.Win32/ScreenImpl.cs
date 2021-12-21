@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Interop;
