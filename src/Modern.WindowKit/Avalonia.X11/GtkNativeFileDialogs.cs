@@ -15,7 +15,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
     class GtkSystemDialog : ISystemDialogImpl
     {
         private Task<bool> _initialized;
-        private unsafe  Task<string[]> ShowDialog(string title, IWindowImpl parent, GtkFileChooserAction action,
+        private unsafe  Task<string[]> ShowDialog(string title, IWindowBaseImpl parent, GtkFileChooserAction action,
             bool multiSelect, string initialFileName, IEnumerable<FileDialogFilter> filters, string defaultExtension)
         {
             IntPtr dlg;
@@ -136,11 +136,11 @@ namespace Modern.WindowKit.X11.NativeDialogs
             return path;
         }
 
-        public async Task<string[]> ShowFileDialogAsync(FileDialog dialog, Window parent)
+        public async Task<string[]> ShowFileDialogAsync(FileDialog dialog, IWindowBaseImpl parent)
         {
             await EnsureInitialized();
 
-            var platformImpl = parent?.PlatformImpl;
+            var platformImpl = parent;
 
             return await await RunOnGlibThread(
                 () => ShowDialog(dialog.Title, platformImpl,
@@ -151,11 +151,11 @@ namespace Modern.WindowKit.X11.NativeDialogs
                     (dialog as SaveFileDialog)?.DefaultExtension));
         }
 
-        public async Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, Window parent)
+        public async Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, IWindowBaseImpl parent)
         {
             await EnsureInitialized();
 
-            var platformImpl = parent?.PlatformImpl;
+            var platformImpl = parent;
 
             return await await RunOnGlibThread(async () =>
             {
@@ -173,7 +173,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
                 throw new Exception("Unable to initialize GTK on separate thread");
         }
         
-        void UpdateParent(IntPtr chooser, IWindowImpl parentWindow)
+        void UpdateParent(IntPtr chooser, IWindowBaseImpl parentWindow)
         {
             var xid = parentWindow.Handle.Handle;
             gtk_widget_realize(chooser);

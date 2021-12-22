@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
-using Modern.WindowKit.Controls.Primitives.PopupPositioning;
-using Modern.WindowKit.FreeDesktop;
+//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+//using Modern.WindowKit.FreeDesktop;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
-using Modern.WindowKit.Input.TextInput;
+//using Modern.WindowKit.Input.TextInput;
 //using Modern.WindowKit.OpenGL;
 //using Modern.WindowKit.OpenGL.Egl;
 using Modern.WindowKit.Platform;
@@ -24,13 +24,12 @@ using static Modern.WindowKit.X11.XLib;
 // ReSharper disable StringLiteralTypo
 namespace Modern.WindowKit.X11
 {
-    unsafe partial class X11Window : IWindowImpl, IPopupImpl, IXI2Client,
-        ITopLevelImplWithNativeMenuExporter,
-        ITopLevelImplWithNativeControlHost,
-        ITopLevelImplWithTextInputMethod
+    unsafe partial class X11Window : IWindowImpl, IPopupImpl, IXI2Client //,
+        //ITopLevelImplWithNativeMenuExporter,
+        //ITopLevelImplWithNativeControlHost,
+        //ITopLevelImplWithTextInputMethod
     {
         private readonly AvaloniaX11Platform _platform;
-        private readonly IWindowImpl _popupParent;
         private readonly bool _popup;
         private readonly X11Info _x11;
         private XConfigureEvent? _configure;
@@ -38,7 +37,7 @@ namespace Modern.WindowKit.X11
         private bool _triggeredExpose;
         private IInputRoot _inputRoot;
         private readonly MouseDevice _mouse;
-        private readonly TouchDevice _touch;
+        //private readonly TouchDevice _touch;
         private readonly IKeyboardDevice _keyboard;
         private PixelPoint? _position;
         private PixelSize _realSize;
@@ -66,10 +65,10 @@ namespace Modern.WindowKit.X11
             _popup = popupParent != null;
             _x11 = platform.Info;
             _mouse = new MouseDevice();
-            _touch = new TouchDevice();
+            //_touch = new TouchDevice();
             _keyboard = platform.KeyboardDevice;
 
-            var glfeature = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
+            //var glfeature = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
             XSetWindowAttributes attr = new XSetWindowAttributes();
             var valueMask = default(SetWindowValuemask);
 
@@ -89,15 +88,15 @@ namespace Modern.WindowKit.X11
             XVisualInfo? visualInfo = null;
 
             // OpenGL seems to be do weird things to it's current window which breaks resize sometimes
-            _useRenderWindow = glfeature != null;
+            _useRenderWindow = false;// glfeature != null;
             
-            var glx = glfeature as GlxPlatformOpenGlInterface;
-            if (glx != null)
-                visualInfo = *glx.Display.VisualInfo;
-            else if (glfeature == null)
-                visualInfo = _x11.TransparentVisualInfo;
+            //var glx = glfeature as GlxPlatformOpenGlInterface;
+            //if (glx != null)
+            //    visualInfo = *glx.Display.VisualInfo;
+            //else if (glfeature == null)
+            //    visualInfo = _x11.TransparentVisualInfo;
 
-            var egl = glfeature as EglPlatformOpenGlInterface;
+            //var egl = glfeature as EglPlatformOpenGlInterface;
             
             var visual = IntPtr.Zero;
             var depth = 24;
@@ -170,13 +169,13 @@ namespace Modern.WindowKit.X11
                    depth, () => RenderScaling)
             };
             
-            if (egl != null)
-                surfaces.Insert(0,
-                    new EglGlPlatformSurface(egl,
-                        new SurfaceInfo(this, _x11.DeferredDisplay, _handle, _renderHandle)));
-            if (glx != null)
-                surfaces.Insert(0, new GlxGlPlatformSurface(glx.Display, glx.DeferredContext,
-                    new SurfaceInfo(this, _x11.Display, _handle, _renderHandle)));
+            //if (egl != null)
+            //    surfaces.Insert(0,
+            //        new EglGlPlatformSurface(egl,
+            //            new SurfaceInfo(this, _x11.DeferredDisplay, _handle, _renderHandle)));
+            //if (glx != null)
+            //    surfaces.Insert(0, new GlxGlPlatformSurface(glx.Display, glx.DeferredContext,
+            //        new SurfaceInfo(this, _x11.Display, _handle, _renderHandle)));
             
             Surfaces = surfaces.ToArray();
             UpdateMotifHints();
@@ -188,48 +187,43 @@ namespace Modern.WindowKit.X11
             CreateIC();
 
             XFlush(_x11.Display);
-            if(_popup)
-                PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
-            if (platform.Options.UseDBusMenu)
-                NativeMenuExporter = DBusMenuExporter.TryCreate(_handle);
-            NativeControlHost = new X11NativeControlHost(_platform, this);
-            DispatcherTimer.Run(() =>
-            {
-                Paint?.Invoke(default);
-                return _handle != IntPtr.Zero;
-            }, TimeSpan.FromMilliseconds(100));
+            //if(_popup)
+            //    PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
+            //if (platform.Options.UseDBusMenu)
+            //    NativeMenuExporter = DBusMenuExporter.TryCreateTopLevelNativeMenu(_handle);
+            //NativeControlHost = new X11NativeControlHost(_platform, this);
             InitializeIme();
         }
 
-        class SurfaceInfo  : EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo
-        {
-            private readonly X11Window _window;
-            private readonly IntPtr _display;
-            private readonly IntPtr _parent;
+        //class SurfaceInfo  : EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo
+        //{
+        //    private readonly X11Window _window;
+        //    private readonly IntPtr _display;
+        //    private readonly IntPtr _parent;
 
-            public SurfaceInfo(X11Window window, IntPtr display, IntPtr parent, IntPtr xid)
-            {
-                _window = window;
-                _display = display;
-                _parent = parent;
-                Handle = xid;
-            }
-            public IntPtr Handle { get; }
+        //    public SurfaceInfo(X11Window window, IntPtr display, IntPtr parent, IntPtr xid)
+        //    {
+        //        _window = window;
+        //        _display = display;
+        //        _parent = parent;
+        //        Handle = xid;
+        //    }
+        //    public IntPtr Handle { get; }
 
-            public PixelSize Size
-            {
-                get
-                {
-                    XLockDisplay(_display);
-                    XGetGeometry(_display, _parent, out var geo);
-                    XResizeWindow(_display, Handle, geo.width, geo.height);
-                    XUnlockDisplay(_display);
-                    return new PixelSize(geo.width, geo.height);
-                }
-            }
+        //    public PixelSize Size
+        //    {
+        //        get
+        //        {
+        //            XLockDisplay(_display);
+        //            XGetGeometry(_display, _parent, out var geo);
+        //            XResizeWindow(_display, Handle, geo.width, geo.height);
+        //            XUnlockDisplay(_display);
+        //            return new PixelSize(geo.width, geo.height);
+        //        }
+        //    }
 
-            public double Scaling => _window.RenderScaling;
-        }
+        //    public double Scaling => _window.RenderScaling;
+        //}
 
         void UpdateMotifHints()
         {
@@ -297,6 +291,30 @@ namespace Modern.WindowKit.X11
 
         public Size ClientSize => new Size(_realSize.Width / RenderScaling, _realSize.Height / RenderScaling);
 
+        public Size? FrameSize
+        {
+            get
+            {
+                XGetWindowProperty(_x11.Display, _handle, _x11.Atoms._NET_FRAME_EXTENTS, IntPtr.Zero,
+                    new IntPtr(4), false, (IntPtr)Atom.AnyPropertyType, out var _,
+                    out var _, out var nitems, out var _, out var prop);
+
+                if (nitems.ToInt64() != 4)
+                {
+                    // Window hasn't been mapped by the WM yet, so can't get the extents.
+                    return null;
+                }
+
+                var data = (IntPtr*)prop.ToPointer();
+                var extents = new Thickness(data[0].ToInt32(), data[2].ToInt32(), data[1].ToInt32(), data[3].ToInt32());
+                XFree(prop);
+                
+                return new Size(
+                    (_realSize.Width + extents.Left + extents.Right) / RenderScaling,
+                    (_realSize.Height + extents.Top + extents.Bottom) / RenderScaling);
+            }
+        }
+
         public double RenderScaling
         {
             get
@@ -313,7 +331,7 @@ namespace Modern.WindowKit.X11
         public IEnumerable<object> Surfaces { get; }
         public Action<RawInputEventArgs> Input { get; set; }
         public Action<Rect> Paint { get; set; }
-        public Action<Size> Resized { get; set; }
+        public Action<Size, PlatformResizeReason> Resized { get; set; }
         //TODO
         public Action<double> ScalingChanged { get; set; }
         public Action Deactivated { get; set; }
@@ -339,21 +357,21 @@ namespace Modern.WindowKit.X11
         public Action<PixelPoint> PositionChanged { get; set; }
         public Action LostFocus { get; set; }
 
-        public IRenderer CreateRenderer(IRenderRoot root)
-        {
-            var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-            var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+        //public IRenderer CreateRenderer(IRenderRoot root)
+        //{
+        //    var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+        //    var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
 
-            if (customRendererFactory != null)
-                return customRendererFactory.Create(root, loop);
+        //    if (customRendererFactory != null)
+        //        return customRendererFactory.Create(root, loop);
             
-            return _platform.Options.UseDeferredRendering ?
-                new DeferredRenderer(root, loop)
-                {
-                    RenderOnlyOnRenderThread = true
-                } :
-                (IRenderer)new X11ImmediateRendererProxy(root, loop);
-        }
+        //    return _platform.Options.UseDeferredRendering ?
+        //        new DeferredRenderer(root, loop)
+        //        {
+        //            RenderOnlyOnRenderThread = true
+        //        } :
+        //        (IRenderer)new X11ImmediateRendererProxy(root, loop);
+        //}
 
         void OnEvent(ref XEvent ev)
         {
@@ -389,11 +407,11 @@ namespace Modern.WindowKit.X11
                 if (ActivateTransientChildIfNeeded())
                     return;
                 Activated?.Invoke();
-                _imeControl?.SetWindowActive(true);
+                //_imeControl?.SetWindowActive(true);
             }
             else if (ev.type == XEventName.FocusOut)
             {
-                _imeControl?.SetWindowActive(false);
+                //_imeControl?.SetWindowActive(false);
                 Deactivated?.Invoke();
             }
             else if (ev.type == XEventName.MotionNotify)
@@ -487,7 +505,7 @@ namespace Modern.WindowKit.X11
                         UpdateImePosition();
 
                         if (changedSize && !updatedSizeViaScaling && !_popup)
-                            Resized?.Invoke(ClientSize);
+                            Resized?.Invoke(ClientSize, PlatformResizeReason.Unspecified);
 
                         Dispatcher.UIThread.RunJobs(DispatcherPriority.Layout);
                     }, DispatcherPriority.Layout);
@@ -542,7 +560,7 @@ namespace Modern.WindowKit.X11
                     UpdateImePosition();
                     SetMinMaxSize(_scaledMinMaxSize.minSize, _scaledMinMaxSize.maxSize);
                     if(!skipResize)
-                        Resize(oldScaledSize, true);
+                        Resize(oldScaledSize, true, PlatformResizeReason.DpiChange);
                     return true;
                 }
 
@@ -589,6 +607,13 @@ namespace Modern.WindowKit.X11
 
         private void OnPropertyChange(IntPtr atom, bool hasValue)
         {
+            if (atom == _x11.Atoms._NET_FRAME_EXTENTS)
+            {
+                // Occurs once the window has been mapped, which is the earliest the extents
+                // can be retrieved, so invoke event to force update of TopLevel.FrameSize.
+                Resized?.Invoke(ClientSize, PlatformResizeReason.Unspecified);
+            }
+
             if (atom == _x11.Atoms._NET_WM_STATE)
             {
                 WindowState state = WindowState.Normal;
@@ -703,8 +728,8 @@ namespace Modern.WindowKit.X11
         {
             if (args is RawPointerEventArgs mouse)
                 mouse.Position = mouse.Position / RenderScaling;
-            if (args is RawDragEvent drag)
-                drag.Location = drag.Location / RenderScaling;
+            //if (args is RawDragEvent drag)
+            //    drag.Location = drag.Location / RenderScaling;
             
             _lastEvent = new InputEventContainer() {Event = args};
             _inputQueue.Enqueue(_lastEvent);
@@ -760,12 +785,18 @@ namespace Modern.WindowKit.X11
 
         void Cleanup()
         {
-            if (_imeControl != null)
+            if (_transparencyHelper != null)
             {
-                _imeControl.Dispose();
-                _imeControl = null;
-                _ime = null;
+                _transparencyHelper.Dispose();
+                _transparencyHelper = null;
             }
+            
+            //if (_imeControl != null)
+            //{
+            //    _imeControl.Dispose();
+            //    _imeControl = null;
+            //    _ime = null;
+            //}
             
             if (_xic != IntPtr.Zero)
             {
@@ -775,13 +806,14 @@ namespace Modern.WindowKit.X11
             
             if (_handle != IntPtr.Zero)
             {
-                XDestroyWindow(_x11.Display, _handle);
                 _platform.Windows.Remove(_handle);
                 _platform.XI2?.OnWindowDestroyed(_handle);
+                var handle = _handle;
                 _handle = IntPtr.Zero;
                 Closed?.Invoke();
                 _mouse.Dispose();
-                _touch.Dispose();
+                //_touch.Dispose();
+                XDestroyWindow(_x11.Display, handle);
             }
             
             if (_useRenderWindow && _renderHandle != IntPtr.Zero)
@@ -809,7 +841,7 @@ namespace Modern.WindowKit.X11
                 XSetTransientForHint(_x11.Display, _handle, parent.Handle.Handle);
         }
 
-        public void Show(bool activate)
+        public void Show(bool activate, bool isDialog)
         {
             _wasMappedAtLeastOnce = true;
             XMapWindow(_x11.Display, _handle);
@@ -832,19 +864,19 @@ namespace Modern.WindowKit.X11
         }
 
 
-        public void Resize(Size clientSize) => Resize(clientSize, false);
+        public void Resize(Size clientSize, PlatformResizeReason reason) => Resize(clientSize, false, reason);
         public void Move(PixelPoint point) => Position = point;
         private void MoveResize(PixelPoint position, Size size, double scaling)
         {
             Move(position);
             _scalingOverride = scaling;
             UpdateScaling(true);
-            Resize(size, true);
+            Resize(size, true, PlatformResizeReason.Layout);
         }
 
         PixelSize ToPixelSize(Size size) => new PixelSize((int)(size.Width * RenderScaling), (int)(size.Height * RenderScaling));
         
-        void Resize(Size clientSize, bool force)
+        void Resize(Size clientSize, bool force, PlatformResizeReason reason)
         {
             if (!force && clientSize == ClientSize)
                 return;
@@ -861,7 +893,7 @@ namespace Modern.WindowKit.X11
             if (force || !_wasMappedAtLeastOnce || (_popup && needImmediatePopupResize))
             {
                 _realSize = pixelSize;
-                Resized?.Invoke(ClientSize);
+                Resized?.Invoke(ClientSize, reason);
             }
         }
         
@@ -907,7 +939,7 @@ namespace Modern.WindowKit.X11
         }
 
         public IMouseDevice MouseDevice => _mouse;
-        public TouchDevice TouchDevice => _touch;
+        //public TouchDevice TouchDevice => _touch;
 
         public IPopupImpl CreatePopup() 
             => _platform.Options.OverlayPopups ? null : new X11Window(_platform, this);
@@ -965,7 +997,7 @@ namespace Modern.WindowKit.X11
                 (IntPtr) side,
                 (IntPtr) 1, (IntPtr)1); // left button
                 
-            e.Pointer.Capture(null);
+            //e.Pointer.Capture(null);
         }
 
         public void BeginMoveDrag(PointerPressedEventArgs e)
@@ -994,15 +1026,23 @@ namespace Modern.WindowKit.X11
                 side = NetWmMoveResize._NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT;
             BeginMoveResize(side, e);
         }
-        
+
         public void SetTitle(string title)
         {
-            var data = Encoding.UTF8.GetBytes(title);
-            fixed (void* pdata = data)
+            if (string.IsNullOrEmpty(title))
             {
-                XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_NAME, _x11.Atoms.UTF8_STRING, 8,
-                    PropertyMode.Replace, pdata, data.Length);
-                XStoreName(_x11.Display, _handle, title);
+                XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_NAME);
+                XDeleteProperty(_x11.Display, _handle, _x11.Atoms.XA_WM_NAME);
+            }
+            else
+            {
+                var data = Encoding.UTF8.GetBytes(title);
+                fixed (void* pdata = data)
+                {
+                    XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_NAME, _x11.Atoms.UTF8_STRING, 8,
+                        PropertyMode.Replace, pdata, data.Length);
+                    XStoreName(_x11.Display, _handle, title);
+                }
             }
         }
 
@@ -1036,7 +1076,12 @@ namespace Modern.WindowKit.X11
         {
             ChangeWMAtoms(value, _x11.Atoms._NET_WM_STATE_ABOVE);
         }
-        
+
+        public void ShowDialog(IWindowImpl parent)
+        {
+            Show(true, true);
+        }
+
         public void SetEnabled(bool enable)
         {
             _disabled = !enable;
@@ -1056,20 +1101,20 @@ namespace Modern.WindowKit.X11
 
         public Action GotInputWhenDisabled { get; set; }
 
-        public void SetIcon(IWindowIconImpl icon)
+        public void SetIcon(SkiaSharp.SKBitmap icon)
         {
-            if (icon != null)
-            {
-                var data = ((X11IconData)icon).Data;
-                fixed (void* pdata = data)
-                    XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
-                        new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
-                        pdata, data.Length);
-            }
-            else
-            {
-                XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
-            }
+            //if (icon != null)
+            //{
+            //    var data = ((X11IconData)icon).Data;
+            //    fixed (void* pdata = data)
+            //        XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
+            //            new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
+            //            pdata, data.Length);
+            //}
+            //else
+            //{
+            //    XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
+            //}
         }
 
         public void ShowTaskbarIcon(bool value)
@@ -1111,10 +1156,12 @@ namespace Modern.WindowKit.X11
             );
         }
 
-        public IPopupPositioner PopupPositioner { get; }
-        public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
-        public INativeControlHostImpl NativeControlHost { get; }
-        public ITextInputMethodImpl TextInputMethod => _ime;
+        //public IPopupPositioner PopupPositioner { get; }
+        //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
+        //public INativeControlHostImpl NativeControlHost { get; }
+        //public ITextInputMethodImpl TextInputMethod => _ime;
+
+        public Size ScaledClientSize => new Size(_realSize.Width, _realSize.Height);
 
         public void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel) =>
             _transparencyHelper.SetTransparencyRequest(transparencyLevel);

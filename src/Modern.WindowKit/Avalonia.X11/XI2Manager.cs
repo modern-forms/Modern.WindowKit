@@ -190,7 +190,7 @@ namespace Modern.WindowKit.X11
             }
 
             if (xev->evtype == XiEventType.XI_Leave || xev->evtype == XiEventType.XI_Enter)
-            //{
+            {
                 var rev = (XIEnterLeaveEvent*)xev;
                 if (_clients.TryGetValue(rev->EventWindow, out var client))
                     OnEnterLeaveEvent(client, ref *rev);
@@ -217,22 +217,22 @@ namespace Modern.WindowKit.X11
 
         void OnDeviceEvent(IXI2Client client, ParsedDeviceEvent ev)
         {
-            if (ev.Type == XiEventType.XI_TouchBegin 
-                || ev.Type == XiEventType.XI_TouchUpdate 
-                || ev.Type == XiEventType.XI_TouchEnd)
-            {
-                var type = ev.Type == XiEventType.XI_TouchBegin ?
-                    RawPointerEventType.TouchBegin :
-                    (ev.Type == XiEventType.XI_TouchUpdate ?
-                        RawPointerEventType.TouchUpdate :
-                        RawPointerEventType.TouchEnd);
-                client.ScheduleXI2Input(new RawTouchEventArgs(client.TouchDevice,
-                    ev.Timestamp, client.InputRoot, type, ev.Position, ev.Modifiers, ev.Detail));
-                return;
-            }
+            //if (ev.Type == XiEventType.XI_TouchBegin 
+            //    || ev.Type == XiEventType.XI_TouchUpdate 
+            //    || ev.Type == XiEventType.XI_TouchEnd)
+            //{
+            //    var type = ev.Type == XiEventType.XI_TouchBegin ?
+            //        RawPointerEventType.TouchBegin :
+            //        (ev.Type == XiEventType.XI_TouchUpdate ?
+            //            RawPointerEventType.TouchUpdate :
+            //            RawPointerEventType.TouchEnd);
+            //    client.ScheduleXI2Input(new RawTouchEventArgs(client.TouchDevice,
+            //        ev.Timestamp, client.InputRoot, type, ev.Position, ev.Modifiers, ev.Detail));
+            //    return;
+            //}
 
-            if (_multitouch && ev.Emulated)
-                return;
+            //if (_multitouch && ev.Emulated)
+            //    return;
             
             if (ev.Type == XiEventType.XI_Motion)
             {
@@ -373,6 +373,6 @@ namespace Modern.WindowKit.X11
         IInputRoot InputRoot { get; }
         void ScheduleXI2Input(RawInputEventArgs args);
         IMouseDevice MouseDevice { get; }
-        TouchDevice TouchDevice { get; }
+        //TouchDevice TouchDevice { get; }
     }
 }

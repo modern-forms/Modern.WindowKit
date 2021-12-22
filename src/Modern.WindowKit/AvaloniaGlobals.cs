@@ -7,7 +7,7 @@ using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Shared.PlatformSupport;
 using Modern.WindowKit.Win32;
-//using Modern.WindowKit.X11;
+using Modern.WindowKit.X11;
 
 namespace Modern.WindowKit
 {
@@ -22,33 +22,34 @@ namespace Modern.WindowKit
         public static ISystemDialogImpl SystemDialogImplementation { get; private set; } = default!;
         public static IClipboard ClipboardInterface { get; private set; } = default!;
 
-        static AvaloniaGlobals ()
+        static AvaloniaGlobals()
         {
-            RuntimePlatform = new StandardRuntimePlatform ();
+            RuntimePlatform = new StandardRuntimePlatform();
 
-            var runtime = RuntimePlatform.GetRuntimeInfo ();
+            var runtime = RuntimePlatform.GetRuntimeInfo();
 
             if (runtime.OperatingSystem == OperatingSystemType.WinNT)
-                InitializeWindows ();
-            //else if (runtime.OperatingSystem == OperatingSystemType.Linux)
-            //    InitializeLinux ();
+                InitializeWindows();
+            else if (runtime.OperatingSystem == OperatingSystemType.Linux)
+                InitializeLinux();
             //else if (runtime.OperatingSystem == OperatingSystemType.OSX)
             //    InitializeOSX ();
             else
-                throw new InvalidOperationException ("Unrecognized Operating System");
+                throw new InvalidOperationException("Unrecognized Operating System");
         }
 
-        //private static void InitializeLinux ()
-        //{
-        //    var x11 = new AvaloniaX11Platform ();
-        //    x11.Initialize (new X11PlatformOptions ());
+        [MemberNotNull(nameof(PlatformThreadingInterface))]
+        private static void InitializeLinux()
+        {
+            var x11 = new AvaloniaX11Platform();
+            x11.Initialize(new X11PlatformOptions());
 
-        //    WindowingInterface = x11;
-        //    PlatformThreadingInterface = new X11PlatformThreading (x11);
-        //    StandardCursorFactory = new X11CursorFactory (x11.Display);
-        //    SystemDialogImplementation = new X11.NativeDialogs.GtkSystemDialog ();
-        //    ClipboardInterface = new X11Clipboard (x11);
-        //}
+            WindowingInterface = x11;
+            PlatformThreadingInterface = new X11PlatformThreading(x11);
+            StandardCursorFactory = new X11CursorFactory(x11.Display);
+            SystemDialogImplementation = new X11.NativeDialogs.GtkSystemDialog();
+            ClipboardInterface = new X11Clipboard(x11);
+        }
 
         //private static void InitializeOSX ()
         //{
@@ -61,16 +62,16 @@ namespace Modern.WindowKit
         //    ClipboardInterface = new Native.ClipboardImpl (platform.Factory.CreateClipboard ());
         //}
 
-        [MemberNotNull (nameof (PlatformThreadingInterface))]
-        private static void InitializeWindows ()
+        [MemberNotNull(nameof(PlatformThreadingInterface))]
+        private static void InitializeWindows()
         {
-            Win32Platform.Initialize ();
+            Win32Platform.Initialize();
 
             PlatformThreadingInterface = Win32Platform.Instance;
             WindowingInterface = Win32Platform.Instance;
             StandardCursorFactory = CursorFactory.Instance;
-            SystemDialogImplementation = new SystemDialogImpl ();
-            ClipboardInterface = new ClipboardImpl ();
+            SystemDialogImplementation = new SystemDialogImpl();
+            ClipboardInterface = new ClipboardImpl();
         }
     }
 }

@@ -23,9 +23,9 @@ namespace Modern.WindowKit.X11
         private static readonly Dictionary<StandardCursorType, CursorFontShape> s_mapping =
             new Dictionary<StandardCursorType, CursorFontShape>
             {
-                {StandardCursorType.Arrow, CursorFontShape.XC_top_left_arrow},
+                {StandardCursorType.Arrow, CursorFontShape.XC_left_ptr},
                 {StandardCursorType.Cross, CursorFontShape.XC_cross},
-                {StandardCursorType.Hand, CursorFontShape.XC_hand1},
+                {StandardCursorType.Hand, CursorFontShape.XC_hand2},
                 {StandardCursorType.Help, CursorFontShape.XC_question_arrow},
                 {StandardCursorType.Ibeam, CursorFontShape.XC_xterm},
                 {StandardCursorType.No, CursorFontShape.XC_X_cursor},
@@ -67,14 +67,15 @@ namespace Modern.WindowKit.X11
             {
                 handle = s_mapping.TryGetValue(cursorType, out var shape)
                 ? _cursors[shape]
-                : _cursors[CursorFontShape.XC_top_left_arrow];
+                : _cursors[CursorFontShape.XC_left_ptr];
             }
             return new CursorImpl(handle);
         }
 
         public unsafe ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
         {
-            return new XImageCursor(_display, cursor, hotSpot);
+            throw new NotImplementedException();
+            //return new XImageCursor(_display, cursor, hotSpot);
         }
 
         private static IntPtr GetNullCursor(IntPtr display)
@@ -85,54 +86,58 @@ namespace Modern.WindowKit.X11
             return XLib.XCreatePixmapCursor(display, pixmap, pixmap, ref color, ref color, 0, 0);
         }
 
-        private unsafe class XImageCursor : CursorImpl, IFramebufferPlatformSurface, IPlatformHandle
-        {
-            private readonly PixelSize _pixelSize;
-            private readonly IUnmanagedBlob _blob;
+        //private unsafe class XImageCursor : CursorImpl, IFramebufferPlatformSurface, IPlatformHandle
+        //{
+        //    private readonly PixelSize _pixelSize;
+        //    private readonly IUnmanagedBlob _blob;
 
-            public XImageCursor(IntPtr display, IBitmapImpl bitmap, PixelPoint hotSpot)
-            {
-                var size = Marshal.SizeOf<XcursorImage>() +
-                    (bitmap.PixelSize.Width * bitmap.PixelSize.Height * 4);
+        //    public XImageCursor(IntPtr display, IBitmapImpl bitmap, PixelPoint hotSpot)
+        //    {
+        //        var size = Marshal.SizeOf<XcursorImage>() +
+        //            (bitmap.PixelSize.Width * bitmap.PixelSize.Height * 4);
+        //        var runtimePlatform = AvaloniaGlobals.RuntimePlatform ??
+        //            throw new InvalidOperationException("Unable to locate IRuntimePlatform");
+        //        var platformRenderInterface = AvaloniaGlobals.() ??
+        //            throw new InvalidOperationException("Unable to locate IPlatformRenderInterface");
 
-                _pixelSize = bitmap.PixelSize;
-                _blob = AvaloniaGlobals.RuntimePlatform.AllocBlob(size);
+        //        _pixelSize = bitmap.PixelSize;
+        //        _blob = runtimePlatform.AllocBlob(size);
                 
-                var image = (XcursorImage*)_blob.Address;
-                image->version = 1;
-                image->size = Marshal.SizeOf<XcursorImage>();
-                image->width = bitmap.PixelSize.Width;
-                image->height = bitmap.PixelSize.Height;
-                image->xhot = hotSpot.X;
-                image->yhot = hotSpot.Y;
-                image->pixels = (IntPtr)(image + 1);
+        //        var image = (XcursorImage*)_blob.Address;
+        //        image->version = 1;
+        //        image->size = Marshal.SizeOf<XcursorImage>();
+        //        image->width = bitmap.PixelSize.Width;
+        //        image->height = bitmap.PixelSize.Height;
+        //        image->xhot = hotSpot.X;
+        //        image->yhot = hotSpot.Y;
+        //        image->pixels = (IntPtr)(image + 1);
                
-                using (var renderTarget = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { this }))
-                using (var ctx = renderTarget.CreateDrawingContext(null))
-                {
-                    var r = new Rect(_pixelSize.ToSize(1)); 
-                    ctx.DrawBitmap(RefCountable.CreateUnownedNotClonable(bitmap), 1, r, r);
-                }
+        //        using (var renderTarget = platformRenderInterface.CreateRenderTarget(new[] { this }))
+        //        using (var ctx = renderTarget.CreateDrawingContext(null))
+        //        {
+        //            var r = new Rect(_pixelSize.ToSize(1)); 
+        //            ctx.DrawBitmap(RefCountable.CreateUnownedNotClonable(bitmap), 1, r, r);
+        //        }
 
-                Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
-            }
+        //        Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
+        //    }
 
-            public string HandleDescriptor => "XCURSOR";
+        //    public string HandleDescriptor => "XCURSOR";
 
-            public override void Dispose()
-            {
-                XLib.XcursorImageDestroy(Handle);
-                _blob.Dispose();
-            }
+        //    public override void Dispose()
+        //    {
+        //        XLib.XcursorImageDestroy(Handle);
+        //        _blob.Dispose();
+        //    }
 
-            public ILockedFramebuffer Lock()
-            {
-                return new LockedFramebuffer(
-                    _blob.Address + Marshal.SizeOf<XcursorImage>(),
-                    _pixelSize, _pixelSize.Width * 4,
-                    new Vector(96, 96), PixelFormat.Bgra8888, null);
-            }
-        }
+        //    public ILockedFramebuffer Lock()
+        //    {
+        //        return new LockedFramebuffer(
+        //            _blob.Address + Marshal.SizeOf<XcursorImage>(),
+        //            _pixelSize, _pixelSize.Width * 4,
+        //            new Vector(96, 96), PixelFormat.Bgra8888, null);
+        //    }
+        //}
     }
 
     class CursorImpl : ICursorImpl

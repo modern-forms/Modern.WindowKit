@@ -129,6 +129,7 @@ CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/
 CopyFile ("Avalonia.X11/NativeDialogs/Gtk.cs", "Avalonia.X11/Gtk.cs");
 CopyFile ("Avalonia.X11/NativeDialogs/GtkNativeFileDialogs.cs", "Avalonia.X11/GtkNativeFileDialogs.cs");
 CopyFile ("Avalonia.X11/Keysyms.cs", "Avalonia.X11/Keysyms.cs");
+CopyFile ("Avalonia.X11/TransparencyHelper.cs", "Avalonia.X11/TransparencyHelper.cs");
 CopyFile ("Avalonia.Base/Platform/Interop/Utf8Buffer.cs", "Avalonia.X11/Utf8Buffer.cs");
 CopyFile ("Avalonia.X11/X11Atoms.cs", "Avalonia.X11/X11Atoms.cs");
 CopyFile ("Avalonia.X11/X11Clipboard.cs", "Avalonia.X11/X11Clipboard.cs");
@@ -137,6 +138,7 @@ CopyFile ("Avalonia.X11/X11Enums.cs", "Avalonia.X11/X11Enums.cs");
 CopyFile ("Avalonia.X11/X11Exception.cs", "Avalonia.X11/X11Exception.cs");
 CopyFile ("Avalonia.X11/X11Framebuffer.cs", "Avalonia.X11/X11Framebuffer.cs");
 CopyFile ("Avalonia.X11/X11FramebufferSurface.cs", "Avalonia.X11/X11FramebufferSurface.cs");
+CopyFile ("Avalonia.X11/X11Globals.cs", "Avalonia.X11/X11Globals.cs");
 CopyFile ("Avalonia.X11/X11Info.cs", "Avalonia.X11/X11Info.cs");
 CopyFile ("Avalonia.X11/X11KeyTransform.cs", "Avalonia.X11/X11KeyTransform.cs");
 CopyFile ("Avalonia.X11/X11Platform.cs", "Avalonia.X11/X11Platform.cs");
@@ -144,6 +146,8 @@ CopyFile ("Avalonia.X11/X11PlatformThreading.cs", "Avalonia.X11/X11PlatformThrea
 CopyFile ("Avalonia.X11/X11Screens.cs", "Avalonia.X11/X11Screens.cs");
 CopyFile ("Avalonia.X11/X11Structs.cs", "Avalonia.X11/X11Structs.cs");
 CopyFile ("Avalonia.X11/X11Window.cs", "Avalonia.X11/X11Window.cs");
+CopyFile ("Avalonia.X11/X11Window.Ime.cs", "Avalonia.X11/X11Window.Ime.cs");
+CopyFile ("Avalonia.X11/X11Window.Xim.cs", "Avalonia.X11/X11Window.Xim.cs");
 CopyFile ("Avalonia.X11/XError.cs", "Avalonia.X11/XError.cs");
 CopyFile ("Avalonia.X11/XI2Manager.cs", "Avalonia.X11/XI2Manager.cs");
 CopyFile ("Avalonia.X11/XIStructs.cs", "Avalonia.X11/XIStructs.cs");
