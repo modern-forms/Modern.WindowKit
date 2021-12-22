@@ -931,7 +931,7 @@ namespace Modern.WindowKit.Win32
 
         private void ExtendClientArea()
         {
-            if (!_shown)
+            if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)
             {
                 return;
             }
