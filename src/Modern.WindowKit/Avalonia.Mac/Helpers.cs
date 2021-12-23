@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using Avalonia.Native.Interop;
+﻿using Avalonia.Native.Interop;
 
 namespace Modern.WindowKit.Native
 {

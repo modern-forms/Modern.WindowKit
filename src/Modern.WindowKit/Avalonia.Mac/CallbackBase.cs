@@ -1,44 +1,30 @@
-﻿#nullable disable
-
-using System;
-using SharpGen.Runtime;
+﻿using System;
+using System.Runtime.ExceptionServices;
+using Avalonia.MicroCom;
+using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native
 {
-    internal class CallbackBase : SharpGen.Runtime.IUnknown
+    public class CallbackBase : IUnknown, IMicroComShadowContainer, IMicroComExceptionCallback
     {
-        private uint _refCount;
-        private bool _disposed;
         private readonly object _lock = new object();
-        private ShadowContainer _shadow;
+        private bool _referencedFromManaged = true;
+        private bool _referencedFromNative = false;
+        private bool _destroyed;
+        
 
-        public CallbackBase()
+        protected virtual void Destroyed()
         {
-            _refCount = 1;
+
         }
 
-        public ShadowContainer Shadow
+        public void RaiseException(Exception e)
         {
-            get => _shadow;
-            set
+            if (AvaloniaGlobals.PlatformThreadingInterface is PlatformThreadingInterface threadingInterface)
             {
-                lock (_lock)
-                {
-                    if (_disposed && value != null)
-                    {
-                        throw new ObjectDisposedException("CallbackBase");
-                    }
+                threadingInterface.TerminateNativeApp();
 
-                    _shadow = value;
-                }
-            }
-        }
-
-        public uint AddRef()
-        {
-            lock (_lock)
-            {
-                return ++_refCount;
+                threadingInterface.DispatchException(ExceptionDispatchInfo.Capture(e));
             }
         }
 
@@ -46,34 +32,36 @@ namespace Modern.WindowKit.Native
         {
             lock (_lock)
             {
-                if (!_disposed)
-                {
-                    _disposed = true;
-                    Release();
-                }
+                _referencedFromManaged = false;
+                DestroyIfNeeded();
             }
         }
 
-        public uint Release()
+        void DestroyIfNeeded()
+        {
+            if(_destroyed)
+                return;
+            if (_referencedFromManaged == false && _referencedFromNative == false)
+            {
+                _destroyed = true;
+                Destroyed();
+            }
+        }
+
+        public MicroComShadow Shadow { get; set; }
+        public void OnReferencedFromNative()
+        {
+            lock (_lock) 
+                _referencedFromNative = true;
+        }
+
+        public void OnUnreferencedFromNative()
         {
             lock (_lock)
             {
-                _refCount--;
-
-                if (_refCount == 0)
-                {
-                    Shadow?.Dispose();
-                    Shadow = null;
-                    Destroyed();
-                }
-
-                return _refCount;
+                _referencedFromNative = false;
+                DestroyIfNeeded();
             }
-        }
-
-        protected virtual void Destroyed()
-        {
-
         }
     }
 }

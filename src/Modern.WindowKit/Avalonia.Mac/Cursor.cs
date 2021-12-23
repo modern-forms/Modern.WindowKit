@@ -1,13 +1,12 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
+using System.IO;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform;
 using Avalonia.Native.Interop;
 
 namespace Modern.WindowKit.Native
 {
-    class AvaloniaNativeCursor : IPlatformHandle, IDisposable
+    class AvaloniaNativeCursor : ICursorImpl, IDisposable
     {
         public IAvnCursor Cursor { get; private set; }
         public IntPtr Handle => IntPtr.Zero;
@@ -26,7 +25,7 @@ namespace Modern.WindowKit.Native
         }
     }
 
-    class CursorFactory : IStandardCursorFactory
+    class CursorFactory : ICursorFactory
     {
         IAvnCursorFactory _native;
 
@@ -35,10 +34,28 @@ namespace Modern.WindowKit.Native
             _native = native;
         }
 
-        public IPlatformHandle GetCursor(StandardCursorType cursorType)
+        public ICursorImpl GetCursor(StandardCursorType cursorType)
         {
             var cursor = _native.GetCursor((AvnStandardCursorType)cursorType);
             return new AvaloniaNativeCursor( cursor );
+        }
+
+        public unsafe ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
+        {
+            using(var ms = new MemoryStream())
+            {
+                cursor.Save(ms);
+
+                var imageData = ms.ToArray();
+
+                fixed(void* ptr = imageData)
+                {
+                    var avnCursor = _native.CreateCustomCursor(ptr, new IntPtr(imageData.Length),
+                        new AvnPixelSize { Width = hotSpot.X, Height = hotSpot.Y });
+
+                    return new AvaloniaNativeCursor(avnCursor);
+                }
+            }
         }
     }
 }

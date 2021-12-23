@@ -18,13 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Avalonia.Mac\**" />
-    <EmbeddedResource Remove="Avalonia.Mac\**" />
-    <None Remove="Avalonia.Mac\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.5" />
+    <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.6-preview4" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>

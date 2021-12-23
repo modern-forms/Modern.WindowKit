@@ -1,11 +1,9 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using Avalonia.Native.Interop;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Threading;
-using SharpGen.Runtime;
 
 namespace Modern.WindowKit.Native
 {
@@ -35,53 +33,72 @@ namespace Modern.WindowKit.Native
                 _parent = parent;
             }
 
-            public void Signaled(int priority, bool priorityContainsMeaningfulValue)
+            public void Signaled(int priority, int priorityContainsMeaningfulValue)
             {
-                _parent.Signaled?.Invoke(priorityContainsMeaningfulValue ? (DispatcherPriority?)priority : null);
+                _parent.Signaled?.Invoke(priorityContainsMeaningfulValue.FromComBool() ? (DispatcherPriority?)priority : null);
             }
         }
 
         readonly IAvnPlatformThreadingInterface _native;
+        private ExceptionDispatchInfo _exceptionDispatchInfo;
+        private CancellationTokenSource _exceptionCancellationSource;
 
         public PlatformThreadingInterface(IAvnPlatformThreadingInterface native)
         {
             _native = native;
             using (var cb = new SignaledCallback(this))
-                _native.SignaledCallback = cb;
+                _native.SetSignaledCallback(cb);
         }
 
-        public bool CurrentThreadIsLoopThread => _native.CurrentThreadIsLoopThread;
+        public bool CurrentThreadIsLoopThread => _native.CurrentThreadIsLoopThread.FromComBool();
 
         public event Action<DispatcherPriority?> Signaled;
 
         public void RunLoop(CancellationToken cancellationToken)
         {
-            if (cancellationToken.CanBeCanceled == false)
-                _native.RunLoop(null);
-            else
+            _exceptionDispatchInfo?.Throw();
+            var l = new object();
+            _exceptionCancellationSource = new CancellationTokenSource();
+
+            var compositeCancellation = CancellationTokenSource
+                .CreateLinkedTokenSource(cancellationToken, _exceptionCancellationSource.Token).Token;
+
+            var cancellation = _native.CreateLoopCancellation();
+            compositeCancellation.Register(() =>
             {
-                var l = new object();
-                var cancellation = _native.CreateLoopCancellation();
-                cancellationToken.Register(() =>
+                lock (l)
                 {
-                    lock (l)
-                    {
-                        cancellation?.Cancel();
-                    }
-                });
-                try
-                {
-                    _native.RunLoop(cancellation);
+                    cancellation?.Cancel();
                 }
-                finally
+            });
+
+            try
+            {
+                _native.RunLoop(cancellation);
+            }
+            finally
+            {
+                lock (l)
                 {
-                    lock(l)
-                    {
-                        cancellation?.Dispose();
-                        cancellation = null;
-                    }
+                    cancellation?.Dispose();
+                    cancellation = null;
                 }
             }
+
+            if (_exceptionDispatchInfo != null)
+            {
+                _exceptionDispatchInfo.Throw();
+            }
+        }
+
+        public void DispatchException (ExceptionDispatchInfo exceptionInfo)
+        {
+            _exceptionDispatchInfo = exceptionInfo;
+        }
+
+        public void TerminateNativeApp()
+        {
+            _exceptionCancellationSource?.Cancel();
         }
 
         public void Signal(DispatcherPriority priority)
