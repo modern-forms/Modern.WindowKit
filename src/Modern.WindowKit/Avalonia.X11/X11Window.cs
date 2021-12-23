@@ -32,6 +32,7 @@ namespace Modern.WindowKit.X11
         private readonly AvaloniaX11Platform _platform;
         private readonly bool _popup;
         private readonly X11Info _x11;
+        private bool _invalidated;
         private XConfigureEvent? _configure;
         private PixelPoint? _configurePoint;
         private bool _triggeredExpose;
@@ -763,12 +764,21 @@ namespace Modern.WindowKit.X11
 
         void DoPaint()
         {
+            _invalidated = false;
             Paint?.Invoke(new Rect());
         }
         
         public void Invalidate(Rect rect)
         {
+            if (_invalidated)
 
+                return;
+            _invalidated = true;
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_mapped)
+                    DoPaint();
+            });
         }
 
         public IInputRoot InputRoot => _inputRoot;
