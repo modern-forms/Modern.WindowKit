@@ -77,6 +77,12 @@ namespace Modern.WindowKit.Platform
         Size MaxAutoSizeHint { get; }
 
         /// <summary>
+        /// Minimum width of the window.
+        /// </summary>
+        /// 
+        void SetMinMaxSize(Size minSize, Size maxSize);
+
+        /// <summary>
         /// Sets whether this window appears on top of all other windows
         /// </summary>
         void SetTopmost(bool value);

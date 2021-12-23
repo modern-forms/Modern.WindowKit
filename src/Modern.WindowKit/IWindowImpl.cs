@@ -107,12 +107,6 @@ namespace Modern.WindowKit.Platform
         void Move(PixelPoint point);
 
         /// <summary>
-        /// Minimum width of the window.
-        /// </summary>
-        /// 
-        void SetMinMaxSize(Size minSize, Size maxSize);
-
-        /// <summary>
         /// Sets if the ClientArea is extended into the non-client area.
         /// </summary>
         /// <param name="extendIntoClientAreaHint">true to enable, false to disable</param>
