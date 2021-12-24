@@ -15,7 +15,7 @@ using Modern.WindowKit.Threading;
 
 namespace Modern.WindowKit.Native
 {
-    internal class MacOSTopLevelWindowHandle : IPlatformHandle//, IMacOSTopLevelPlatformHandle
+    internal class MacOSTopLevelWindowHandle : IPlatformHandle, IMacOSTopLevelPlatformHandle
     {
         IAvnWindowBase _native;
 
