@@ -6,6 +6,5 @@ namespace Modern.WindowKit.Platform
     {
         IWindowImpl CreateWindow();
         //IWindowImpl CreateEmbeddableWindow();
-        IPopupImpl CreatePopup(IWindowBaseImpl parent);
     }
 }
