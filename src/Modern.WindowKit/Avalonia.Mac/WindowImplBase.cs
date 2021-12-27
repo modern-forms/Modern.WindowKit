@@ -479,14 +479,5 @@ namespace Modern.WindowKit.Native
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0, 0);
 
         public IPlatformHandle Handle { get; private set; }
-
-        public Size ScaledClientSize
-        {
-            get
-            {
-                var s = _native.ClientSize;
-                return new Size(s.Width * RenderScaling, s.Height * RenderScaling);
-            }
-        }
     }
 }

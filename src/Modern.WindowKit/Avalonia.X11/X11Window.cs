@@ -1171,8 +1171,6 @@ namespace Modern.WindowKit.X11
         //public INativeControlHostImpl NativeControlHost { get; }
         //public ITextInputMethodImpl TextInputMethod => _ime;
 
-        public Size ScaledClientSize => new Size(_realSize.Width, _realSize.Height);
-
         public void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel) =>
             _transparencyHelper.SetTransparencyRequest(transparencyLevel);
 

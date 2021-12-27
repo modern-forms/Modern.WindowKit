@@ -593,15 +593,6 @@ namespace Modern.WindowKit.Win32
             UnmanagedMethods.ShowWindow(_hwnd, ShowWindowCommand.Hide);
             _shown = false;
         }
-        public Size ScaledClientSize
-        {
-            get
-            {
-                UnmanagedMethods.RECT rect;
-                UnmanagedMethods.GetClientRect(_hwnd, out rect);
-                return new Size(rect.right, rect.bottom);
-            }
-        }
 
         public virtual void Show(bool activate, bool isDialog)
         {

@@ -156,8 +156,6 @@ namespace Modern.WindowKit.Platform
         //[CanBeNull]
         //IMouseDevice MouseDevice { get; }
 
-        Size ScaledClientSize { get; }
-
         IPopupImpl CreatePopup();
 
         /// <summary>
