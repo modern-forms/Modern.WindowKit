@@ -1,10 +1,8 @@
-using Modern.WindowKit.Controls;
-using Modern.WindowKit.Input;
 ﻿using System;
 
 namespace Modern.WindowKit.Platform
 {
-    public interface IWindowBaseImpl : ITopLevelImpl
+    public partial interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
         /// Shows the window.
@@ -19,17 +17,6 @@ namespace Modern.WindowKit.Platform
         void Hide();
 
         /// <summary>
-        /// Starts moving a window with left button being held. Should be called from left mouse button press event handler.
-        /// </summary>
-        void BeginMoveDrag(PointerPressedEventArgs e);
-
-        /// <summary>
-        /// Starts resizing a window. This function is used if an application has window resizing controls. 
-        /// Should be called from left mouse button press event handler
-        /// </summary>
-        void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e);
-
-        /// <summary>
         /// Gets the scaling factor for Window positioning and sizing.
         /// </summary>
         double DesktopScaling { get; }
@@ -37,7 +24,7 @@ namespace Modern.WindowKit.Platform
         /// <summary>
         /// Gets the position of the window in device pixels.
         /// </summary>
-        PixelPoint Position { get; set; }
+        PixelPoint Position { get; }
         
         /// <summary>
         /// Gets or sets a method called when the window's position changes.
@@ -65,22 +52,9 @@ namespace Modern.WindowKit.Platform
         IPlatformHandle Handle { get; }
 
         /// <summary>
-        /// Sets the client size of the top level.
-        /// </summary>
-        /// <param name="clientSize">The new client size.</param>
-        /// <param name="reason">The reason for the resize.</param>
-        void Resize(Size clientSize, PlatformResizeReason reason = PlatformResizeReason.Application);
-       
-        /// <summary>
         /// Gets a maximum client size hint for an auto-sizing window, in device-independent pixels.
         /// </summary>
         Size MaxAutoSizeHint { get; }
-
-        /// <summary>
-        /// Minimum width of the window.
-        /// </summary>
-        /// 
-        void SetMinMaxSize(Size minSize, Size maxSize);
 
         /// <summary>
         /// Sets whether this window appears on top of all other windows

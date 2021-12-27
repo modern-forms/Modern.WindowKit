@@ -221,6 +221,16 @@ private void CopyFile (string src, string dst)
     
     text = text.Replace("////using Modern.WindowKit", "//using Modern.WindowKit");
 
+    // File specific fixups
+    switch (Path.GetFileName (dst)) {
+        case "ICloseable.cs":
+            text = text.Replace ("namespace Modern.WindowKit.Input", "namespace Modern.WindowKit");
+            break;
+        case "IWindowBaseImpl.cs":
+            text = text.Replace ("public interface", "public partial interface");
+            break;
+    }
+
     var dest_lines = File.Exists (full_dst) ? CommentDiffs (text, full_dst) : new[] { text };
     File.WriteAllLines (full_dst, dest_lines, Encoding.UTF8);
 }

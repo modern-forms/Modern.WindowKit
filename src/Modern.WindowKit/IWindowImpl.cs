@@ -26,11 +26,6 @@ namespace Modern.WindowKit.Platform
         void SetTitle(string title);
 
         /// <summary>
-        /// Shows the window as a dialog.
-        /// </summary>
-        void ShowDialog(IWindowImpl parent);
-
-        /// <summary>
         /// Sets the parent of the window.
         /// </summary>
         /// <param name="parent">The parent <see cref="IWindowImpl"/>.</param>
@@ -101,10 +96,34 @@ namespace Modern.WindowKit.Platform
         /// </summary>
         Thickness OffScreenMargin { get; }
 
-        /// <summary>
+        ///// <summary>
+        ///// Starts moving a window with left button being held. Should be called from left mouse button press event handler.
+        ///// </summary>
+        //void BeginMoveDrag(PointerPressedEventArgs e);
+
+        ///// <summary>
+        ///// Starts resizing a window. This function is used if an application has window resizing controls. 
+        ///// Should be called from left mouse button press event handler
+        ///// </summary>
+        //void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e);
+
+        ///// <summary>
+        ///// Sets the client size of the top level.
+        ///// </summary>
+        ///// <param name="clientSize">The new client size.</param>
+        ///// <param name="reason">The reason for the resize.</param>
+        //void Resize(Size clientSize, PlatformResizeReason reason = PlatformResizeReason.Application);
+
+        /// </summary>
         /// Sets the client size of the top level.
         /// </summary>
         void Move(PixelPoint point);
+
+        ///// <summary>
+        ///// Minimum width of the window.
+        ///// </summary>
+        ///// 
+        //void SetMinMaxSize(Size minSize, Size maxSize);
 
         /// <summary>
         /// Sets if the ClientArea is extended into the non-client area.
