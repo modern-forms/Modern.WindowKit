@@ -39,6 +39,7 @@ CopyFile ("Avalonia.Input/IKeyboardDevice.cs", "IKeyboardDevice.cs");
 CopyFile ("Avalonia.Visuals/Platform/ILockedFramebuffer.cs", "ILockedFramebuffer.cs");
 CopyFile ("Avalonia.Input/IMouseDevice.cs", "IMouseDevice.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformHandle.cs", "IPlatformHandle.cs");
+CopyFile ("Avalonia.Visuals/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformThreadingInterface.cs", "IPlatformThreadingInterface.cs");
 CopyFile ("Avalonia.Input/IPointer.cs", "IPointer.cs");
 CopyFile ("Avalonia.Input/IPointerDevice.cs", "IPointerDevice.cs");

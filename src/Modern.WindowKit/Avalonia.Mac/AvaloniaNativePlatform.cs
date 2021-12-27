@@ -11,7 +11,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native
 {
-    class AvaloniaNativePlatform : IWindowingPlatform //IPlatformSettings, 
+    class AvaloniaNativePlatform : IPlatformSettings, IWindowingPlatform
     {
         private readonly IAvaloniaNativeFactory _factory;
         private AvaloniaNativePlatformOptions _options;
