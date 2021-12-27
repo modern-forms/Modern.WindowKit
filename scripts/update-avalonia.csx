@@ -242,6 +242,9 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("Window window", "WindowKit.Platform.IWindowBaseImpl window");
             text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
             break;
+        case "KeyInterop.cs":
+            text = text.Replace("static class", "public static class");
+            break;
     }
 
     var dest_lines = File.Exists (full_dst) ? CommentDiffs (text, full_dst) : new[] { text };
