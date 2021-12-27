@@ -227,7 +227,10 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("namespace Modern.WindowKit.Input", "namespace Modern.WindowKit");
             break;
         case "IWindowBaseImpl.cs":
+        case "PixelPoint.cs":
+        case "Point.cs":
             text = text.Replace ("public interface", "public partial interface");
+            text = text.Replace ("readonly struct", "readonly partial struct");
             break;
         case "ISystemDialogImpl.cs":
         case "SystemDialog.cs":

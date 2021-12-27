@@ -13,7 +13,7 @@ namespace Modern.WindowKit
 #if !BUILDTASK
     public
 #endif
-    readonly struct Point : IEquatable<Point>
+    readonly partial struct Point : IEquatable<Point>
     {
         static Point()
         {
@@ -293,7 +293,5 @@ namespace Modern.WindowKit
         {
             get { return (_x == 0) && (_y == 0); }
         }
-
-        public static Point Empty { get; } = new Point ();
     }
 }

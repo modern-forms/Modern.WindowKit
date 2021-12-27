@@ -7,7 +7,7 @@ namespace Modern.WindowKit
     /// <summary>
     /// Represents a point in device pixels.
     /// </summary>
-    public readonly struct PixelPoint : IEquatable<PixelPoint>
+    public readonly partial struct PixelPoint : IEquatable<PixelPoint>
     {
         /// <summary>
         /// A point representing 0,0.
@@ -174,8 +174,6 @@ namespace Modern.WindowKit
         /// <param name="y">The Y co-ordinate.</param>
         /// <returns>The new <see cref="PixelPoint"/>.</returns>
         public PixelPoint WithY(int y) => new PixelPoint(X, y);
-
-        public System.Drawing.Point ToDrawingPoint () => new System.Drawing.Point (X, Y);
 
         /// <summary>
         /// Converts the <see cref="PixelPoint"/> to a device-independent <see cref="Point"/> using the
