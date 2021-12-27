@@ -136,7 +136,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
             return path;
         }
 
-        public async Task<string[]> ShowFileDialogAsync(FileDialog dialog, IWindowBaseImpl parent)
+        public async Task<string[]> ShowFileDialogAsync(FileDialog dialog, WindowKit.Platform.IWindowBaseImpl parent)
         {
             await EnsureInitialized();
 
@@ -151,7 +151,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
                     (dialog as SaveFileDialog)?.DefaultExtension));
         }
 
-        public async Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, IWindowBaseImpl parent)
+        public async Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, WindowKit.Platform.IWindowBaseImpl parent)
         {
             await EnsureInitialized();
 

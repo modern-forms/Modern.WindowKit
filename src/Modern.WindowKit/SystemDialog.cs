@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Modern.WindowKit.Platform;
+using Modern.WindowKit.Controls.Platform;
 
 #nullable enable
 
@@ -62,7 +62,7 @@ namespace Modern.WindowKit.Controls
         /// A task that on completion contains the full path of the save location, or null if the
         /// dialog was canceled.
         /// </returns>
-        public async Task<string?> ShowAsync(IWindowBaseImpl parent)
+        public async Task<string?> ShowAsync(WindowKit.Platform.IWindowBaseImpl parent)
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));
@@ -91,7 +91,7 @@ namespace Modern.WindowKit.Controls
         /// A task that on completion returns an array containing the full path to the selected
         /// files, or null if the dialog was canceled.
         /// </returns>
-        public Task<string[]?> ShowAsync(IWindowBaseImpl parent)
+        public Task<string[]?> ShowAsync(WindowKit.Platform.IWindowBaseImpl parent)
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));
@@ -121,7 +121,7 @@ namespace Modern.WindowKit.Controls
         /// A task that on completion returns the full path of the selected directory, or null if the
         /// dialog was canceled.
         /// </returns>
-        public Task<string?> ShowAsync(IWindowBaseImpl parent)
+        public Task<string?> ShowAsync(WindowKit.Platform.IWindowBaseImpl parent)
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));

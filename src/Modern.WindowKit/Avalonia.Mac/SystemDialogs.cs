@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
 using Avalonia.Native.Interop;
-using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native
 {
@@ -18,7 +17,7 @@ namespace Modern.WindowKit.Native
             _native = native;
         }
 
-        public Task<string[]> ShowFileDialogAsync(FileDialog dialog, IWindowBaseImpl parent)
+        public Task<string[]> ShowFileDialogAsync(FileDialog dialog, WindowKit.Platform.IWindowBaseImpl parent)
         {
             var events = new SystemDialogEvents();
 
@@ -46,7 +45,7 @@ namespace Modern.WindowKit.Native
             return events.Task.ContinueWith(t => { events.Dispose(); return t.Result; });
         }
 
-        public Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, IWindowBaseImpl parent)
+        public Task<string> ShowFolderDialogAsync(OpenFolderDialog dialog, WindowKit.Platform.IWindowBaseImpl parent)
         {
             var events = new SystemDialogEvents();
 
@@ -57,7 +56,7 @@ namespace Modern.WindowKit.Native
             return events.Task.ContinueWith(t => { events.Dispose(); return t.Result.FirstOrDefault(); });
         }
 
-        private IAvnWindow GetNativeWindow(IWindowBaseImpl window)
+        private IAvnWindow GetNativeWindow(WindowKit.Platform.IWindowBaseImpl window)
         {
             return (window as WindowImpl)?.Native;
         }

@@ -229,6 +229,16 @@ private void CopyFile (string src, string dst)
         case "IWindowBaseImpl.cs":
             text = text.Replace ("public interface", "public partial interface");
             break;
+        case "ISystemDialogImpl.cs":
+        case "SystemDialog.cs":
+        case "SystemDialogs.cs":
+        case "GtkNativeFileDialogs.cs":
+            text = text.Replace ("Window parent", "WindowKit.Platform.IWindowBaseImpl parent");
+            text = text.Replace ("?.PlatformImpl", "");
+            text = text.Replace ("IWindowImpl parentWindow", "IWindowBaseImpl parentWindow");
+            text = text.Replace ("Window window", "WindowKit.Platform.IWindowBaseImpl window");
+            text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
+            break;
     }
 
     var dest_lines = File.Exists (full_dst) ? CommentDiffs (text, full_dst) : new[] { text };
