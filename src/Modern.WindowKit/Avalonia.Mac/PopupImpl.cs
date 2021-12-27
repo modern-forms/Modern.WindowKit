@@ -1,5 +1,5 @@
 ﻿using System;
-//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 using Avalonia.Native.Interop;
 using Modern.WindowKit.Platform;
 
@@ -26,7 +26,7 @@ namespace Modern.WindowKit.Native
                 //var context = _opts.UseGpu ? glFeature?.MainContext : null;
                 Init(factory.CreatePopup(e, null), factory.CreateScreens());
             }
-            //PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(parent, MoveResize));
+            PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(parent, MoveResize));
         }
 
         private void MoveResize(PixelPoint position, Size size, double scaling)
@@ -76,6 +76,6 @@ namespace Modern.WindowKit.Native
         {
         }
 
-        //public IPopupPositioner PopupPositioner { get; }
+        public IPopupPositioner PopupPositioner { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+﻿using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 
 namespace Modern.WindowKit.Platform
 {
@@ -7,7 +7,7 @@ namespace Modern.WindowKit.Platform
     /// </summary>
     public interface IPopupImpl : IWindowBaseImpl
     {
-        //IPopupPositioner PopupPositioner { get; }
+        IPopupPositioner PopupPositioner { get; }
 
         void SetWindowManagerAddShadowHint(bool enabled);
     }

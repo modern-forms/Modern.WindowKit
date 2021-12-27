@@ -43,6 +43,7 @@ CopyFile ("Avalonia.Base/Platform/IPlatformThreadingInterface.cs", "IPlatformThr
 CopyFile ("Avalonia.Input/IPointer.cs", "IPointer.cs");
 CopyFile ("Avalonia.Input/IPointerDevice.cs", "IPointerDevice.cs");
 CopyFile ("Avalonia.Controls/Platform/IPopupImpl.cs", "IPopupImpl.cs");
+CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/IPopupPositioner.cs", "IPopupPositioner.cs");
 CopyFile ("Avalonia.Base/Platform/IRuntimePlatform.cs", "IRuntimePlatform.cs");
 CopyFile ("Avalonia.Controls/Platform/IScreenImpl.cs", "IScreenImpl.cs");
 //CopyFile ("Avalonia.Input/Platform/IStandardCursorFactory.cs", "IStandardCursorFactory.cs");
@@ -55,6 +56,8 @@ CopyFile ("Avalonia.Visuals/Platform/IWriteableBitmapImpl.cs", "IWriteableBitmap
 CopyFile ("Avalonia.Base/Threading/JobRunner.cs", "JobRunner.cs");
 CopyFile ("Avalonia.Input/Key.cs", "Key.cs");
 CopyFile ("Avalonia.Input/KeyboardDevice.cs", "KeyboardDevice.cs");
+CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositioner.cs", "ManagedPopupPositioner.cs");
+CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositionerPopupImplHelper.cs", "ManagedPopupPositionerPopupImplHelper.cs");
 CopyFile ("Avalonia.Base/Utilities/MathUtilities.cs", "MathUtilities.cs");
 CopyFile ("Avalonia.Input/MouseDevice.cs", "MouseDevice.cs");
 CopyFile ("Avalonia.Visuals/Platform/PixelFormat.cs", "PixelFormat.cs");

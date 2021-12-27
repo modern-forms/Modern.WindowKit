@@ -1,5 +1,5 @@
 ﻿using System;
-//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Interop;
 
@@ -129,7 +129,7 @@ namespace Modern.WindowKit.Win32
         private PopupImpl(IWindowBaseImpl parent, bool dummy) : base()
         {
             _parent = parent;
-            //PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(parent, MoveResize));
+            PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(parent, MoveResize));
         }
 
         private void MoveResize(PixelPoint position, Size size, double scaling)
@@ -165,6 +165,6 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        //public IPopupPositioner PopupPositioner { get; }
+        public IPopupPositioner PopupPositioner { get; }
     }
 }

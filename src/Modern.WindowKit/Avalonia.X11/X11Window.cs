@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
-//using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 //using Modern.WindowKit.FreeDesktop;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
@@ -188,8 +188,8 @@ namespace Modern.WindowKit.X11
             CreateIC();
 
             XFlush(_x11.Display);
-            //if(_popup)
-            //    PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
+            if (_popup)
+                PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
             //if (platform.Options.UseDBusMenu)
             //    NativeMenuExporter = DBusMenuExporter.TryCreateTopLevelNativeMenu(_handle);
             //NativeControlHost = new X11NativeControlHost(_platform, this);
@@ -1166,7 +1166,7 @@ namespace Modern.WindowKit.X11
             );
         }
 
-        //public IPopupPositioner PopupPositioner { get; }
+        public IPopupPositioner PopupPositioner { get; }
         //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
         //public INativeControlHostImpl NativeControlHost { get; }
         //public ITextInputMethodImpl TextInputMethod => _ime;
