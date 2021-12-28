@@ -19,7 +19,14 @@ string modern_windowkit_repo_path = "..";
 string avalonia_path = Path.Combine (avalonia_repo_path, "src");
 string modern_windowkit_path = Path.Combine (modern_windowkit_repo_path, "src", "Modern.WindowKit");
 
-CopyFile ("Avalonia.Visuals/Platform/AlphaFormat.cs", "AlphaFormat.cs");
+//CopyFile ("Skia/Avalonia.Skia/IDrawableBitmapImpl.cs", "Avalonia.Skia/IDrawableBitmapImpl.cs");
+//CopyFile ("Avalonia.Visuals/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
+//CopyFile("Avalonia.Visuals/Platform/LockedFramebuffer.cs", "LockedFramebuffer.cs");
+//CopyFile("Avalonia.Visuals/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
+
+//return;
+
+CopyFile("Avalonia.Visuals/Platform/AlphaFormat.cs", "AlphaFormat.cs");
 CopyFile ("Avalonia.Visuals/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInterpolationMode.cs");
 //CopyFile ("Avalonia.Input/Cursors.cs", "Cursors.cs");
 CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
@@ -93,22 +100,23 @@ CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLev
 CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
 // Mac Backend
-CopyFile ("Avalonia.Native/AvaloniaNativeApplicationPlatform.cs", "Avalonia.Mac/AvaloniaNativeApplicationPlatform.cs");
-CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
-CopyFile ("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
-CopyFile ("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
-CopyFile ("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
-CopyFile ("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
-CopyFile ("Avalonia.Native/DeferredFramebuffer.cs", "Avalonia.Mac/DeferredFramebuffer.cs");
-CopyFile ("Avalonia.Native/DynLoader.cs", "Avalonia.Mac/DynLoader.cs");
-CopyFile ("Avalonia.Native/Extensions.cs", "Avalonia.Mac/Extensions.cs");
-CopyFile ("Avalonia.Native/Helpers.cs", "Avalonia.Mac/Helpers.cs");
-CopyFile ("Avalonia.Native/PlatformThreadingInterface.cs", "Avalonia.Mac/PlatformThreadingInterface.cs");
-CopyFile ("Avalonia.Native/PopupImpl.cs", "Avalonia.Mac/PopupImpl.cs");
-CopyFile ("Avalonia.Native/ScreenImpl.cs", "Avalonia.Mac/ScreenImpl.cs");
-CopyFile ("Avalonia.Native/SystemDialogs.cs", "Avalonia.Mac/SystemDialogs.cs");
-CopyFile ("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
-CopyFile ("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
+CopyFile("Avalonia.Native/AvaloniaNativeApplicationPlatform.cs", "Avalonia.Mac/AvaloniaNativeApplicationPlatform.cs");
+CopyFile("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
+CopyFile("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
+CopyFile("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
+CopyFile("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
+CopyFile("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
+CopyFile("Avalonia.Native/DeferredFramebuffer.cs", "Avalonia.Mac/DeferredFramebuffer.cs");
+CopyFile("Avalonia.Native/DynLoader.cs", "Avalonia.Mac/DynLoader.cs");
+CopyFile("Avalonia.Native/Extensions.cs", "Avalonia.Mac/Extensions.cs");
+CopyFile("Avalonia.Native/Helpers.cs", "Avalonia.Mac/Helpers.cs");
+CopyFile("Avalonia.Base/Platform/IMacOSTopLevelPlatformHandle.cs", "Avalonia.Mac/IMacOSTopLevelPlatformHandle.cs");
+CopyFile("Avalonia.Native/PlatformThreadingInterface.cs", "Avalonia.Mac/PlatformThreadingInterface.cs");
+CopyFile("Avalonia.Native/PopupImpl.cs", "Avalonia.Mac/PopupImpl.cs");
+CopyFile("Avalonia.Native/ScreenImpl.cs", "Avalonia.Mac/ScreenImpl.cs");
+CopyFile("Avalonia.Native/SystemDialogs.cs", "Avalonia.Mac/SystemDialogs.cs");
+CopyFile("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
+CopyFile("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
 
 // Windows Backend
 CopyFile ("Windows/Avalonia.Win32/ClipboardFormats.cs", "Avalonia.Win32/ClipboardFormats.cs");
@@ -134,32 +142,32 @@ CopyFile ("Windows/Avalonia.Win32/Win32TypeExtensions.cs", "Avalonia.Win32/Win32
 //CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/Interop/UnmanagedMethods.cs");
 
 // X11 Backend
-CopyFile ("Avalonia.X11/NativeDialogs/Gtk.cs", "Avalonia.X11/Gtk.cs");
-CopyFile ("Avalonia.X11/NativeDialogs/GtkNativeFileDialogs.cs", "Avalonia.X11/GtkNativeFileDialogs.cs");
-CopyFile ("Avalonia.X11/Keysyms.cs", "Avalonia.X11/Keysyms.cs");
-CopyFile ("Avalonia.X11/TransparencyHelper.cs", "Avalonia.X11/TransparencyHelper.cs");
-CopyFile ("Avalonia.Base/Platform/Interop/Utf8Buffer.cs", "Avalonia.X11/Utf8Buffer.cs");
-CopyFile ("Avalonia.X11/X11Atoms.cs", "Avalonia.X11/X11Atoms.cs");
-CopyFile ("Avalonia.X11/X11Clipboard.cs", "Avalonia.X11/X11Clipboard.cs");
-CopyFile ("Avalonia.X11/X11CursorFactory.cs", "Avalonia.X11/X11CursorFactory.cs");
-CopyFile ("Avalonia.X11/X11Enums.cs", "Avalonia.X11/X11Enums.cs");
-CopyFile ("Avalonia.X11/X11Exception.cs", "Avalonia.X11/X11Exception.cs");
-CopyFile ("Avalonia.X11/X11Framebuffer.cs", "Avalonia.X11/X11Framebuffer.cs");
-CopyFile ("Avalonia.X11/X11FramebufferSurface.cs", "Avalonia.X11/X11FramebufferSurface.cs");
-CopyFile ("Avalonia.X11/X11Globals.cs", "Avalonia.X11/X11Globals.cs");
-CopyFile ("Avalonia.X11/X11Info.cs", "Avalonia.X11/X11Info.cs");
-CopyFile ("Avalonia.X11/X11KeyTransform.cs", "Avalonia.X11/X11KeyTransform.cs");
-CopyFile ("Avalonia.X11/X11Platform.cs", "Avalonia.X11/X11Platform.cs");
-CopyFile ("Avalonia.X11/X11PlatformThreading.cs", "Avalonia.X11/X11PlatformThreading.cs");
-CopyFile ("Avalonia.X11/X11Screens.cs", "Avalonia.X11/X11Screens.cs");
-CopyFile ("Avalonia.X11/X11Structs.cs", "Avalonia.X11/X11Structs.cs");
-CopyFile ("Avalonia.X11/X11Window.cs", "Avalonia.X11/X11Window.cs");
-CopyFile ("Avalonia.X11/X11Window.Ime.cs", "Avalonia.X11/X11Window.Ime.cs");
-CopyFile ("Avalonia.X11/X11Window.Xim.cs", "Avalonia.X11/X11Window.Xim.cs");
-CopyFile ("Avalonia.X11/XError.cs", "Avalonia.X11/XError.cs");
-CopyFile ("Avalonia.X11/XI2Manager.cs", "Avalonia.X11/XI2Manager.cs");
-CopyFile ("Avalonia.X11/XIStructs.cs", "Avalonia.X11/XIStructs.cs");
-CopyFile ("Avalonia.X11/XLib.cs", "Avalonia.X11/XLib.cs");
+CopyFile("Avalonia.X11/NativeDialogs/Gtk.cs", "Avalonia.X11/Gtk.cs");
+CopyFile("Avalonia.X11/NativeDialogs/GtkNativeFileDialogs.cs", "Avalonia.X11/GtkNativeFileDialogs.cs");
+CopyFile("Avalonia.X11/Keysyms.cs", "Avalonia.X11/Keysyms.cs");
+CopyFile("Avalonia.X11/TransparencyHelper.cs", "Avalonia.X11/TransparencyHelper.cs");
+CopyFile("Avalonia.Base/Platform/Interop/Utf8Buffer.cs", "Avalonia.X11/Utf8Buffer.cs");
+CopyFile("Avalonia.X11/X11Atoms.cs", "Avalonia.X11/X11Atoms.cs");
+CopyFile("Avalonia.X11/X11Clipboard.cs", "Avalonia.X11/X11Clipboard.cs");
+CopyFile("Avalonia.X11/X11CursorFactory.cs", "Avalonia.X11/X11CursorFactory.cs");
+CopyFile("Avalonia.X11/X11Enums.cs", "Avalonia.X11/X11Enums.cs");
+CopyFile("Avalonia.X11/X11Exception.cs", "Avalonia.X11/X11Exception.cs");
+CopyFile("Avalonia.X11/X11Framebuffer.cs", "Avalonia.X11/X11Framebuffer.cs");
+CopyFile("Avalonia.X11/X11FramebufferSurface.cs", "Avalonia.X11/X11FramebufferSurface.cs");
+CopyFile("Avalonia.X11/X11Globals.cs", "Avalonia.X11/X11Globals.cs");
+CopyFile("Avalonia.X11/X11Info.cs", "Avalonia.X11/X11Info.cs");
+CopyFile("Avalonia.X11/X11KeyTransform.cs", "Avalonia.X11/X11KeyTransform.cs");
+CopyFile("Avalonia.X11/X11Platform.cs", "Avalonia.X11/X11Platform.cs");
+CopyFile("Avalonia.X11/X11PlatformThreading.cs", "Avalonia.X11/X11PlatformThreading.cs");
+CopyFile("Avalonia.X11/X11Screens.cs", "Avalonia.X11/X11Screens.cs");
+CopyFile("Avalonia.X11/X11Structs.cs", "Avalonia.X11/X11Structs.cs");
+CopyFile("Avalonia.X11/X11Window.cs", "Avalonia.X11/X11Window.cs");
+CopyFile("Avalonia.X11/X11Window.Ime.cs", "Avalonia.X11/X11Window.Ime.cs");
+CopyFile("Avalonia.X11/X11Window.Xim.cs", "Avalonia.X11/X11Window.Xim.cs");
+CopyFile("Avalonia.X11/XError.cs", "Avalonia.X11/XError.cs");
+CopyFile("Avalonia.X11/XI2Manager.cs", "Avalonia.X11/XI2Manager.cs");
+CopyFile("Avalonia.X11/XIStructs.cs", "Avalonia.X11/XIStructs.cs");
+CopyFile("Avalonia.X11/XLib.cs", "Avalonia.X11/XLib.cs");
 
 // Skia Backend
 CopyFile ("Skia/Avalonia.Skia/Helpers/ImageSavingHelper.cs", "Avalonia.Skia/ImageSavingHelper.cs");
@@ -317,8 +325,9 @@ private string[] CommentDiffs (string text, string dest)
     while ((s = sw.ReadLine ()) != null)
         src_lines.Add (s);
 
-    for (var i = 0; i < Math.Min (src_lines.Count, dest_lines.Length); i++) {
-        if (StripWhitespace (src_lines[i]) == StripWhitespace (dest_lines[i]))
+    for (var i = 0; i < Math.Min(src_lines.Count, dest_lines.Length); i++)
+    {
+        if (StripWhitespace(src_lines[i]) == StripWhitespace(dest_lines[i]))
             src_lines[i] = dest_lines[i];
     }
 
