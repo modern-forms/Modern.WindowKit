@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.WindowKit", "src\Mod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{FBA8D825-0962-4763-BE44-84BE7EA62EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "samples\HelloWorld\HelloWorld.csproj", "{13BAC4FD-2578-42BA-981C-802E7190D513}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "samples\Demo\Demo.csproj", "{13BAC4FD-2578-42BA-981C-802E7190D513}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
