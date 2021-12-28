@@ -11,7 +11,7 @@ using Modern.WindowKit.Utilities;
 
 namespace Modern.WindowKit.X11
 {
-    class X11CursorFactory : ICursorFactory
+    partial class X11CursorFactory : ICursorFactory
     {
         private static readonly byte[] NullCursorData = new byte[] { 0 };
 
@@ -72,11 +72,10 @@ namespace Modern.WindowKit.X11
             return new CursorImpl(handle);
         }
 
-        public unsafe ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
-        {
-            throw new NotImplementedException();
-            //return new XImageCursor(_display, cursor, hotSpot);
-        }
+        //public unsafe ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
+        //{
+        //    return new XImageCursor(_display, cursor, hotSpot);
+        //}
 
         private static IntPtr GetNullCursor(IntPtr display)
         {
@@ -97,7 +96,7 @@ namespace Modern.WindowKit.X11
         //            (bitmap.PixelSize.Width * bitmap.PixelSize.Height * 4);
         //        var runtimePlatform = AvaloniaGlobals.RuntimePlatform ??
         //            throw new InvalidOperationException("Unable to locate IRuntimePlatform");
-        //        var platformRenderInterface = AvaloniaGlobals.() ??
+        //        var platformRenderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>() ??
         //            throw new InvalidOperationException("Unable to locate IPlatformRenderInterface");
 
         //        _pixelSize = bitmap.PixelSize;

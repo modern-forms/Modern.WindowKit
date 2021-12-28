@@ -32,7 +32,6 @@ namespace Modern.WindowKit.X11
         private readonly AvaloniaX11Platform _platform;
         private readonly bool _popup;
         private readonly X11Info _x11;
-        private bool _invalidated;
         private XConfigureEvent? _configure;
         private PixelPoint? _configurePoint;
         private bool _triggeredExpose;
@@ -89,7 +88,7 @@ namespace Modern.WindowKit.X11
             XVisualInfo? visualInfo = null;
 
             // OpenGL seems to be do weird things to it's current window which breaks resize sometimes
-            _useRenderWindow = false;// glfeature != null;
+            _useRenderWindow = glfeature != null;
             
             //var glx = glfeature as GlxPlatformOpenGlInterface;
             //if (glx != null)
@@ -612,7 +611,7 @@ namespace Modern.WindowKit.X11
             {
                 // Occurs once the window has been mapped, which is the earliest the extents
                 // can be retrieved, so invoke event to force update of TopLevel.FrameSize.
-                Resized?.Invoke(ClientSize, PlatformResizeReason.Unspecified);
+                Resized.Invoke(ClientSize, PlatformResizeReason.Unspecified);
             }
 
             if (atom == _x11.Atoms._NET_WM_STATE)
@@ -762,24 +761,15 @@ namespace Modern.WindowKit.X11
             ScheduleInput(mev, ref ev);
         }
 
-        void DoPaint()
-        {
-            _invalidated = false;
-            Paint?.Invoke(new Rect());
-        }
+        //void DoPaint()
+        //{
+        //    Paint?.Invoke(new Rect());
+        //}
         
-        public void Invalidate(Rect rect)
-        {
-            if (_invalidated)
+        //public void Invalidate(Rect rect)
+        //{
 
-                return;
-            _invalidated = true;
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (_mapped)
-                    DoPaint();
-            });
-        }
+        //}
 
         public IInputRoot InputRoot => _inputRoot;
         
@@ -1087,11 +1077,6 @@ namespace Modern.WindowKit.X11
             ChangeWMAtoms(value, _x11.Atoms._NET_WM_STATE_ABOVE);
         }
 
-        public void ShowDialog(IWindowImpl parent)
-        {
-            Show(true, true);
-        }
-
         public void SetEnabled(bool enable)
         {
             _disabled = !enable;
@@ -1111,21 +1096,21 @@ namespace Modern.WindowKit.X11
 
         public Action GotInputWhenDisabled { get; set; }
 
-        public void SetIcon(SkiaSharp.SKBitmap icon)
-        {
-            //if (icon != null)
-            //{
-            //    var data = ((X11IconData)icon).Data;
-            //    fixed (void* pdata = data)
-            //        XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
-            //            new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
-            //            pdata, data.Length);
-            //}
-            //else
-            //{
-            //    XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
-            //}
-        }
+        //public void SetIcon(IWindowIconImpl icon)
+        //{
+        //    if (icon != null)
+        //    {
+        //        var data = ((X11IconData)icon).Data;
+        //        fixed (void* pdata = data)
+        //            XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
+        //                new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
+        //                pdata, data.Length);
+        //    }
+        //    else
+        //    {
+        //        XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
+        //    }
+        //}
 
         public void ShowTaskbarIcon(bool value)
         {

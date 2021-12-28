@@ -232,9 +232,11 @@ private void CopyFile (string src, string dst)
         case "Point.cs":
         case "Pointer.cs":
         case "RawTextInputEventArgs.cs":
+        case "X11CursorFactory.cs":
             text = text.Replace ("public interface", "public partial interface");
             text = text.Replace ("readonly struct", "readonly partial struct");
             text = text.Replace ("public class", "public partial class");
+            text = text.Replace ("class X11CursorFactory", "partial class X11CursorFactory");
             break;
         case "ISystemDialogImpl.cs":
         case "SystemDialog.cs":
@@ -258,6 +260,13 @@ private void CopyFile (string src, string dst)
             break;
         case "WindowImpl.AppWndProc.cs":
             text = text.Replace("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
+            break;
+        case "X11Platform.cs":
+            text = text.Replace ("Avalonia.X11.X11Screens", "X11.X11Screens");
+            break;
+        case "X11Window.Ime.cs":
+            text = text.Replace ("UpdateImePosition() => _imeControl?", "UpdateImePosition() { } // => _imeControl?");
+            text = text.Replace ("_inputRoot, text),", "_inputRoot, text, (RawInputModifiers)ev.KeyEvent.state),");
             break;
     }
 

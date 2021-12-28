@@ -8,6 +8,6 @@ namespace Modern.WindowKit.Input
 {
     public partial class Pointer
     {
-        public void Dispose() { };
+        public void Dispose() { }
     }
 }
