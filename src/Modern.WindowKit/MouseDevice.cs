@@ -26,14 +26,14 @@ namespace Modern.WindowKit.Input
             _pointer = pointer ?? new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
         }
         
-        /// <summary>
-        /// Gets the control that is currently capturing by the mouse, if any.
-        /// </summary>
-        /// <remarks>
-        /// When an element captures the mouse, it receives mouse input whether the cursor is 
-        /// within the control's bounds or not. To set the mouse capture, call the 
-        /// <see cref="Capture"/> method.
-        /// </remarks>
+        ///// <summary>
+        ///// Gets the control that is currently capturing by the mouse, if any.
+        ///// </summary>
+        ///// <remarks>
+        ///// When an element captures the mouse, it receives mouse input whether the cursor is 
+        ///// within the control's bounds or not. To set the mouse capture, call the 
+        ///// <see cref="Capture"/> method.
+        ///// </remarks>
         //[Obsolete("Use IPointer instead")]
         //public IInputElement? Captured => _pointer.Captured;
 
@@ -47,38 +47,40 @@ namespace Modern.WindowKit.Input
             protected set => _position = value;
         }
 
-        ///// <summary>
-        ///// Captures mouse input to the specified control.
-        ///// </summary>
-        ///// <param name="control">The control.</param>
-        ///// <remarks>
-        ///// When an element captures the mouse, it receives mouse input whether the cursor is 
-        ///// within the control's bounds or not. The current mouse capture control is exposed
-        ///// by the <see cref="Captured"/> property.
-        ///// </remarks>
-        //public void Capture(IInputElement? control)
-        //{
-        //    _pointer.Capture(control);
-        //}
+//        /// <summary>
+//        /// Captures mouse input to the specified control.
+//        /// </summary>
+//        /// <param name="control">The control.</param>
+//        /// <remarks>
+//        /// When an element captures the mouse, it receives mouse input whether the cursor is 
+//        /// within the control's bounds or not. The current mouse capture control is exposed
+//        /// by the <see cref="Captured"/> property.
+//        /// </remarks>
+//        public void Capture(IInputElement? control)
+//        {
+//            _pointer.Capture(control);
+//        }
 
-        ///// <summary>
-        ///// Gets the mouse position relative to a control.
-        ///// </summary>
-        ///// <param name="relativeTo">The control.</param>
-        ///// <returns>The mouse position in the control's coordinates.</returns>
-        //public Point GetPosition(IVisual relativeTo)
-        //{
-        //    relativeTo = relativeTo ?? throw new ArgumentNullException(nameof(relativeTo));
+//        /// <summary>
+//        /// Gets the mouse position relative to a control.
+//        /// </summary>
+//        /// <param name="relativeTo">The control.</param>
+//        /// <returns>The mouse position in the control's coordinates.</returns>
+//        public Point GetPosition(IVisual relativeTo)
+//        {
+//            relativeTo = relativeTo ?? throw new ArgumentNullException(nameof(relativeTo));
 
-        //    if (relativeTo.VisualRoot == null)
-        //    {
-        //        throw new InvalidOperationException("Control is not attached to visual tree.");
-        //    }
+//            if (relativeTo.VisualRoot == null)
+//            {
+//                throw new InvalidOperationException("Control is not attached to visual tree.");
+//            }
 
-        //    var rootPoint = relativeTo.VisualRoot.PointToClient(Position);
-        //    var transform = relativeTo.VisualRoot.TransformToVisual(relativeTo);
-        //    return rootPoint * transform!.Value;
-        //}
+//#pragma warning disable CS0618 // Type or member is obsolete
+//            var rootPoint = relativeTo.VisualRoot.PointToClient(Position);
+//#pragma warning restore CS0618 // Type or member is obsolete
+//            var transform = relativeTo.VisualRoot.TransformToVisual(relativeTo);
+//            return rootPoint * transform!.Value;
+//        }
 
         public void ProcessRawEvent(RawInputEventArgs e)
         {
@@ -99,7 +101,7 @@ namespace Modern.WindowKit.Input
         //        if (root.PointerOverElement != null)
         //            ClearPointerOver(this, 0, root, PointerPointProperties.None, KeyModifiers.None);
         //        return;
-        //     }
+        //    }
             
             
         //    var clientPoint = root.PointToClient(_position.Value);
@@ -238,7 +240,8 @@ namespace Modern.WindowKit.Input
         //        if (source != null)
         //        {
         //            var settings = AvaloniaLocator.Current.GetService<IPlatformSettings>();
-        //            var doubleClickTime = settings.DoubleClickTime.TotalMilliseconds;
+        //            var doubleClickTime = settings?.DoubleClickTime.TotalMilliseconds ?? 500;
+        //            var doubleClickSize = settings?.DoubleClickSize ?? new Size(4, 4);
 
         //            if (!_lastClickRect.Contains(p) || timestamp - _lastClickTime > doubleClickTime)
         //            {
@@ -248,7 +251,7 @@ namespace Modern.WindowKit.Input
         //            ++_clickCount;
         //            _lastClickTime = timestamp;
         //            _lastClickRect = new Rect(p, new Size())
-        //                .Inflate(new Thickness(settings.DoubleClickSize.Width / 2, settings.DoubleClickSize.Height / 2));
+        //                .Inflate(new Thickness(doubleClickSize.Width / 2, doubleClickSize.Height / 2));
         //            _lastMouseDownButton = properties.PointerUpdateKind.GetMouseButton();
         //            var e = new PointerPressedEventArgs(source, _pointer, root, p, timestamp, properties, inputModifiers, _clickCount);
         //            source.RaiseEvent(e);
@@ -296,10 +299,10 @@ namespace Modern.WindowKit.Input
         //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var hit = HitTest(root, p);
+        //    var source = GetSource(hit);
 
-        //    if (hit != null)
+        //    if (source is not null)
         //    {
-        //        var source = GetSource(hit);
         //        var e = new PointerReleasedEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers,
         //            _lastMouseDownButton);
 
@@ -319,10 +322,10 @@ namespace Modern.WindowKit.Input
         //    root = root ?? throw new ArgumentNullException(nameof(root));
 
         //    var hit = HitTest(root, p);
+        //    var source = GetSource(hit);
 
-        //    if (hit != null)
+        //    if (source is not null)
         //    {
-        //        var source = GetSource(hit);
         //        var e = new PointerWheelEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers, delta);
 
         //        source?.RaiseEvent(e);
@@ -332,9 +335,10 @@ namespace Modern.WindowKit.Input
         //    return false;
         //}
 
-        //private IInteractive GetSource(IVisual hit)
+        //private IInteractive? GetSource(IVisual? hit)
         //{
-        //    hit = hit ?? throw new ArgumentNullException(nameof(hit));
+        //    if (hit is null)
+        //        return null;
 
         //    return _pointer.Captured ??
         //        (hit as IInteractive) ??
