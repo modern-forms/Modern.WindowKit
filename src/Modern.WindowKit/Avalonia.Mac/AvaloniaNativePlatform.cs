@@ -137,10 +137,6 @@ namespace Modern.WindowKit.Native
         //{
         //    return new TrayIconImpl(_factory);
         //}
-        public IPopupImpl CreatePopup(IWindowBaseImpl parent)
-        {
-            return new PopupImpl(_factory, _options, parent);
-        }
 
         public IWindowImpl CreateWindow()
         {

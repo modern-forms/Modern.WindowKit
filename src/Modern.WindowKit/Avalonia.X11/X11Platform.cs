@@ -135,11 +135,6 @@ namespace Modern.WindowKit.X11
             throw new NotSupportedException();
         }
 
-        public IPopupImpl CreatePopup(IWindowBaseImpl parent)
-        {
-            return new X11Window(this, parent as IWindowImpl);
-        }
-
         bool EnableIme(X11PlatformOptions options)
         {
             // Disable if explicitly asked by user

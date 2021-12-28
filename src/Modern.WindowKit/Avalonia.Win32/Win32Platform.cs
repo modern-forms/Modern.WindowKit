@@ -385,10 +385,5 @@ namespace Modern.WindowKit.Win32
 
             SetProcessDPIAware();
         }
-
-        public IPopupImpl CreatePopup (IWindowBaseImpl parent)
-        {
-            return new PopupImpl (parent);
-        }
     }
 }
