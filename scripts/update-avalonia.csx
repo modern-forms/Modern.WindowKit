@@ -122,7 +122,7 @@ CopyFile ("Windows/Avalonia.Win32/OleDataObject.cs", "Avalonia.Win32/OleDataObje
 CopyFile ("Windows/Avalonia.Win32/PlatformConstants.cs", "Avalonia.Win32/PlatformConstants.cs");
 CopyFile ("Windows/Avalonia.Win32/PopupImpl.cs", "Avalonia.Win32/PopupImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/ScreenImpl.cs", "Avalonia.Win32/ScreenImpl.cs");
-CopyFile ("Windows/Avalonia.Win32/SystemDialogImpl.cs", "Avalonia.Win32/SystemDialogImpl.cs");
+//CopyFile ("Windows/Avalonia.Win32/SystemDialogImpl.cs", "Avalonia.Win32/SystemDialogImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32Platform.cs", "Avalonia.Win32/Win32Platform.cs");
 //CopyFile ("Windows/Avalonia.Win32/WindowFramebuffer.cs", "Avalonia.Win32/WindowFramebuffer.cs");
 CopyFile ("Windows/Avalonia.Win32/WindowImpl.cs", "Avalonia.Win32/WindowImpl.cs");
@@ -131,7 +131,7 @@ CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32TypeExtensions.cs", "Avalonia.Win32/Win32TypeExtensions.cs");
-CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/Interop/UnmanagedMethods.cs");
+//CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/Interop/UnmanagedMethods.cs");
 
 // X11 Backend
 CopyFile ("Avalonia.X11/NativeDialogs/Gtk.cs", "Avalonia.X11/Gtk.cs");
