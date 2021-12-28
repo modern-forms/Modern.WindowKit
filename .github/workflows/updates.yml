@@ -1,0 +1,51 @@
+# This action runs every Monday morning, scanning the Avalonia repository
+# for updated native files, opening a PR to bind any changes found.
+name: Check for Avalonia updates
+
+# Runs every Monday at 06:00 UTC
+on:
+  schedule:
+    - cron: 0 6 * * 1
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        
+    - name: Check out Avalonia repo
+      uses: actions/checkout@v2
+      with: 
+        repository: AvaloniaUI/Avalonia
+        path: Avalonia        
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+                
+    - name: Install dotnet-script
+      run: dotnet tool install -g dotnet-script
+      
+    - name: Run update-config script
+      run: |
+        cd build; dotnet script update-avalonia.csx
+
+    - name: Create Pull Request
+      id: cpr
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: Avalonia updates
+        branch-suffix: timestamp
+        delete-branch: true
+        title: 'Avalonia updates'
+        body: |
+            Update to latest Avalonia repository
+        assignees: jpobst
+        draft: true
