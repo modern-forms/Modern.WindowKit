@@ -80,4 +80,3 @@ namespace Modern.WindowKit.Native
         }
     }
 }
-

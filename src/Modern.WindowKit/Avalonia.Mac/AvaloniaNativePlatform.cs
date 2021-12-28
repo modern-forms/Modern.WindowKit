@@ -11,7 +11,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native
 {
-    class AvaloniaNativePlatform : IPlatformSettings, IWindowingPlatform
+    partial class AvaloniaNativePlatform : IPlatformSettings, IWindowingPlatform
     {
         private readonly IAvaloniaNativeFactory _factory;
         private AvaloniaNativePlatformOptions _options;
@@ -138,26 +138,18 @@ namespace Modern.WindowKit.Native
         //    return new TrayIconImpl(_factory);
         //}
 
-        public IWindowImpl CreateWindow()
-        {
-            return new WindowImpl(_factory, _options);
-        }
+        //public IWindowImpl CreateWindow()
+        //{
+        //    return new WindowImpl(_factory, _options, _platformGl);
+        //}
 
         public IWindowImpl CreateEmbeddableWindow()
         {
             throw new NotImplementedException();
         }
-
-        public IAvaloniaNativeFactory Factory => _factory;
-
-        public static AvaloniaNativePlatform Initialize()
-        {
-            var options = new AvaloniaNativePlatformOptions();
-            return Initialize(CreateAvaloniaNative(), options);
-        }
     }
 
-    public class AvaloniaNativeMacOptions
+    public partial class AvaloniaNativeMacOptions
     {
         private readonly IAvnMacOptions _opts;
         private bool _showInDock;

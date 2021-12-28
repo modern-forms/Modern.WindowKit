@@ -24,4 +24,3 @@ namespace Modern.WindowKit.Native
         }
     }
 }
-

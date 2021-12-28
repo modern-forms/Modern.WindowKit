@@ -43,7 +43,7 @@ namespace Modern.WindowKit.Native
         }
     }
 
-    internal abstract class WindowBaseImpl : IWindowBaseImpl,
+    internal abstract partial class WindowBaseImpl : IWindowBaseImpl,
         IFramebufferPlatformSurface//, ITopLevelImplWithNativeControlHost
     {
         protected IInputRoot _inputRoot;
@@ -61,7 +61,7 @@ namespace Modern.WindowKit.Native
         //private NativeControlHostImpl _nativeControlHost;
         //private IGlContext _glContext;
 
-        internal WindowBaseImpl(AvaloniaNativePlatformOptions opts /*,AvaloniaNativePlatformOpenGlInterface glFeature*/)
+        internal WindowBaseImpl(AvaloniaNativePlatformOptions opts)
         {
             //_gpu = opts.UseGpu && glFeature != null;
             _deferredRendering = opts.UseDeferredRendering;
@@ -71,7 +71,7 @@ namespace Modern.WindowKit.Native
             _cursorFactory = AvaloniaGlobals.StandardCursorFactory;
         }
 
-        protected void Init(IAvnWindowBase window, IAvnScreens screens/*, IGlContext glContext*/)
+        protected void Init(IAvnWindowBase window, IAvnScreens screens)
         {
             _native = window;
             //_glContext = glContext;
@@ -151,7 +151,7 @@ namespace Modern.WindowKit.Native
         public IMouseDevice MouseDevice => _mouse;
         public abstract IPopupImpl CreatePopup();
 
-        protected unsafe class WindowBaseEvents : CallbackBase, IAvnWindowBaseEvents
+        protected unsafe partial class WindowBaseEvents : CallbackBase, IAvnWindowBaseEvents
         {
             private readonly WindowBaseImpl _parent;
 
@@ -233,30 +233,29 @@ namespace Modern.WindowKit.Native
                 _parent.LostFocus?.Invoke();
             }
 
-            public AvnDragDropEffects DragEvent(AvnDragEventType type, AvnPoint position,
-                AvnInputModifiers modifiers,
-                AvnDragDropEffects effects,
-                IAvnClipboard clipboard, IntPtr dataObjectHandle)
-            {
-                return AvnDragDropEffects.None;
-                //var device = AvaloniaLocator.Current.GetService<IDragDropDevice>();
+            //public AvnDragDropEffects DragEvent(AvnDragEventType type, AvnPoint position,
+            //    AvnInputModifiers modifiers,
+            //    AvnDragDropEffects effects,
+            //    IAvnClipboard clipboard, IntPtr dataObjectHandle)
+            //{
+            //    var device = AvaloniaLocator.Current.GetService<IDragDropDevice>();
 
-                //IDataObject dataObject = null;
-                //if (dataObjectHandle != IntPtr.Zero)
-                //    dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
-
-                //using (var clipboardDataObject = new ClipboardDataObject(clipboard))
-                //{
-                //    if (dataObject == null)
-                //        dataObject = clipboardDataObject;
-
-                //    var args = new RawDragEvent(device, (RawDragEventType)type,
-                //        _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
-                //        (RawInputModifiers)modifiers);
-                //    _parent.Input(args);
-                //    return (AvnDragDropEffects)args.Effects;
-                //}
-            }
+            //    IDataObject dataObject = null;
+            //    if (dataObjectHandle != IntPtr.Zero)
+            //        dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
+                
+            //    using(var clipboardDataObject = new ClipboardDataObject(clipboard))
+            //    {
+            //        if (dataObject == null)
+            //            dataObject = clipboardDataObject;
+                    
+            //        var args = new RawDragEvent(device, (RawDragEventType)type,
+            //            _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
+            //            (RawInputModifiers)modifiers);
+            //        _parent.Input(args);
+            //        return (AvnDragDropEffects)args.Effects;
+            //    }
+            //}
         }
 
         public void Activate()

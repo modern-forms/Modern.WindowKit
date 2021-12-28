@@ -207,9 +207,10 @@ private void CopyFile (string src, string dst)
 
     // We still use Avalonia.Native.Interop for now
     text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Avalonia.Native.Interop");
+    text = text.Replace ("using Modern.WindowKit.MicroCom", "using Avalonia.MicroCom");
 
     // We don't use Avalonia's DI
-    text = text.Replace ("AvaloniaLocator.Current.GetService<IStandardCursorFactory>()", "AvaloniaGlobals.StandardCursorFactory");
+    text = text.Replace ("AvaloniaLocator.Current.GetService<ICursorFactory>()", "AvaloniaGlobals.StandardCursorFactory");
     text = text.Replace ("AvaloniaLocator.Current.GetService<IPlatformThreadingInterface>()", "AvaloniaGlobals.PlatformThreadingInterface");
     text = text.Replace ("AvaloniaLocator.Current.GetService<ISystemDialogImpl>()", "AvaloniaGlobals.SystemDialogImplementation");
     text = text.Replace ("AvaloniaLocator.Current.GetService<IRuntimePlatform>()", "AvaloniaGlobals.RuntimePlatform");
@@ -233,10 +234,12 @@ private void CopyFile (string src, string dst)
         case "Pointer.cs":
         case "RawTextInputEventArgs.cs":
         case "X11CursorFactory.cs":
+        case "AvaloniaNativePlatform.cs":
             text = text.Replace ("public interface", "public partial interface");
             text = text.Replace ("readonly struct", "readonly partial struct");
             text = text.Replace ("public class", "public partial class");
             text = text.Replace ("class X11CursorFactory", "partial class X11CursorFactory");
+            text = text.Replace ("class AvaloniaNativePlatform", "partial class AvaloniaNativePlatform");
             break;
         case "ISystemDialogImpl.cs":
         case "SystemDialog.cs":
@@ -254,12 +257,32 @@ private void CopyFile (string src, string dst)
         case "IWindowImpl.cs":
             text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap?");
             break;
+        case "PopupImpl.cs":        // Mac
+            text = text.Replace ("base(opts, glFeature)", "base(opts)");
+            text = text.Replace ("context?.Context", "null");
+            text = text.Replace ("_factory, _opts, _glFeature, this", "_factory, _opts, this");
+            text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
+            break;
         case "WindowImpl.cs":
+            // Win
             text = text.Replace ("ShowInTaskbar = false", "ShowInTaskbar = true");
             text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
+            // Mac
+            text = text.Replace (", AvaloniaNativePlatformOptions opts,", ", AvaloniaNativePlatformOptions opts");
+            text = text.Replace ("AvaloniaNativePlatformOpenGlInterface glFeature) : base(opts, glFeature)", ") : base(opts)");
+            text = text.Replace ("context?.Context", "null");
+            text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
+            text = text.Replace ("internal class WindowImpl", "internal partial class WindowImpl");
             break;
-        case "WindowImpl.AppWndProc.cs":
-            text = text.Replace("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
+        case "WindowImplBase.cs":   // Mac
+            text = text.Replace ("unsafe class", "unsafe partial class");
+            text = text.Replace ("abstract class WindowBaseImpl", "abstract partial class WindowBaseImpl");
+            text = text.Replace ("AvaloniaNativePlatformOptions opts, AvaloniaNativePlatformOpenGlInterface glFeature", "AvaloniaNativePlatformOptions opts");
+            text = text.Replace ("IAvnScreens screens, IGlContext glContext", "IAvnScreens screens");
+            text = text.Replace ("_inputRoot, text)", "_inputRoot, text, RawInputModifiers.None)");
+            break;
+        case "WindowImpl.AppWndProc.cs":    // Win
+            text = text.Replace ("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
             break;
         case "X11Platform.cs":
             text = text.Replace ("Avalonia.X11.X11Screens", "X11.X11Screens");
@@ -290,14 +313,14 @@ private string[] CommentDiffs (string text, string dest)
         src_lines.Add (s);
 
     for (var i = 0; i < Math.Min (src_lines.Count, dest_lines.Length); i++) {
-        if (StripWhitespace ("//" + src_lines[i]) == StripWhitespace (dest_lines[i]))
+        if (StripWhitespace (src_lines[i]) == StripWhitespace (dest_lines[i]))
             src_lines[i] = dest_lines[i];
     }
 
     return src_lines.ToArray ();
 }
 
-private string StripWhitespace (string str) => str.Replace (" ", "").Replace ("\t", "");
+private string StripWhitespace (string str) => str.Replace (" ", "").Replace ("\t", "").Replace ("/", "").Replace ("/*", "").Replace ("*/", "");
 
 private static void DirectoryCopy (string sourceDirName, string destDirName, bool copySubDirs)
 {

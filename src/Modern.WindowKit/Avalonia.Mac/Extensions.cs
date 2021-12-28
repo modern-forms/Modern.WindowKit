@@ -6,4 +6,3 @@
         public static bool FromComBool(this int b) => b != 0;
     }
 }
-

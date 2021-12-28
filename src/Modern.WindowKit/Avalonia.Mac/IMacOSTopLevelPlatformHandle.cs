@@ -10,4 +10,3 @@ namespace Modern.WindowKit.Platform
         IntPtr GetNSWindowRetained();
     }
 }
-

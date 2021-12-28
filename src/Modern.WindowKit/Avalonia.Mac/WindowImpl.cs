@@ -11,7 +11,7 @@ using Modern.WindowKit.Platform.Interop;
 
 namespace Modern.WindowKit.Native
 {
-    internal class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
+    internal partial class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
     {
         private readonly IAvaloniaNativeFactory _factory;
         private readonly AvaloniaNativePlatformOptions _opts;
@@ -72,20 +72,15 @@ namespace Modern.WindowKit.Native
 
         public IAvnWindow Native => _native;
 
-        public void ShowDialog(IWindowImpl window)
-        {
-            _native.Show(true.AsComBool (), true.AsComBool());
-        }
-
         public void CanResize(bool value)
         {
             _native.SetCanResize(value.AsComBool());
         }
 
-        public void SetSystemDecorations(SystemDecorations enabled)
-        {
-            _native.SetDecorations((Avalonia.Native.Interop.SystemDecorations)enabled);
-        }
+        //public void SetSystemDecorations(Controls.SystemDecorations enabled)
+        //{
+        //    _native.SetDecorations((Interop.SystemDecorations)enabled);
+        //}
 
         //public void SetTitleBarColor(Avalonia.Media.Color color)
         //{
@@ -200,10 +195,10 @@ namespace Modern.WindowKit.Native
             // NO OP On OSX
         }
 
-        public void SetIcon(SkiaSharp.SKBitmap? icon)
-        {
-            // NO OP on OSX
-        }
+        //public void SetIcon(IWindowIconImpl icon)
+        //{
+        //    // NO OP on OSX
+        //}
 
         public Func<bool> Closing { get; set; }
 
@@ -211,8 +206,8 @@ namespace Modern.WindowKit.Native
 
         public void Move(PixelPoint point) => Position = point;
 
-        public override IPopupImpl? CreatePopup() =>
-            _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, this);
+        //public override IPopupImpl CreatePopup() =>
+        //    _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, _glFeature, this);
 
         public Action GotInputWhenDisabled { get; set; }
 
