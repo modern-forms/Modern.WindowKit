@@ -57,6 +57,7 @@ CopyFile ("Avalonia.Visuals/Platform/IWriteableBitmapImpl.cs", "IWriteableBitmap
 CopyFile ("Avalonia.Base/Threading/JobRunner.cs", "JobRunner.cs");
 CopyFile ("Avalonia.Input/Key.cs", "Key.cs");
 CopyFile ("Avalonia.Input/KeyboardDevice.cs", "KeyboardDevice.cs");
+CopyFile ("Avalonia.Visuals/Platform/LockedFramebuffer.cs", "LockedFramebuffer.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositioner.cs", "ManagedPopupPositioner.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositionerPopupImplHelper.cs", "ManagedPopupPositionerPopupImplHelper.cs");
 CopyFile ("Avalonia.Base/Utilities/MathUtilities.cs", "MathUtilities.cs");
@@ -229,6 +230,7 @@ private void CopyFile (string src, string dst)
         case "IWindowBaseImpl.cs":
         case "PixelPoint.cs":
         case "Point.cs":
+        case "Pointer.cs":
         case "RawTextInputEventArgs.cs":
             text = text.Replace ("public interface", "public partial interface");
             text = text.Replace ("readonly struct", "readonly partial struct");
@@ -253,6 +255,9 @@ private void CopyFile (string src, string dst)
         case "WindowImpl.cs":
             text = text.Replace ("ShowInTaskbar = false", "ShowInTaskbar = true");
             text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
+            break;
+        case "WindowImpl.AppWndProc.cs":
+            text = text.Replace("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
             break;
     }
 

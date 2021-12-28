@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Modern.WindowKit.Input
 {
-    public class Pointer : IPointer, IDisposable
+    public partial class Pointer : IPointer, IDisposable
     {
         private static int s_NextFreePointerId = 1000;
         public static int GetNextFreeId() => s_NextFreePointerId++;
@@ -69,6 +69,6 @@ namespace Modern.WindowKit.Input
             
         public PointerType Type { get; }
         public bool IsPrimary { get; }
-        public void Dispose() {} // Capture(null);
+        //public void Dispose() => Capture(null);
     }
 }
