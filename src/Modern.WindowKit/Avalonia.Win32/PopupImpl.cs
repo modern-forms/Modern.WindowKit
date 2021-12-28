@@ -115,7 +115,7 @@ namespace Modern.WindowKit.Win32
         // One fabulous design decision leads to another, I guess
         static IWindowBaseImpl SaveParentHandle(IWindowBaseImpl parent)
         {
-            s_parentHandle = parent?.Handle?.Handle ?? IntPtr.Zero;
+            s_parentHandle = parent.Handle.Handle;
             return parent;
         }
 
