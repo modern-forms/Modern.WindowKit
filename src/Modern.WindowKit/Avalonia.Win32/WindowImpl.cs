@@ -439,7 +439,7 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        public IEnumerable<object> Surfaces => new object[] { Handle, /* _gl, */ _framebuffer };
+        //public IEnumerable<object> Surfaces => new object[] { Handle, _gl, _framebuffer };
 
         public PixelPoint Position
         {
@@ -642,14 +642,6 @@ namespace Modern.WindowKit.Win32
         {
             SetWindowText(_hwnd, title);
         }
-        public void ShowDialog(IWindowImpl parent)
-        {
-            _parent = (WindowImpl)parent;
-            //_parent._disabledBy.Add(this);
-            //_parent.UpdateEnabled();
-            SetWindowLongPtr(_hwnd, (int)WindowLongParam.GWL_HWNDPARENT, ((WindowImpl)parent)._hwnd);
-            ShowWindow(_showWindowState, true);
-        }
 
         public void SetCursor(ICursorImpl cursor)
         {
@@ -667,21 +659,13 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        public void SetIcon(SkiaSharp.SKBitmap icon)
-        {
-            if (icon == null)
-            {
-                UnmanagedMethods.PostMessage(_hwnd, (int)UnmanagedMethods.WindowsMessage.WM_SETICON,
-                    new IntPtr((int)UnmanagedMethods.Icons.ICON_BIG), IntPtr.Zero);
-
-                return;
-            }
-
-            using var icon2 = icon.ToBitmap();
-
-            UnmanagedMethods.PostMessage(_hwnd, (int)UnmanagedMethods.WindowsMessage.WM_SETICON,
-                new IntPtr((int)UnmanagedMethods.Icons.ICON_BIG), icon2.GetHicon());
-        }
+        //public void SetIcon(IWindowIconImpl icon)
+        //{
+        //    var impl = (IconImpl)icon;
+        //    var hIcon = impl?.HIcon ?? IntPtr.Zero;
+        //    PostMessage(_hwnd, (int)WindowsMessage.WM_SETICON,
+        //        new IntPtr((int)Icons.ICON_BIG), hIcon);
+        //}
 
         public void ShowTaskbarIcon(bool value)
         {

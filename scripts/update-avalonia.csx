@@ -245,7 +245,14 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
             break;
         case "KeyInterop.cs":
-            text = text.Replace("static class", "public static class");
+            text = text.Replace ("static class", "public static class");
+            break;
+        case "IWindowImpl.cs":
+            text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap?");
+            break;
+        case "WindowImpl.cs":
+            text = text.Replace ("ShowInTaskbar = false", "ShowInTaskbar = true");
+            text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
             break;
     }
 
