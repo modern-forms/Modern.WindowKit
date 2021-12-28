@@ -76,7 +76,7 @@ namespace Modern.WindowKit.Input
 
         private static ICursorImpl GetCursor(StandardCursorType type)
         {
-            var platform = AvaloniaGlobals.StandardCursorFactory;
+            var platform = AvaloniaGlobals.GetService<ICursorFactory> ();
 
             if (platform == null)
             {

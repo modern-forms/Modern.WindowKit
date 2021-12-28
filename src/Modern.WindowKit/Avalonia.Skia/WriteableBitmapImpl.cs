@@ -96,7 +96,7 @@ namespace Modern.WindowKit.Skia
             SKColorType colorType = format.ToSkColorType();
             SKAlphaType alphaType = alphaFormat.ToSkAlphaType();
             
-            var runtimePlatform = AvaloniaGlobals.RuntimePlatform;
+            var runtimePlatform = AvaloniaGlobals.GetService<IRuntimePlatform>();
             
             if (runtimePlatform != null)
             {

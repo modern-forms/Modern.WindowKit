@@ -68,7 +68,7 @@ namespace Modern.WindowKit.Native
 
             //_keyboard = AvaloniaLocator.Current.GetService<IKeyboardDevice>();
             //_mouse = new MouseDevice();
-            _cursorFactory = AvaloniaGlobals.StandardCursorFactory;
+            _cursorFactory = AvaloniaGlobals.GetService<ICursorFactory>();
         }
 
         protected void Init(IAvnWindowBase window, IAvnScreens screens)

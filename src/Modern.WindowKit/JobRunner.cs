@@ -80,7 +80,7 @@ namespace Modern.WindowKit.Threading
         /// </summary>
         internal void UpdateServices()
         {
-            _platform = AvaloniaGlobals.PlatformThreadingInterface;
+            _platform = AvaloniaGlobals.GetService<IPlatformThreadingInterface>();
         }
 
         private void AddJob(IJob job)

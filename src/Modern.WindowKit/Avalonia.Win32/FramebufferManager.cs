@@ -107,8 +107,7 @@ namespace Modern.WindowKit.Win32
 
         private static FramebufferData AllocateFramebufferData(int width, int height)
         {
-            var service = AvaloniaGlobals.RuntimePlatform ??
-                throw new InvalidOperationException("Unable to locate IRuntimePlatform.");
+            var service = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>();
             var bitmapBlob = service.AllocBlob(width * height * _bytesPerPixel);
 
             return new FramebufferData(bitmapBlob, width, height);

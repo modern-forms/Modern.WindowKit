@@ -1,11 +1,12 @@
 ﻿using Modern.WindowKit;
+using Modern.WindowKit.Platform;
 using Modern.WindowKit.Threading;
 
 public class Program
 {
     static void Main(string[] args)
     {
-        var window = AvaloniaGlobals.WindowingInterface.CreateWindow();
+        var window = AvaloniaGlobals.GetRequiredService<IWindowingPlatform>().CreateWindow();
         window.Show(true, false);
         var _mainLoopCancellationTokenSource = new CancellationTokenSource();
 

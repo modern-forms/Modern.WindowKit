@@ -27,7 +27,7 @@ namespace Modern.WindowKit.Win32
             _bmpInfo.Init();
             _bmpInfo.biWidth = size.Width;
             _bmpInfo.biHeight = -size.Height;
-            _bitmapBlob = AvaloniaGlobals.RuntimePlatform.AllocBlob(size.Width * size.Height * 4);
+            _bitmapBlob = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>().AllocBlob(size.Width * size.Height * 4);
         }
 
         ~WindowFramebuffer()

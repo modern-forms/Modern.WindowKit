@@ -66,8 +66,7 @@ namespace Modern.WindowKit.Controls
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));
-            var service = AvaloniaGlobals.SystemDialogImplementation ??
-                throw new InvalidOperationException("Unable to locate ISystemDialogImpl.");
+            var service = AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>();
             return (await service.ShowFileDialogAsync(this, parent) ??
              Array.Empty<string>()).FirstOrDefault();
         }
@@ -95,8 +94,7 @@ namespace Modern.WindowKit.Controls
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));
-            var service = AvaloniaGlobals.SystemDialogImplementation ??
-                throw new InvalidOperationException("Unable to locate ISystemDialogImpl.");
+            var service = AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>();
             return service.ShowFileDialogAsync(this, parent);
         }
     }
@@ -125,8 +123,7 @@ namespace Modern.WindowKit.Controls
         {
             if(parent == null)
                 throw new ArgumentNullException(nameof(parent));
-            var service = AvaloniaGlobals.SystemDialogImplementation ??
-                throw new InvalidOperationException("Unable to locate ISystemDialogImpl.");
+            var service = AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>();
             return service.ShowFolderDialogAsync(this, parent);
         }
     }

@@ -18,7 +18,7 @@ namespace Modern.WindowKit.Threading
         private IPlatformThreadingInterface? _platform;
 
         public static Dispatcher UIThread { get; } =
-            new Dispatcher(AvaloniaGlobals.PlatformThreadingInterface);
+            new Dispatcher(AvaloniaGlobals.GetService<IPlatformThreadingInterface>());
 
         public Dispatcher(IPlatformThreadingInterface? platform)
         {
@@ -56,11 +56,7 @@ namespace Modern.WindowKit.Threading
         /// </param>
         public void MainLoop(CancellationToken cancellationToken)
         {
-            var platform = AvaloniaGlobals.PlatformThreadingInterface;
-
-            if (platform is null)
-                throw new InvalidOperationException("Unable to locate IPlatformThreadingInterface");
-
+            var platform = AvaloniaGlobals.GetRequiredService<IPlatformThreadingInterface>();
             cancellationToken.Register(() => platform.Signal(DispatcherPriority.Send));
             platform.RunLoop(cancellationToken);
         }
@@ -137,7 +133,7 @@ namespace Modern.WindowKit.Threading
                 _platform.Signaled -= _jobRunner.RunJobs;
             }
 
-            _platform = AvaloniaGlobals.PlatformThreadingInterface;
+            _platform = AvaloniaGlobals.GetService<IPlatformThreadingInterface>();
             _jobRunner.UpdateServices();
 
             if (_platform != null)

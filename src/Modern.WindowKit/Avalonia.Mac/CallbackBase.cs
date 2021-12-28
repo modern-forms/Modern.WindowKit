@@ -20,7 +20,7 @@ namespace Modern.WindowKit.Native
 
         public void RaiseException(Exception e)
         {
-            if (AvaloniaGlobals.PlatformThreadingInterface is PlatformThreadingInterface threadingInterface)
+            if (AvaloniaGlobals.GetService<IPlatformThreadingInterface>() is PlatformThreadingInterface threadingInterface)
             {
                 threadingInterface.TerminateNativeApp();
 

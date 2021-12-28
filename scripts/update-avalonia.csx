@@ -210,11 +210,16 @@ private void CopyFile (string src, string dst)
     text = text.Replace ("using Modern.WindowKit.MicroCom", "using Avalonia.MicroCom");
 
     // We don't use Avalonia's DI
-    text = text.Replace ("AvaloniaLocator.Current.GetService<ICursorFactory>()", "AvaloniaGlobals.StandardCursorFactory");
-    text = text.Replace ("AvaloniaLocator.Current.GetService<IPlatformThreadingInterface>()", "AvaloniaGlobals.PlatformThreadingInterface");
-    text = text.Replace ("AvaloniaLocator.Current.GetService<ISystemDialogImpl>()", "AvaloniaGlobals.SystemDialogImplementation");
-    text = text.Replace ("AvaloniaLocator.Current.GetService<IRuntimePlatform>()", "AvaloniaGlobals.RuntimePlatform");
-    text = text.Replace ("AvaloniaLocator.Current?.GetService<IRuntimePlatform>()", "AvaloniaGlobals.RuntimePlatform");
+    text = text.Replace ("AvaloniaLocator.Current.GetService<ICursorFactory>()", "AvaloniaGlobals.GetService<ICursorFactory>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetService<IPlatformThreadingInterface>()", "AvaloniaGlobals.GetService<IPlatformThreadingInterface>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetService<ISystemDialogImpl>()", "AvaloniaGlobals.GetService<ISystemDialogImpl>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetService<IRuntimePlatform>()", "AvaloniaGlobals.GetService<IRuntimePlatform>()");
+    text = text.Replace ("AvaloniaLocator.Current?.GetService<IRuntimePlatform>()", "AvaloniaGlobals.GetService<IRuntimePlatform>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetRequiredService<ICursorFactory>()", "AvaloniaGlobals.GetRequiredService<ICursorFactory>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetRequiredService<IPlatformThreadingInterface>()", "AvaloniaGlobals.GetRequiredService<IPlatformThreadingInterface>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetRequiredService<ISystemDialogImpl>()", "AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>()");
+    text = text.Replace ("AvaloniaLocator.Current.GetRequiredService<IRuntimePlatform>()", "AvaloniaGlobals.GetRequiredService<IRuntimePlatform>()");
+    text = text.Replace ("AvaloniaLocator.Current?.GetRequiredService<IRuntimePlatform>()", "AvaloniaGlobals.GetRequiredService<IRuntimePlatform>()");
 
     // Other fixups
     text = Comment (text, "Contract.Requires");
