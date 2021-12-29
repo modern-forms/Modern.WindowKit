@@ -13,4 +13,3 @@
         public long TouchPointId { get; set; }
     }
 }
-
