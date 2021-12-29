@@ -16,6 +16,8 @@ public class Program
     private static Point? cursor_position;
     private static bool show_diagnostics = true;
 
+    private static SKColor[] touch_colors = new SKColor[] { SKColors.Yellow, SKColors.Blue, SKColors.Brown, SKColors.Purple, SKColors.Pink, SKColors.White, SKColors.Orange, SKColors.Black, SKColors.Coral, SKColors.Gray };
+
     private static void Main()
     {
         // Create a native window
@@ -82,7 +84,10 @@ public class Program
 
     private static void HandleInput(RawInputEventArgs obj)
     {
-        if (obj is RawPointerEventArgs pointer)
+        // Touch must be first since RawTouchEventArgs subclasses RawPointerEventArgs
+        if (obj is RawTouchEventArgs touch)
+            HandleTouchInput(touch);
+        else if (obj is RawPointerEventArgs pointer)
             HandleMouseInput(pointer);
         else if (obj is RawKeyEventArgs key)
             HandleKeyboardInput(key);
@@ -123,8 +128,22 @@ public class Program
         Invalidate();
     }
 
-    private static void Invalidate() => window.Invalidate(new Rect(Point.Empty, window.ClientSize));
+    private static void HandleTouchInput(RawTouchEventArgs e)
+    {
+        var x = Scale((int)e.Position.X);
+        var y = Scale((int)e.Position.Y);
 
+        if (e.Type == RawPointerEventType.TouchUpdate)
+        {
+            var radius = Scale(5);
+            var color = touch_colors[e.TouchPointId % 10];
+            var paint = new SKPaint { Color = color, IsStroke = false };
+            GetCanvas().Canvas.DrawCircle(x, y, radius, paint);
+            Invalidate();
+        }
+    }
+
+    private static void Invalidate() => window.Invalidate(new Rect(Point.Empty, window.ClientSize));
 
     private static void OutputDiagnostics(SKCanvas canvas)
     {

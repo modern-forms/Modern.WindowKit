@@ -14,6 +14,8 @@ This sample shows how to perform various operations such as:
 
 - Create a window
 - Handle painting
-- Handle input (Click and drag to paint, F1 to toggle diagnostic information)
+- Handle mouse input (Click and drag to paint)
+- Handle touch input (Touch to paint, Windows/Linux only)
+- Handle keyboard input (F1 to toggle diagnostic information)
 
 ![demo-screenshot](https://user-images.githubusercontent.com/179295/147585748-0a37d7f9-973d-407f-9120-95df44864c04.png)

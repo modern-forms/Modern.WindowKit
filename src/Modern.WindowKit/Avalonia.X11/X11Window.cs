@@ -37,7 +37,7 @@ namespace Modern.WindowKit.X11
         private bool _triggeredExpose;
         private IInputRoot _inputRoot;
         private readonly MouseDevice _mouse;
-        //private readonly TouchDevice _touch;
+        private readonly TouchDevice _touch;
         private readonly IKeyboardDevice _keyboard;
         private PixelPoint? _position;
         private PixelSize _realSize;
@@ -65,7 +65,7 @@ namespace Modern.WindowKit.X11
             _popup = popupParent != null;
             _x11 = platform.Info;
             _mouse = new MouseDevice();
-            //_touch = new TouchDevice();
+            _touch = new TouchDevice();
             _keyboard = platform.KeyboardDevice;
 
             //var glfeature = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
@@ -939,7 +939,7 @@ namespace Modern.WindowKit.X11
         }
 
         public IMouseDevice MouseDevice => _mouse;
-        //public TouchDevice TouchDevice => _touch;
+        public TouchDevice TouchDevice => _touch;
 
         public IPopupImpl CreatePopup() 
             => _platform.Options.OverlayPopups ? null : new X11Window(_platform, this);
