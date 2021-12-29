@@ -71,6 +71,7 @@ CopyFile ("Avalonia.Input/Raw/RawKeyEventArgs.cs", "RawKeyEventArgs.cs");
 CopyFile ("Avalonia.Input/Raw/RawPointerEventArgs.cs", "RawPointerEventArgs.cs");
 CopyFile ("Avalonia.Input/Raw/RawMouseWheelEventArgs.cs", "RawMouseWheelEventArgs.cs");
 CopyFile ("Avalonia.Input/Raw/RawTextInputEventArgs.cs", "RawTextInputEventArgs.cs");
+CopyFile ("Avalonia.Input/Raw/RawTouchEventArgs.cs", "RawTouchEventArgs.cs");
 CopyFile ("Avalonia.Visuals/Rect.cs", "Rect.cs");
 //CopyFile ("Avalonia.Input/RuntimeInfo.cs", "RuntimeInfo.cs");
 CopyFile ("Avalonia.Controls/Platform/Screen.cs", "Screen.cs");
@@ -81,6 +82,7 @@ CopyFile ("Shared/PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimeP
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
 CopyFile ("Avalonia.Controls/SystemDialog.cs", "SystemDialog.cs");
 CopyFile ("Avalonia.Visuals/Thickness.cs", "Thickness.cs");
+CopyFile ("Avalonia.Input/TouchDevice.cs", "TouchDevice.cs");
 CopyFile ("Avalonia.Visuals/Vector.cs", "Vector.cs");
 CopyFile ("Avalonia.Controls/WindowEdge.cs", "WindowEdge.cs");
 CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");

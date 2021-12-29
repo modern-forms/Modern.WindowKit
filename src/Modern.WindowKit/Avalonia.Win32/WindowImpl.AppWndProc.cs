@@ -84,7 +84,7 @@ namespace Modern.WindowKit.Win32
                         Closed?.Invoke();
 
                         _mouseDevice.Dispose();
-                        //_touchDevice?.Dispose();
+                        _touchDevice?.Dispose();
                         //Free other resources
                         Dispose();
                         return IntPtr.Zero;
@@ -309,35 +309,35 @@ namespace Modern.WindowKit.Win32
                             PointToClient(PointFromLParam(lParam)), GetMouseModifiers(wParam));
                         break;
                     }
-                //case WindowsMessage.WM_TOUCH:
-                //    {
-                //        var touchInputCount = wParam.ToInt32();
+                case WindowsMessage.WM_TOUCH:
+                    {
+                        var touchInputCount = wParam.ToInt32();
 
-                //        var pTouchInputs = stackalloc TOUCHINPUT[touchInputCount];
-                //        var touchInputs = new Span<TOUCHINPUT>(pTouchInputs, touchInputCount);
+                        var pTouchInputs = stackalloc TOUCHINPUT[touchInputCount];
+                        var touchInputs = new Span<TOUCHINPUT>(pTouchInputs, touchInputCount);
 
-                //        if (GetTouchInputInfo(lParam, (uint)touchInputCount, pTouchInputs, Marshal.SizeOf<TOUCHINPUT>()))
-                //        {
-                //            foreach (var touchInput in touchInputs)
-                //            {
-                //                Input?.Invoke(new RawTouchEventArgs(_touchDevice, touchInput.Time,
-                //                    _owner,
-                //                    touchInput.Flags.HasAllFlags(TouchInputFlags.TOUCHEVENTF_UP) ?
-                //                        RawPointerEventType.TouchEnd :
-                //                        touchInput.Flags.HasAllFlags(TouchInputFlags.TOUCHEVENTF_DOWN) ?
-                //                            RawPointerEventType.TouchBegin :
-                //                            RawPointerEventType.TouchUpdate,
-                //                    PointToClient(new PixelPoint(touchInput.X / 100, touchInput.Y / 100)),
-                //                    WindowsKeyboardDevice.Instance.Modifiers,
-                //                    touchInput.Id));
-                //            }
+                        if (GetTouchInputInfo(lParam, (uint)touchInputCount, pTouchInputs, Marshal.SizeOf<TOUCHINPUT>()))
+                        {
+                            foreach (var touchInput in touchInputs)
+                            {
+                                Input?.Invoke(new RawTouchEventArgs(_touchDevice, touchInput.Time,
+                                    _owner,
+                                    touchInput.Flags.HasAllFlags(TouchInputFlags.TOUCHEVENTF_UP) ?
+                                        RawPointerEventType.TouchEnd :
+                                        touchInput.Flags.HasAllFlags(TouchInputFlags.TOUCHEVENTF_DOWN) ?
+                                            RawPointerEventType.TouchBegin :
+                                            RawPointerEventType.TouchUpdate,
+                                    PointToClient(new PixelPoint(touchInput.X / 100, touchInput.Y / 100)),
+                                    WindowsKeyboardDevice.Instance.Modifiers,
+                                    touchInput.Id));
+                            }
 
-                //            CloseTouchInputHandle(lParam);
-                //            return IntPtr.Zero;
-                //        }
+                            CloseTouchInputHandle(lParam);
+                            return IntPtr.Zero;
+                        }
 
-                //        break;
-                //    }
+                        break;
+                    }
                 case WindowsMessage.WM_NCPAINT:
                     {
                         if (!HasFullDecorations)

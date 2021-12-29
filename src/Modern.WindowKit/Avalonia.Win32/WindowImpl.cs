@@ -62,7 +62,7 @@ namespace Modern.WindowKit.Win32
 #endif
 
         private const WindowStyles WindowStateMask = (WindowStyles.WS_MAXIMIZE | WindowStyles.WS_MINIMIZE);
-        //private readonly TouchDevice _touchDevice;
+        private readonly TouchDevice _touchDevice;
         private readonly MouseDevice _mouseDevice;
         //private readonly ManagedDeferredRendererLock _rendererLock;
         private readonly FramebufferManager _framebuffer;
@@ -93,7 +93,7 @@ namespace Modern.WindowKit.Win32
 
         public WindowImpl()
         {
-            //_touchDevice = new TouchDevice();
+            _touchDevice = new TouchDevice();
             _mouseDevice = new WindowsMouseDevice();
 
 #if USE_MANAGED_DRAG
