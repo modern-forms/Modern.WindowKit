@@ -90,6 +90,9 @@ public class Program
 
     private static void HandleMouseInput(RawPointerEventArgs e)
     {
+        var x = Scale((int)e.Position.X);
+        var y = Scale((int)e.Position.Y);
+
         if (e.Type == RawPointerEventType.LeftButtonDown)
             draw_color = SKColors.Red;
         else if (e.Type == RawPointerEventType.RightButtonDown)
@@ -98,9 +101,9 @@ public class Program
             draw_color = null;
         else if (e.Type == RawPointerEventType.Move && draw_color.HasValue)
         {
-            var radius = 5;
+            var radius = Scale(5);
             var paint = new SKPaint { Color = draw_color.Value, IsStroke = false };
-            GetCanvas().Canvas.DrawCircle(e.Position.ToSKPoint(), radius, paint);
+            GetCanvas().Canvas.DrawCircle(x, y, radius, paint);
         }
 
         if (e.Type == RawPointerEventType.LeaveWindow)
@@ -125,25 +128,30 @@ public class Program
 
     private static void OutputDiagnostics(SKCanvas canvas)
     {
-        var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 16, SubpixelText = true, Typeface = SKTypeface.FromFamilyName(SKTypeface.Default.FamilyName, SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright) };
+        var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = Scale(16), SubpixelText = true, Typeface = SKTypeface.FromFamilyName(SKTypeface.Default.FamilyName, SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright) };
 
+        int x = Scale(10);
         var y = 0;
-        canvas.DrawText($"ClientSize - {window.ClientSize}", 10, y += 25, paint);
-        canvas.DrawText($"DesktopScaling - {window.DesktopScaling}", 10, y += 25, paint);
-        canvas.DrawText($"ExtendedMargins - {window.ExtendedMargins}", 10, y += 25, paint);
-        canvas.DrawText($"FrameSize - {window.FrameSize}", 10, y += 25, paint);
-        canvas.DrawText($"IsClientAreaExtendedToDecorations - {window.IsClientAreaExtendedToDecorations}", 10, y += 25, paint);
-        canvas.DrawText($"MaxAutoSizeHint - {window.MaxAutoSizeHint}", 10, y += 25, paint);
-        canvas.DrawText($"NeedsManagedDecorations - {window.NeedsManagedDecorations}", 10, y += 25, paint);
-        canvas.DrawText($"OffScreenMargin - {window.OffScreenMargin}", 10, y += 25, paint);
-        canvas.DrawText($"Position - {window.Position}", 10, y += 25, paint);
-        canvas.DrawText($"RenderScaling - {window.RenderScaling}", 10, y += 25, paint);
-        canvas.DrawText($"TransparencyLevel - {window.TransparencyLevel}", 10, y += 25, paint);
-        canvas.DrawText($"WindowState - {window.WindowState}", 10, y += 25, paint);
+        var line_height = Scale(25);
 
-        y = (int)window.ClientSize.Height - 45;
+        canvas.DrawText($"ClientSize - {window.ClientSize}", x, y += line_height, paint);
+        canvas.DrawText($"DesktopScaling - {window.DesktopScaling}", x, y += line_height, paint);
+        canvas.DrawText($"ExtendedMargins - {window.ExtendedMargins}", x, y += line_height, paint);
+        canvas.DrawText($"FrameSize - {window.FrameSize}", x, y += line_height, paint);
+        canvas.DrawText($"IsClientAreaExtendedToDecorations - {window.IsClientAreaExtendedToDecorations}", x, y += line_height, paint);
+        canvas.DrawText($"MaxAutoSizeHint - {window.MaxAutoSizeHint}", x, y += line_height, paint);
+        canvas.DrawText($"NeedsManagedDecorations - {window.NeedsManagedDecorations}", x, y += line_height, paint);
+        canvas.DrawText($"OffScreenMargin - {window.OffScreenMargin}", x, y += line_height, paint);
+        canvas.DrawText($"Position - {window.Position}", x, y += line_height, paint);
+        canvas.DrawText($"RenderScaling - {window.RenderScaling}", x, y += line_height, paint);
+        canvas.DrawText($"TransparencyLevel - {window.TransparencyLevel}", x, y += line_height, paint);
+        canvas.DrawText($"WindowState - {window.WindowState}", x, y += line_height, paint);
+
+        y += line_height;
 
         if (cursor_position.HasValue)
-            canvas.DrawText($"Cursor Position - {cursor_position}", 10, y += 25, paint);
+            canvas.DrawText($"Cursor Position - {cursor_position}", x, y += line_height, paint);
     }
+
+    private static int Scale(int value) => (int)(value * window.RenderScaling);
 }
