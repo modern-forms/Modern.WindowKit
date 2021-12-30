@@ -812,7 +812,7 @@ namespace Modern.WindowKit.X11
                 _handle = IntPtr.Zero;
                 Closed?.Invoke();
                 _mouse.Dispose();
-                //_touch.Dispose();
+                _touch.Dispose();
                 XDestroyWindow(_x11.Display, handle);
             }
             
