@@ -40,18 +40,22 @@ namespace Modern.WindowKit.X11
 
         public void SetIcon(SkiaSharp.SKBitmap? icon)
         {
-            //if (icon != null)
-            //{
-            //    var data = ((X11IconData)icon).Data;
-            //    fixed (void* pdata = data)
-            //        XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
-            //            new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
-            //            pdata, data.Length);
-            //}
-            //else
-            //{
-            //    XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
-            //}
+            if (icon is not null)
+            {
+                var data = new UIntPtr[icon.Width * icon.Height + 2];
+                data[0] = new UIntPtr((uint)icon.Width);
+                data[1] = new UIntPtr((uint)icon.Height);
+                icon.Pixels.Select(p => new UIntPtr((uint)p)).ToArray().CopyTo(data, 2);
+
+                fixed (void* pdata = data)
+                    XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
+                        new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
+                        pdata, data.Length);
+            }
+            else
+            {
+                XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
+            }
         }
     }
 }
