@@ -66,8 +66,8 @@ namespace Modern.WindowKit.Native
             //_gpu = opts.UseGpu && glFeature != null;
             _deferredRendering = opts.UseDeferredRendering;
 
-            //_keyboard = AvaloniaLocator.Current.GetService<IKeyboardDevice>();
-            //_mouse = new MouseDevice();
+            _keyboard = AvaloniaNativePlatform.KeyboardDevice;
+            _mouse = new MouseDevice();
             _cursorFactory = AvaloniaGlobals.GetService<ICursorFactory>();
         }
 
@@ -265,8 +265,8 @@ namespace Modern.WindowKit.Native
 
         public bool RawTextInputEvent(uint timeStamp, string text)
         {
-            if (_inputRoot is null) 
-                return false;
+            //if (_inputRoot is null) 
+            //    return false;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
@@ -279,8 +279,8 @@ namespace Modern.WindowKit.Native
 
         public bool RawKeyEvent(AvnRawKeyEventType type, uint timeStamp, AvnInputModifiers modifiers, uint key)
         {
-            if (_inputRoot is null) 
-                return false;
+            //if (_inputRoot is null) 
+            //    return false;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
@@ -298,8 +298,8 @@ namespace Modern.WindowKit.Native
 
         public void RawMouseEvent(AvnRawMouseEventType type, uint timeStamp, AvnInputModifiers modifiers, AvnPoint point, AvnVector delta)
         {
-            if (_inputRoot is null) 
-                return;
+            //if (_inputRoot is null) 
+            //    return;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
