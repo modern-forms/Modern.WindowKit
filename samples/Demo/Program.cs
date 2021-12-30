@@ -124,7 +124,10 @@ public class Program
     {
         // Use F1 key to toggle diagnostics
         if (e.Type == RawKeyEventType.KeyUp && e.Key == Modern.WindowKit.Input.Key.F1)
+        {
             show_diagnostics = !show_diagnostics;
+            e.Handled = true;
+        }
 
         Invalidate();
     }
