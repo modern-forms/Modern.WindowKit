@@ -277,6 +277,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("context?.Context", "null");
             text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
             text = text.Replace ("internal class WindowImpl", "internal partial class WindowImpl");
+            text = text.Replace ("return true.AsComBool();", "return false.AsComBool();");
             break;
         case "WindowImplBase.cs":   // Mac
             text = text.Replace ("unsafe class", "unsafe partial class");
@@ -284,6 +285,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("AvaloniaNativePlatformOptions opts, AvaloniaNativePlatformOpenGlInterface glFeature", "AvaloniaNativePlatformOptions opts");
             text = text.Replace ("IAvnScreens screens, IGlContext glContext", "IAvnScreens screens");
             text = text.Replace ("_inputRoot, text)", "_inputRoot, text, RawInputModifiers.None)");
+            text = text.Replace ("AvaloniaLocator.Current.GetService<IKeyboardDevice>()", "AvaloniaNativePlatform.KeyboardDevice");
             break;
         case "WindowImpl.AppWndProc.cs":    // Win
             text = text.Replace ("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
