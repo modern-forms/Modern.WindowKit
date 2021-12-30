@@ -24,6 +24,7 @@ public class Program
         window = AvaloniaGlobals.GetRequiredService<IWindowingPlatform>().CreateWindow();
         window.Resize(new Size(1024, 768));
         window.SetTitle("Modern.WindowKit Demo");
+        window.SetIcon(SKBitmap.Decode("icon.png"));
 
         // When the window is closed, stop our message loop
         var _mainLoopCancellationTokenSource = new CancellationTokenSource();

@@ -11,4 +11,10 @@
     <ProjectReference Include="..\..\src\Modern.WindowKit\Modern.WindowKit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
