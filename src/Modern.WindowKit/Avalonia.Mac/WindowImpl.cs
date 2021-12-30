@@ -54,7 +54,7 @@ namespace Modern.WindowKit.Native
                     return _parent.Closing().AsComBool();
                 }
 
-                return true.AsComBool();
+                return false.AsComBool();
             }
 
             void IAvnWindowEvents.WindowStateChanged(AvnWindowState state)
