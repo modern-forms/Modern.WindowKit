@@ -11,7 +11,7 @@ namespace Modern.WindowKit.Win32
     {
         public IEnumerable<object> Surfaces => new object[] { Handle, /* _gl, */ _framebuffer };
 
-        public void SetIcon(SkiaSharp.SKBitmap icon)
+        public void SetIcon(SkiaSharp.SKBitmap? icon)
         {
             if (icon == null)
             {

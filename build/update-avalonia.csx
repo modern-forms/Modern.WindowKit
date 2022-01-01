@@ -232,7 +232,6 @@ private void CopyFile (string src, string dst)
         case "ICloseable.cs":
             text = text.Replace ("namespace Modern.WindowKit.Input", "namespace Modern.WindowKit");
             break;
-        case "IWindowBaseImpl.cs":
         case "PixelPoint.cs":
         case "Point.cs":
         case "Pointer.cs":

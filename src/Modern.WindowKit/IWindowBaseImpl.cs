@@ -2,7 +2,7 @@
 
 namespace Modern.WindowKit.Platform
 {
-    public partial interface IWindowBaseImpl : ITopLevelImpl
+    public interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
         /// Shows the window.
