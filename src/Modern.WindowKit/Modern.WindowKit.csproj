@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Modern.WindowKit</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/modern-forms/Modern.WindowKit</PackageProjectUrl>
     <Description>Cross-platform library for creating and interacting with OS windows.</Description>
