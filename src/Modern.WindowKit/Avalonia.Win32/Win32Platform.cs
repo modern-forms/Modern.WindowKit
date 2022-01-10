@@ -134,6 +134,11 @@ namespace Modern.WindowKit.Win32
 
         public TimeSpan DoubleClickTime => TimeSpan.FromMilliseconds(UnmanagedMethods.GetDoubleClickTime());
 
+        /// <inheritdoc cref="IPlatformSettings.TouchDoubleClickSize"/>
+        public Size TouchDoubleClickSize => new Size(16,16);
+
+        /// <inheritdoc cref="IPlatformSettings.TouchDoubleClickTime"/>
+        public TimeSpan TouchDoubleClickTime => DoubleClickTime;
         public static void Initialize()
         {
             Initialize(new Win32PlatformOptions());
@@ -142,35 +147,35 @@ namespace Modern.WindowKit.Win32
         public static void Initialize(Win32PlatformOptions options)
         {
             Options = options;
-            //AvaloniaLocator.CurrentMutable
-            //    .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
-            //    .Bind<ICursorFactory>().ToConstant(CursorFactory.Instance)
-            //    .Bind<IKeyboardDevice>().ToConstant(WindowsKeyboardDevice.Instance)
-            //    .Bind<IPlatformSettings>().ToConstant(s_instance)
-            //    .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
-            //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
-            //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
-            //    .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
-            //    .Bind<IWindowingPlatform>().ToConstant(s_instance)
-            //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control)
-            //    {
-            //        OpenContextMenu =
-            //        {
-            //            // Add Shift+F10
-            //            new KeyGesture(Key.F10, KeyModifiers.Shift)
-            //        }
-            //    })
-            //    .Bind<IPlatformIconLoader>().ToConstant(s_instance)
-            //    .Bind<NonPumpingLockHelper.IHelperImpl>().ToConstant(new NonPumpingSyncContext.HelperImpl())
-            //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new WindowsMountedVolumeInfoProvider())
-            //    .Bind<IPlatformLifetimeEventsImpl>().ToConstant(s_instance);
+            AvaloniaLocator.CurrentMutable
+                .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
+                .Bind<ICursorFactory>().ToConstant(CursorFactory.Instance)
+                .Bind<IKeyboardDevice>().ToConstant(WindowsKeyboardDevice.Instance)
+                .Bind<IPlatformSettings>().ToConstant(s_instance)
+                .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
+                .Bind<IRenderLoop>().ToConstant(new RenderLoop())
+                .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
+                .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
+                .Bind<IWindowingPlatform>().ToConstant(s_instance)
+                .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control)
+                {
+                    OpenContextMenu =
+                    {
+                        // Add Shift+F10
+                        new KeyGesture(Key.F10, KeyModifiers.Shift)
+                    }
+                })
+                .Bind<IPlatformIconLoader>().ToConstant(s_instance)
+                .Bind<NonPumpingLockHelper.IHelperImpl>().ToConstant(new NonPumpingSyncContext.HelperImpl())
+                .Bind<IMountedVolumeInfoProvider>().ToConstant(new WindowsMountedVolumeInfoProvider())
+                .Bind<IPlatformLifetimeEventsImpl>().ToConstant(s_instance);
 
-            //Win32GlManager.Initialize();
+            Win32GlManager.Initialize();
 
             _uiThread = Thread.CurrentThread;
 
-            //if (OleContext.Current != null)
-            //    AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToSingleton<DragSource>();
+            if (OleContext.Current != null)
+                AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToSingleton<DragSource>();
         }
 
         public bool HasMessages()
@@ -189,8 +194,8 @@ namespace Modern.WindowKit.Win32
             }
             else
             {
-                //Logging.Logger.TryGet(Logging.LogEventLevel.Error, Logging.LogArea.Win32Platform)
-                //    ?.Log(this, "Unmanaged error in {0}. Error Code: {1}", nameof(ProcessMessage), Marshal.GetLastWin32Error());
+                Logging.Logger.TryGet(Logging.LogEventLevel.Error, Logging.LogArea.Win32Platform)
+                    ?.Log(this, "Unmanaged error in {0}. Error Code: {1}", nameof(ProcessMessage), Marshal.GetLastWin32Error());
 
             }
         }
@@ -206,8 +211,8 @@ namespace Modern.WindowKit.Win32
             }
             if (result < 0)
             {
-                //Logging.Logger.TryGet(Logging.LogEventLevel.Error, Logging.LogArea.Win32Platform)
-                //    ?.Log(this, "Unmanaged error in {0}. Error Code: {1}", nameof(RunLoop), Marshal.GetLastWin32Error());
+                Logging.Logger.TryGet(Logging.LogEventLevel.Error, Logging.LogArea.Win32Platform)
+                    ?.Log(this, "Unmanaged error in {0}. Error Code: {1}", nameof(RunLoop), Marshal.GetLastWin32Error());
             }
         }
 
@@ -271,15 +276,15 @@ namespace Modern.WindowKit.Win32
                         return IntPtr.Zero;
                     }
                 }
-            }
-            
-            //TrayIconImpl.ProcWnd(hWnd, msg, wParam, lParam);
+        }
+
+            TrayIconImpl.ProcWnd(hWnd, msg, wParam, lParam);
 
             return UnmanagedMethods.DefWindowProc(hWnd, msg, wParam, lParam);
         }
 
         private void CreateMessageWindow()
-        {
+            {
             // Ensure that the delegate doesn't get garbage collected by storing it as a field.
             _wndProcDelegate = new UnmanagedMethods.WndProc(WndProc);
 
@@ -304,58 +309,58 @@ namespace Modern.WindowKit.Win32
             {
                 throw new Win32Exception();
             }
-        }
-
-        //public ITrayIconImpl CreateTrayIcon ()
-        //{
-        //    return new TrayIconImpl();
         //}
 
-        public IWindowImpl CreateWindow()
+        public ITrayIconImpl CreateTrayIcon ()
         {
+            return new TrayIconImpl();
+        }
+
+        public IWindowImpl CreateWindow()
+        //{
             return new WindowImpl();
         }
 
-        //public IWindowImpl CreateEmbeddableWindow()
-        //{
-        //    var embedded = new EmbeddedWindowImpl();
-        //    embedded.Show(true, false);
-        //    return embedded;
+        public IWindowImpl CreateEmbeddableWindow()
+        {
+            var embedded = new EmbeddedWindowImpl();
+            embedded.Show(true, false);
+            return embedded;
+        }
+
+        public IWindowIconImpl LoadIcon(string fileName)
+        {
+            using (var stream = File.OpenRead(fileName))
+            {
+                return CreateIconImpl(stream);
+            }
         //}
 
-        //public IWindowIconImpl LoadIcon(string fileName)
+        public IWindowIconImpl LoadIcon(Stream stream)
         //{
-        //    using (var stream = File.OpenRead(fileName))
-        //    {
-        //        return CreateIconImpl(stream);
-        //    }
-        //}
+            return CreateIconImpl(stream);
+        }
 
-        //public IWindowIconImpl LoadIcon(Stream stream)
-        //{
-        //    return CreateIconImpl(stream);
-        //}
+        public IWindowIconImpl LoadIcon(IBitmapImpl bitmap)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                bitmap.Save(memoryStream);
+                return new IconImpl(new System.Drawing.Bitmap(memoryStream));
+            }
+        }
 
-        //public IWindowIconImpl LoadIcon(IBitmapImpl bitmap)
-        //{
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        bitmap.Save(memoryStream);
-        //        return new IconImpl(new System.Drawing.Bitmap(memoryStream));
-        //    }
+        private static IconImpl CreateIconImpl(Stream stream)
+        {
+            try
+            {
+                return new IconImpl(new System.Drawing.Icon(stream));
         //}
-
-        //private static IconImpl CreateIconImpl(Stream stream)
-        //{
-        //    try
-        //    {
-        //        return new IconImpl(new System.Drawing.Icon(stream));
-        //    }
-        //    catch (ArgumentException)
-        //    {
-        //        return new IconImpl(new System.Drawing.Bitmap(stream));
-        //    }
-        //}
+            catch (ArgumentException)
+            {
+                return new IconImpl(new System.Drawing.Bitmap(stream));
+            }
+        }
 
         private static void SetDpiAwareness()
         {
@@ -381,7 +386,7 @@ namespace Modern.WindowKit.Win32
             {
                 SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
                 return;
-            }
+}
 
             SetProcessDPIAware();
         }

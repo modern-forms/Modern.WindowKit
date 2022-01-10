@@ -110,6 +110,13 @@ namespace Modern.WindowKit.Threading
             _jobRunner.Post(action, priority);
         }
 
+        /// <inheritdoc/>
+        public void Post<T>(Action<T> action, T arg, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            _ = action ?? throw new ArgumentNullException(nameof(action));
+            _jobRunner.Post(action, arg, priority);
+        }
+
         /// <summary>
         /// This is needed for platform backends that don't have internal priority system (e. g. win32)
         /// To ensure that there are no jobs with higher priority
