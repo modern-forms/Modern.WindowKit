@@ -341,9 +341,13 @@ namespace Modern.WindowKit.X11
 
         public Action<WindowTransparencyLevel> TransparencyLevelChanged
         {
-            get => _transparencyHelper.TransparencyLevelChanged;
-            set => _transparencyHelper.TransparencyLevelChanged = value;
-        }        
+            get => _transparencyHelper?.TransparencyLevelChanged;
+            set
+            {
+                if (_transparencyHelper != null)
+                    _transparencyHelper.TransparencyLevelChanged = value;
+            }
+        }
 
         public Action<bool> ExtendClientAreaToDecorationsChanged { get; set; }
 
@@ -357,21 +361,21 @@ namespace Modern.WindowKit.X11
         public Action<PixelPoint> PositionChanged { get; set; }
         public Action LostFocus { get; set; }
 
-        //public IRenderer CreateRenderer(IRenderRoot root)
-        //{
-        //    var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-        //    var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+        public IRenderer CreateRenderer(IRenderRoot root)
+        {
+            var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+            var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
 
-        //    if (customRendererFactory != null)
-        //        return customRendererFactory.Create(root, loop);
+            if (customRendererFactory != null)
+                return customRendererFactory.Create(root, loop);
             
-        //    return _platform.Options.UseDeferredRendering ?
-        //        new DeferredRenderer(root, loop)
-        //        {
-        //            RenderOnlyOnRenderThread = true
-        //        } :
-        //        (IRenderer)new X11ImmediateRendererProxy(root, loop);
-        //}
+            return _platform.Options.UseDeferredRendering ?
+                new DeferredRenderer(root, loop)
+                {
+                    RenderOnlyOnRenderThread = true
+                } :
+                (IRenderer)new X11ImmediateRendererProxy(root, loop);
+        }
 
         void OnEvent(ref XEvent ev)
         {
@@ -407,11 +411,11 @@ namespace Modern.WindowKit.X11
                 if (ActivateTransientChildIfNeeded())
                     return;
                 Activated?.Invoke();
-                //_imeControl?.SetWindowActive(true);
+                _imeControl?.SetWindowActive(true);
             }
             else if (ev.type == XEventName.FocusOut)
             {
-                //_imeControl?.SetWindowActive(false);
+                _imeControl?.SetWindowActive(false);
                 Deactivated?.Invoke();
             }
             else if (ev.type == XEventName.MotionNotify)
@@ -453,7 +457,7 @@ namespace Modern.WindowKit.X11
                 
             }
             else if (ev.type == XEventName.ButtonRelease)
-            {
+                        {
                 if (ev.ButtonEvent.button < 4 || ev.ButtonEvent.button == 8 || ev.ButtonEvent.button == 9)
                     MouseEvent(
                         ev.ButtonEvent.button switch
@@ -519,7 +523,7 @@ namespace Modern.WindowKit.X11
                 Cleanup();
             }
             else if (ev.type == XEventName.ClientMessage)
-            {
+                    {
                 if (ev.ClientMessageEvent.message_type == _x11.Atoms.WM_PROTOCOLS)
                 {
                     if (ev.ClientMessageEvent.ptr1 == _x11.Atoms.WM_DELETE_WINDOW)
@@ -562,7 +566,7 @@ namespace Modern.WindowKit.X11
                     if(!skipResize)
                         Resize(oldScaledSize, true, PlatformResizeReason.DpiChange);
                     return true;
-                }
+        }
 
                 return false;
             }
@@ -647,7 +651,7 @@ namespace Modern.WindowKit.X11
                             {
                                 state = WindowState.Maximized;
                                 break;
-                            }
+                }
                         }
                     }
                     XFree(prop);
@@ -684,7 +688,7 @@ namespace Modern.WindowKit.X11
                 rv |= RawInputModifiers.Meta;
             return rv;
         }
-        
+
         private SystemDecorations _systemDecorations = SystemDecorations.Full;
         private bool _canResize = true;
         private const int MaxWindowDimension = 100000;
@@ -728,13 +732,13 @@ namespace Modern.WindowKit.X11
         {
             if (args is RawPointerEventArgs mouse)
                 mouse.Position = mouse.Position / RenderScaling;
-            //if (args is RawDragEvent drag)
-            //    drag.Location = drag.Location / RenderScaling;
+            if (args is RawDragEvent drag)
+                drag.Location = drag.Location / RenderScaling;
             
             _lastEvent = new InputEventContainer() {Event = args};
             _inputQueue.Enqueue(_lastEvent);
             if (_inputQueue.Count == 1)
-            {
+                    {
                 Dispatcher.UIThread.Post(() =>
                 {
                     while (_inputQueue.Count > 0)
@@ -761,15 +765,15 @@ namespace Modern.WindowKit.X11
             ScheduleInput(mev, ref ev);
         }
 
-        //void DoPaint()
-        //{
-        //    Paint?.Invoke(new Rect());
-        //}
+        void DoPaint()
+        {
+            Paint?.Invoke(new Rect());
+        }
         
-        //public void Invalidate(Rect rect)
-        //{
-
-        //}
+        public void Invalidate(Rect rect)
+        {
+        
+        }
 
         public IInputRoot InputRoot => _inputRoot;
         
@@ -791,12 +795,12 @@ namespace Modern.WindowKit.X11
                 _transparencyHelper = null;
             }
             
-            //if (_imeControl != null)
-            //{
-            //    _imeControl.Dispose();
-            //    _imeControl = null;
-            //    _ime = null;
-            //}
+            if (_imeControl != null)
+            {
+                _imeControl.Dispose();
+                _imeControl = null;
+                _ime = null;
+            }
             
             if (_xic != IntPtr.Zero)
             {
@@ -851,7 +855,7 @@ namespace Modern.WindowKit.X11
         public void Hide() => XUnmapWindow(_x11.Display, _handle);
         
         public Point PointToClient(PixelPoint point) => new Point((point.X - Position.X) / RenderScaling, (point.Y - Position.Y) / RenderScaling);
-
+        
         public PixelPoint PointToScreen(Point point) => new PixelPoint(
             (int)(point.X * RenderScaling + Position.X),
             (int)(point.Y * RenderScaling + Position.Y));
@@ -905,7 +909,7 @@ namespace Modern.WindowKit.X11
         }
 
         public void SetCursor(ICursorImpl cursor)
-        {
+            {
             if (cursor == null)
                 XDefineCursor(_x11.Display, _handle, _x11.DefaultCursor);
             else if (cursor is CursorImpl impl)
@@ -967,7 +971,7 @@ namespace Modern.WindowKit.X11
 
         void SendNetWMMessage(IntPtr message_type, IntPtr l0,
             IntPtr? l1 = null, IntPtr? l2 = null, IntPtr? l3 = null, IntPtr? l4 = null)
-        {
+                {
             var xev = new XEvent
             {
                 ClientMessageEvent =
@@ -997,7 +1001,7 @@ namespace Modern.WindowKit.X11
                 (IntPtr) side,
                 (IntPtr) 1, (IntPtr)1); // left button
                 
-            //e.Pointer.Capture(null);
+            e.Pointer.Capture(null);
         }
 
         public void BeginMoveDrag(PointerPressedEventArgs e)
@@ -1067,7 +1071,7 @@ namespace Modern.WindowKit.X11
             var max = new PixelSize(
                 (int)(maxSize.Width > maxDim ? maxDim : Math.Max(min.Width, maxSize.Width * RenderScaling)),
                 (int)(maxSize.Height > maxDim ? maxDim : Math.Max(min.Height, maxSize.Height * RenderScaling)));
-            
+
             _minMaxSize = (min, max);
             UpdateSizeHints(null);
         }
@@ -1076,7 +1080,7 @@ namespace Modern.WindowKit.X11
         {
             ChangeWMAtoms(value, _x11.Atoms._NET_WM_STATE_ABOVE);
         }
-
+        
         public void SetEnabled(bool enable)
         {
             _disabled = !enable;
@@ -1096,21 +1100,21 @@ namespace Modern.WindowKit.X11
 
         public Action GotInputWhenDisabled { get; set; }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    if (icon != null)
-        //    {
-        //        var data = ((X11IconData)icon).Data;
-        //        fixed (void* pdata = data)
-        //            XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
-        //                new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
-        //                pdata, data.Length);
+        public void SetIcon(IWindowIconImpl icon)
+        {
+            if (icon != null)
+            {
+                var data = ((X11IconData)icon).Data;
+                fixed (void* pdata = data)
+                    XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
+                        new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
+                        pdata, data.Length);
         //    }
-        //    else
-        //    {
-        //        XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
-        //    }
-        //}
+            else
+            {
+                XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON);
+            }
+        }
 
         public void ShowTaskbarIcon(bool value)
         {
@@ -1137,7 +1141,7 @@ namespace Modern.WindowKit.X11
                         newAtoms.Add(atom);
                     else
                         newAtoms.Remove(atom);
-
+            
                 XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_STATE, (IntPtr)Atom.XA_ATOM, 32,
                     PropertyMode.Replace, newAtoms.ToArray(), newAtoms.Count);
             }
@@ -1152,9 +1156,9 @@ namespace Modern.WindowKit.X11
         }
 
         public IPopupPositioner PopupPositioner { get; }
-        //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
-        //public INativeControlHostImpl NativeControlHost { get; }
-        //public ITextInputMethodImpl TextInputMethod => _ime;
+        public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
+        public INativeControlHostImpl NativeControlHost { get; }
+        public ITextInputMethodImpl TextInputMethod => _ime;
 
         public void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel) =>
             _transparencyHelper?.SetTransparencyRequest(transparencyLevel);
@@ -1163,7 +1167,8 @@ namespace Modern.WindowKit.X11
         {
         }
 
-        public WindowTransparencyLevel TransparencyLevel => _transparencyHelper.CurrentLevel;
+        public WindowTransparencyLevel TransparencyLevel =>
+            _transparencyHelper?.CurrentLevel ?? WindowTransparencyLevel.None;
 
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0.8, 0.8);
 

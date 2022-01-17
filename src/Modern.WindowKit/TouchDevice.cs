@@ -58,60 +58,57 @@ namespace Modern.WindowKit.Input
             //    }
             //    else
             //    {
-            //        var settings = AvaloniaLocator.Current.GetService<IPlatformSettings>();
-            //        if (settings == null)
-            //        {
-            //            throw new Exception("IPlatformSettings can not be null.");
-            //        }
-            //        if (!_lastClickRect.Contains(args.Position)
-            //            || ev.Timestamp - _lastClickTime > settings.DoubleClickTime.TotalMilliseconds)
-            //        {
-            //            _clickCount = 0;
-            //        }
-            //        ++_clickCount;
-            //        _lastClickTime = ev.Timestamp;
-            //        _lastClickRect = new Rect(args.Position, new Size())
-            //            .Inflate(new Thickness(16, 16));
-            //    }
+                    var settings = AvaloniaLocator.Current.GetRequiredService<IPlatformSettings>();
 
-            //    target.RaiseEvent(new PointerPressedEventArgs(target, pointer,
-            //        args.Root, args.Position, ev.Timestamp,
-            //        new PointerPointProperties(GetModifiers(args.InputModifiers, true),
-            //            PointerUpdateKind.LeftButtonPressed),
-            //        GetKeyModifiers(args.InputModifiers), _clickCount));
-            //}
+                    if (!_lastClickRect.Contains(args.Position)
+                        || ev.Timestamp - _lastClickTime > settings.TouchDoubleClickTime.TotalMilliseconds)
+                    {
+                        _clickCount = 0;
+                    }
+                    ++_clickCount;
+                    _lastClickTime = ev.Timestamp;
+                    _lastClickRect = new Rect(args.Position, new Size())
+                        .Inflate(new Thickness(settings.TouchDoubleClickSize.Width / 2, settings.TouchDoubleClickSize.Height / 2));
+                }
 
-            //if (args.Type == RawPointerEventType.TouchEnd)
+                target.RaiseEvent(new PointerPressedEventArgs(target, pointer,
+                    args.Root, args.Position, ev.Timestamp,
+                    new PointerPointProperties(GetModifiers(args.InputModifiers, true),
+                        PointerUpdateKind.LeftButtonPressed),
+                    GetKeyModifiers(args.InputModifiers), _clickCount));
+            }
+
+            if (args.Type == RawPointerEventType.TouchEnd)
+            {
+                _pointers.Remove(args.TouchPointId);
+                using (pointer)
             //{
-            //    _pointers.Remove(args.TouchPointId);
-            //    using (pointer)
-            //    {
-            //        target.RaiseEvent(new PointerReleasedEventArgs(target, pointer,
-            //            args.Root, args.Position, ev.Timestamp,
-            //            new PointerPointProperties(GetModifiers(args.InputModifiers, false),
-            //                PointerUpdateKind.LeftButtonReleased),
-            //            GetKeyModifiers(args.InputModifiers), MouseButton.Left));
-            //    }
+                    target.RaiseEvent(new PointerReleasedEventArgs(target, pointer,
+                        args.Root, args.Position, ev.Timestamp,
+                        new PointerPointProperties(GetModifiers(args.InputModifiers, false),
+                            PointerUpdateKind.LeftButtonReleased),
+                        GetKeyModifiers(args.InputModifiers), MouseButton.Left));
+                }
+            }
+
+            if (args.Type == RawPointerEventType.TouchCancel)
+            {
+                _pointers.Remove(args.TouchPointId);
+                using (pointer)
+                    pointer.Capture(null);
+            }
+
+            if (args.Type == RawPointerEventType.TouchUpdate)
+            {
+                var modifiers = GetModifiers(args.InputModifiers, pointer.IsPrimary);
+                target.RaiseEvent(new PointerEventArgs(InputElement.PointerMovedEvent, target, pointer, args.Root,
+                    args.Position, ev.Timestamp,
+                    new PointerPointProperties(GetModifiers(args.InputModifiers, true), PointerUpdateKind.Other),
+                    GetKeyModifiers(args.InputModifiers)));
+            }
+
+
             //}
-
-            //if (args.Type == RawPointerEventType.TouchCancel)
-            //{
-            //    _pointers.Remove(args.TouchPointId);
-            //    using (pointer)
-            //        pointer.Capture(null);
-            //}
-
-            //if (args.Type == RawPointerEventType.TouchUpdate)
-            //{
-            //    var modifiers = GetModifiers(args.InputModifiers, pointer.IsPrimary);
-            //    target.RaiseEvent(new PointerEventArgs(InputElement.PointerMovedEvent, target, pointer, args.Root,
-            //        args.Position, ev.Timestamp,
-            //        new PointerPointProperties(GetModifiers(args.InputModifiers, true), PointerUpdateKind.Other),
-            //        GetKeyModifiers(args.InputModifiers)));
-            //}
-
-
-        }
 
         public void Dispose()
         {
@@ -125,4 +122,4 @@ namespace Modern.WindowKit.Input
         }
 
     }
-}
+        }

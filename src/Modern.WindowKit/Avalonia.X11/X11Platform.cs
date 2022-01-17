@@ -68,20 +68,21 @@ namespace Modern.WindowKit.X11
             //TODO: log
             //if (options.UseDBusMenu)
             //    DBusHelper.TryInitialize();
-            //AvaloniaLocator.CurrentMutable.BindToSelf(this)
-            //    .Bind<IWindowingPlatform>().ToConstant(this)
-            //    .Bind<IPlatformThreadingInterface>().ToConstant(new X11PlatformThreading(this))
-            //    .Bind<IRenderTimer>().ToConstant(new SleepLoopRenderTimer(60))
-            //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
-            //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control))
-            //    .Bind<IKeyboardDevice>().ToFunc(() => KeyboardDevice)
-            //    .Bind<ICursorFactory>().ToConstant(new X11CursorFactory(Display))
-            //    .Bind<IClipboard>().ToConstant(new X11Clipboard(this))
-            //    .Bind<IPlatformSettings>().ToConstant(new PlatformSettingsStub())
-            //    .Bind<IPlatformIconLoader>().ToConstant(new X11IconLoader(Info))
-            //    .Bind<ISystemDialogImpl>().ToConstant(new GtkSystemDialog())
-            //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new LinuxMountedVolumeInfoProvider())
-            //    .Bind<IPlatformLifetimeEventsImpl>().ToConstant(new X11PlatformLifetimeEvents(this));
+
+            AvaloniaLocator.CurrentMutable.BindToSelf(this)
+                .Bind<IWindowingPlatform>().ToConstant(this)
+                .Bind<IPlatformThreadingInterface>().ToConstant(new X11PlatformThreading(this))
+                .Bind<IRenderTimer>().ToConstant(new SleepLoopRenderTimer(60))
+                .Bind<IRenderLoop>().ToConstant(new RenderLoop())
+                .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control))
+                .Bind<IKeyboardDevice>().ToFunc(() => KeyboardDevice)
+                .Bind<ICursorFactory>().ToConstant(new X11CursorFactory(Display))
+                .Bind<IClipboard>().ToConstant(new X11Clipboard(this))
+                .Bind<IPlatformSettings>().ToConstant(new PlatformSettingsStub())
+                .Bind<IPlatformIconLoader>().ToConstant(new X11IconLoader(Info))
+                .Bind<ISystemDialogImpl>().ToConstant(new GtkSystemDialog())
+                .Bind<IMountedVolumeInfoProvider>().ToConstant(new LinuxMountedVolumeInfoProvider())
+                .Bind<IPlatformLifetimeEventsImpl>().ToConstant(new X11PlatformLifetimeEvents(this));
             
             X11Screens = X11.X11Screens.Init(this);
             Screens = new X11Screens(X11Screens);
@@ -92,38 +93,38 @@ namespace Modern.WindowKit.X11
                     XI2 = xi2;
             }
 
-            //if (options.UseGpu)
-            //{
-            //    if (options.UseEGL)
-            //        EglPlatformOpenGlInterface.TryInitialize();
-            //    else
-            //        GlxPlatformOpenGlInterface.TryInitialize(Info, Options.GlProfiles);
-            //}
-
+            if (options.UseGpu)
+            {
+                if (options.UseEGL)
+                    EglPlatformOpenGlInterface.TryInitialize();
+                else
+                    GlxPlatformOpenGlInterface.TryInitialize(Info, Options.GlProfiles);
+            }
+            
             
         }
 
         public IntPtr DeferredDisplay { get; set; }
         public IntPtr Display { get; set; }
 
-        //private static uint[] X11IconConverter(IWindowIconImpl icon)
-        //{
-        //    if (!(icon is X11IconData x11icon))
-        //        return Array.Empty<uint>();
+        private static uint[] X11IconConverter(IWindowIconImpl icon)
+        {
+            if (!(icon is X11IconData x11icon))
+                return Array.Empty<uint>();
 
-        //    return x11icon.Data.Select(x => x.ToUInt32()).ToArray();
-        //}
+            return x11icon.Data.Select(x => x.ToUInt32()).ToArray();
+        }
 
-        //public ITrayIconImpl CreateTrayIcon()
-        //{
-        //    var dbusTrayIcon = new DBusTrayIconImpl();
+        public ITrayIconImpl CreateTrayIcon()
+        {
+            var dbusTrayIcon = new DBusTrayIconImpl();
 
-        //    if (!dbusTrayIcon.IsActive) return new XEmbedTrayIconImpl();
+            if (!dbusTrayIcon.IsActive) return new XEmbedTrayIconImpl();
 
-        //    dbusTrayIcon.IconConverterDelegate = X11IconConverter;
+            dbusTrayIcon.IconConverterDelegate = X11IconConverter;
 
-        //    return dbusTrayIcon;
-        //}
+            return dbusTrayIcon;
+        }
         
         public IWindowImpl CreateWindow()
         {
@@ -181,8 +182,8 @@ namespace Modern.WindowKit.X11
                 return true;
             
             return false;
-        }
     }
+}
 }
 
 namespace Modern.WindowKit
@@ -244,15 +245,15 @@ namespace Modern.WindowKit
         public bool EnableSessionManagement { get; set; } = 
             Environment.GetEnvironmentVariable("AVALONIA_X11_USE_SESSION_MANAGEMENT") != "0";
         
-        //public IList<GlVersion> GlProfiles { get; set; } = new List<GlVersion>
-        //{
-        //    new GlVersion(GlProfileType.OpenGL, 4, 0),
-        //    new GlVersion(GlProfileType.OpenGL, 3, 2),
-        //    new GlVersion(GlProfileType.OpenGL, 3, 0),
-        //    new GlVersion(GlProfileType.OpenGLES, 3, 2),
-        //    new GlVersion(GlProfileType.OpenGLES, 3, 0),
-        //    new GlVersion(GlProfileType.OpenGLES, 2, 0)
-        //};
+        public IList<GlVersion> GlProfiles { get; set; } = new List<GlVersion>
+        {
+            new GlVersion(GlProfileType.OpenGL, 4, 0),
+            new GlVersion(GlProfileType.OpenGL, 3, 2),
+            new GlVersion(GlProfileType.OpenGL, 3, 0),
+            new GlVersion(GlProfileType.OpenGLES, 3, 2),
+            new GlVersion(GlProfileType.OpenGLES, 3, 0),
+            new GlVersion(GlProfileType.OpenGLES, 2, 0)
+        };
 
         public IList<string> GlxRendererBlacklist { get; set; } = new List<string>
         {
@@ -273,13 +274,13 @@ namespace Modern.WindowKit
     }
     public static class AvaloniaX11PlatformExtensions
     {
-        //public static T UseX11<T>(this T builder) where T : AppBuilderBase<T>, new()
-        //{
-        //    builder.UseWindowingSubsystem(() =>
-        //        new AvaloniaX11Platform().Initialize(AvaloniaLocator.Current.GetService<X11PlatformOptions>() ??
-        //                                             new X11PlatformOptions()));
-        //    return builder;
-        //}
+        public static T UseX11<T>(this T builder) where T : AppBuilderBase<T>, new()
+        {
+            builder.UseWindowingSubsystem(() =>
+                new AvaloniaX11Platform().Initialize(AvaloniaLocator.Current.GetService<X11PlatformOptions>() ??
+                                                     new X11PlatformOptions()));
+            return builder;
+        }
 
         public static void InitializeX11Platform(X11PlatformOptions options = null) =>
             new AvaloniaX11Platform().Initialize(options ?? new X11PlatformOptions());
