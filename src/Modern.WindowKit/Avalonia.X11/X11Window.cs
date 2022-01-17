@@ -341,9 +341,13 @@ namespace Modern.WindowKit.X11
 
         public Action<WindowTransparencyLevel> TransparencyLevelChanged
         {
-            get => _transparencyHelper.TransparencyLevelChanged;
-            set => _transparencyHelper.TransparencyLevelChanged = value;
-        }        
+            get => _transparencyHelper?.TransparencyLevelChanged;
+            set
+            {
+                if (_transparencyHelper != null)
+                    _transparencyHelper.TransparencyLevelChanged = value;
+            }
+        }
 
         public Action<bool> ExtendClientAreaToDecorationsChanged { get; set; }
 
@@ -1163,10 +1167,11 @@ namespace Modern.WindowKit.X11
         {
         }
 
-        public WindowTransparencyLevel TransparencyLevel => _transparencyHelper.CurrentLevel;
+        public WindowTransparencyLevel TransparencyLevel =>
+            _transparencyHelper?.CurrentLevel ?? WindowTransparencyLevel.None;
 
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0.8, 0.8);
 
         public bool NeedsManagedDecorations => false;
-    }
+}
 }
