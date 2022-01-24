@@ -90,6 +90,7 @@ namespace Modern.WindowKit.Win32
         private bool _shown;
         private bool _hiddenWindowIsParent;
         private uint _langid;
+        private bool _ignoreWmChar;
 
         public WindowImpl()
         {
@@ -112,43 +113,43 @@ namespace Modern.WindowKit.Win32
                 IsResizable = true,
                 Decorations = SystemDecorations.Full
             };
-            //_rendererLock = new ManagedDeferredRendererLock();
+            _rendererLock = new ManagedDeferredRendererLock();
 
-            //var glPlatform = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
+            var glPlatform = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
 
-            //var compositionConnector = AvaloniaLocator.Current.GetService<WinUICompositorConnection>();
+            var compositionConnector = AvaloniaLocator.Current.GetService<WinUICompositorConnection>();
 
-            //_isUsingComposition = compositionConnector is { } &&
-            //    glPlatform is EglPlatformOpenGlInterface egl &&
-            //        egl.Display is AngleWin32EglDisplay angleDisplay &&
-            //        angleDisplay.PlatformApi == AngleOptions.PlatformApi.DirectX11;
+            _isUsingComposition = compositionConnector is { } &&
+                glPlatform is EglPlatformOpenGlInterface egl &&
+                    egl.Display is AngleWin32EglDisplay angleDisplay &&
+                    angleDisplay.PlatformApi == AngleOptions.PlatformApi.DirectX11;
 
             CreateWindow();
             _framebuffer = new FramebufferManager(_hwnd);
             UpdateInputMethod(GetKeyboardLayout(0));
-            //if (glPlatform != null)
-            //{
-            //    if (_isUsingComposition)
-            //    {
-            //        var cgl = new WinUiCompositedWindowSurface(compositionConnector, this);
-            //        _blurHost = cgl;
+            if (glPlatform != null)
+            {
+                if (_isUsingComposition)
+                {
+                    var cgl = new WinUiCompositedWindowSurface(compositionConnector, this);
+                    _blurHost = cgl;
 
-            //        _gl = cgl;
+                    _gl = cgl;
 
-            //        _isUsingComposition = true;
-            //    }
-            //    else
-            //    {
-            //        if (glPlatform is EglPlatformOpenGlInterface egl2)
-            //            _gl = new EglGlPlatformSurface(egl2, this);
-            //        else if (glPlatform is WglPlatformOpenGlInterface wgl)
-            //            _gl = new WglGlPlatformSurface(wgl.PrimaryContext, this);
-            //    }
+                    _isUsingComposition = true;
+                }
+                else
+                {
+                    if (glPlatform is EglPlatformOpenGlInterface egl2)
+                        _gl = new EglGlPlatformSurface(egl2, this);
+                    else if (glPlatform is WglPlatformOpenGlInterface wgl)
+                        _gl = new WglGlPlatformSurface(wgl.PrimaryContext, this);
             //}
+            }
 
             Screen = new ScreenImpl();
 
-            //_nativeControlHost = new Win32NativeControlHost(this, _isUsingComposition);
+            _nativeControlHost = new Win32NativeControlHost(this, _isUsingComposition);
             s_instances.Add(this);
         }
 
@@ -194,13 +195,13 @@ namespace Modern.WindowKit.Win32
                     else
                     {
                         throw new Win32Exception();
-                    }
+                }
                 }
                 else
                 {
                     return new Thickness();
-                }
             }
+        }
         }
 
         public double RenderScaling => _scaling;
@@ -214,7 +215,7 @@ namespace Modern.WindowKit.Win32
                 GetClientRect(_hwnd, out var rect);
 
                 return new Size(rect.right, rect.bottom) / RenderScaling;
-            }
+        }
         }
 
         public Size? FrameSize
@@ -229,7 +230,7 @@ namespace Modern.WindowKit.Win32
 
                 DwmGetWindowAttribute(_hwnd, (int)DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out var rect, Marshal.SizeOf(typeof(RECT)));
                 return new Size(rect.Width, rect.Height) / RenderScaling;
-            }
+        }
         }
 
         public IScreenImpl Screen { get; }
@@ -268,7 +269,7 @@ namespace Modern.WindowKit.Win32
                 }
 
                 _showWindowState = value;                
-            }
+        }
         }
 
         public WindowTransparencyLevel TransparencyLevel { get; private set; }
@@ -299,12 +300,12 @@ namespace Modern.WindowKit.Win32
                 else
                 {
                     return Win7EnableBlur(transparencyLevel);
-                }
+            }
             }
             else
             {
                 return WindowTransparencyLevel.None;
-            }
+        }
         }
 
         private WindowTransparencyLevel Win7EnableBlur(WindowTransparencyLevel transparencyLevel)
@@ -330,7 +331,7 @@ namespace Modern.WindowKit.Win32
             else
             {
                 return transparencyLevel;
-            }
+        }
         }
 
         private WindowTransparencyLevel Win8xEnableBlur(WindowTransparencyLevel transparencyLevel)
@@ -436,10 +437,10 @@ namespace Modern.WindowKit.Win32
                 Marshal.FreeHGlobal(accentPtr);
 
                 return transparencyLevel;
-            }
+        }
         }
 
-        //public IEnumerable<object> Surfaces => new object[] { Handle, _gl, _framebuffer };
+        public IEnumerable<object> Surfaces => new object[] { Handle, _gl, _framebuffer };
 
         public PixelPoint Position
         {
@@ -459,7 +460,7 @@ namespace Modern.WindowKit.Win32
                     0,
                     0,
                     SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER);
-            }
+        }
         }
 
         private bool HasFullDecorations => _windowProperties.Decorations == SystemDecorations.Full;
@@ -472,23 +473,23 @@ namespace Modern.WindowKit.Win32
             _maxSize = maxSize;
         }
 
-        //public IRenderer CreateRenderer(IRenderRoot root)
-        //{
-        //    var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-        //    var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+        public IRenderer CreateRenderer(IRenderRoot root)
+        {
+            var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+            var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
 
-        //    if (customRendererFactory != null)
-        //        return customRendererFactory.Create(root, loop);
+            if (customRendererFactory != null)
+                return customRendererFactory.Create(root, loop);
 
-        //    return Win32Platform.UseDeferredRendering 
-        //        ?  _isUsingComposition 
-        //            ? new DeferredRenderer(root, loop)
-        //            {
-        //                RenderOnlyOnRenderThread = true
-        //            } 
-        //            : (IRenderer)new DeferredRenderer(root, loop, rendererLock: _rendererLock)
-        //        : new ImmediateRenderer(root);
-        //}
+            return Win32Platform.UseDeferredRendering 
+                ?  _isUsingComposition 
+                    ? new DeferredRenderer(root, loop)
+                    {
+                        RenderOnlyOnRenderThread = true
+                    } 
+                    : (IRenderer)new DeferredRenderer(root, loop, rendererLock: _rendererLock)
+                : new ImmediateRenderer(root);
+        }
 
         public void Resize(Size value, PlatformResizeReason reason)
         {
@@ -511,7 +512,7 @@ namespace Modern.WindowKit.Win32
                     requestedClientWidth + (_isClientAreaExtended ? 0 : windowRect.Width - clientRect.Width),
                     requestedClientHeight + (_isClientAreaExtended ? 0 : windowRect.Height - clientRect.Height),
                     SetWindowPosFlags.SWP_RESIZE);
-            }
+        }
         }
 
         public void Activate()
@@ -523,13 +524,13 @@ namespace Modern.WindowKit.Win32
 
         public void Dispose()
         {
-            //(_gl as IDisposable)?.Dispose();
+            (_gl as IDisposable)?.Dispose();
 
-            //if (_dropTarget != null)
-            //{
-            //    OleContext.Current?.UnregisterDragDrop(Handle);
-            //    _dropTarget = null;
-            //}
+            if (_dropTarget != null)
+            {
+                OleContext.Current?.UnregisterDragDrop(Handle);
+                _dropTarget = null;
+            }
 
             if (_hwnd != IntPtr.Zero)
             {
@@ -550,7 +551,7 @@ namespace Modern.WindowKit.Win32
                 _className = null;
             }
 
-            //_framebuffer.Dispose();
+            _framebuffer.Dispose();
         }
 
         public void Invalidate(Rect rect)
@@ -621,10 +622,10 @@ namespace Modern.WindowKit.Win32
 
         public void BeginMoveDrag(PointerPressedEventArgs e)
         {
-            //_mouseDevice.Capture(null);
+            _mouseDevice.Capture(null);
             DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
                 new IntPtr((int)HitTestValues.HTCAPTION), IntPtr.Zero);
-            //e.Pointer.Capture(null);
+            e.Pointer.Capture(null);
         }
 
         public void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e)
@@ -632,7 +633,7 @@ namespace Modern.WindowKit.Win32
 #if USE_MANAGED_DRAG
             _managedDrag.BeginResizeDrag(edge, ScreenToClient(MouseDevice.Position.ToPoint(_scaling)));
 #else
-            //_mouseDevice.Capture(null);
+            _mouseDevice.Capture(null);
             DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
                 new IntPtr((int)s_edgeLookup[edge]), IntPtr.Zero);
 #endif
@@ -652,20 +653,20 @@ namespace Modern.WindowKit.Win32
                 var hCursor = impl?.Handle ?? DefaultCursor;
                 SetClassLong(_hwnd, ClassLongIndex.GCLP_HCURSOR, hCursor);
 
-                //if (_owner.IsPointerOver)
-                //{
-                //    UnmanagedMethods.SetCursor(hCursor);
-                //}
+                if (_owner.IsPointerOver)
+                {
+                    UnmanagedMethods.SetCursor(hCursor);
             }
         }
+        }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    var impl = (IconImpl)icon;
-        //    var hIcon = impl?.HIcon ?? IntPtr.Zero;
-        //    PostMessage(_hwnd, (int)WindowsMessage.WM_SETICON,
-        //        new IntPtr((int)Icons.ICON_BIG), hIcon);
-        //}
+        public void SetIcon(IWindowIconImpl icon)
+        {
+            var impl = (IconImpl)icon;
+            var hIcon = impl?.HIcon ?? IntPtr.Zero;
+            PostMessage(_hwnd, (int)WindowsMessage.WM_SETICON,
+                new IntPtr((int)Icons.ICON_BIG), hIcon);
+        }
 
         public void ShowTaskbarIcon(bool value)
         {
@@ -784,18 +785,18 @@ namespace Modern.WindowKit.Win32
                     out var dpiy) == 0)
                 {
                     _scaling = dpix / 96.0;
-                }
             }
+        }
         }
 
         private void CreateDropTarget()
         {
-            //var odt = new OleDropTarget(this, _owner);
+            var odt = new OleDropTarget(this, _owner);
 
-            //if (OleContext.Current?.RegisterDragDrop(Handle, odt) ?? false)
-            //{
-            //    _dropTarget = odt;
-            //}
+            if (OleContext.Current?.RegisterDragDrop(Handle, odt) ?? false)
+            {
+                _dropTarget = odt;
+        }
         }
 
         /// <summary>
@@ -854,7 +855,7 @@ namespace Modern.WindowKit.Win32
                 UpdateWindowProperties(_windowProperties, true);
             }
 
-            //TaskBarList.MarkFullscreen(_hwnd, fullscreen);
+            TaskBarList.MarkFullscreen(_hwnd, fullscreen);
             
             ExtendClientArea();
         }
@@ -1006,11 +1007,11 @@ namespace Modern.WindowKit.Win32
                 MaximizeWithoutCoveringTaskbar();
             }
 
-            //if (!Design.IsDesignMode && activate)
-            //{
-            //    SetFocus(_hwnd);
-            //    SetForegroundWindow(_hwnd);
-            //}
+            if (!Design.IsDesignMode && activate)
+            {
+                SetFocus(_hwnd);
+                SetForegroundWindow(_hwnd);
+        }
         }
         
         private void BeforeCloseCleanup(bool isDisposing)
@@ -1035,8 +1036,8 @@ namespace Modern.WindowKit.Win32
                 if (wasActive)
                 {
                     SetActiveWindow(_parent._hwnd);
-                }
             }
+        }
         }
 
         private void MaximizeWithoutCoveringTaskbar()
@@ -1055,8 +1056,8 @@ namespace Modern.WindowKit.Win32
                     var cy = Math.Abs(monitorInfo.rcWork.bottom - y);
 
                     SetWindowPos(_hwnd, WindowPosZOrder.HWND_NOTOPMOST, x, y, cx, cy, SetWindowPosFlags.SWP_SHOWWINDOW);
-                }
             }
+        }        
         }        
 
         private WindowStyles GetWindowStateStyles()
@@ -1073,7 +1074,7 @@ namespace Modern.WindowKit.Win32
             else
             {
                 return (WindowStyles)GetWindowLong(_hwnd, (int)WindowLongParam.GWL_STYLE);
-            }
+        }
         }
 
         private WindowStyles GetExtendedStyle()
@@ -1085,7 +1086,7 @@ namespace Modern.WindowKit.Win32
             else
             {
                 return (WindowStyles)GetWindowLong(_hwnd, (int)WindowLongParam.GWL_EXSTYLE);
-            }
+        }
         }
 
         private void SetStyle(WindowStyles style, bool save = true)
@@ -1098,7 +1099,7 @@ namespace Modern.WindowKit.Win32
             if (!_isFullScreenActive)
             {
                 SetWindowLong(_hwnd, (int)WindowLongParam.GWL_STYLE, (uint)style);
-            }
+        }
         }
 
         private void SetExtendedStyle(WindowStyles style, bool save = true)
@@ -1111,7 +1112,7 @@ namespace Modern.WindowKit.Win32
             if (!_isFullScreenActive)
             {
                 SetWindowLong(_hwnd, (int)WindowLongParam.GWL_EXSTYLE, (uint)style);
-            }
+        }
         }
 
         private void UpdateWindowProperties(WindowProperties newProperties, bool forceChanges = false)
@@ -1146,7 +1147,7 @@ namespace Modern.WindowKit.Win32
 
                         if (shown)
                             Show(activated, false);
-                    }
+                }
                 }
                 else
                 {
@@ -1233,8 +1234,8 @@ namespace Modern.WindowKit.Win32
                     SetWindowPos(_hwnd, IntPtr.Zero, newRect.left, newRect.top, newRect.Width, newRect.Height,
                         SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOACTIVATE |
                         SetWindowPosFlags.SWP_FRAMECHANGED);
-                }
             }            
+        }
         }
 
         private const int MF_BYCOMMAND = 0x0;
@@ -1265,21 +1266,21 @@ namespace Modern.WindowKit.Win32
         }
 #endif
 
-        //PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
-        //{
-        //    get
-        //    {
-        //        GetClientRect(_hwnd, out var rect);
+        PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
+        {
+            get
+            {
+                GetClientRect(_hwnd, out var rect);
 
-        //        return new PixelSize(
-        //            Math.Max(1, rect.right - rect.left),
-        //            Math.Max(1, rect.bottom - rect.top));
-        //    }
+                return new PixelSize(
+                    Math.Max(1, rect.right - rect.left),
+                    Math.Max(1, rect.bottom - rect.top));
         //}
+        }
 
-        //double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
+        double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
 
-        //IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
+        IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
 
         public void SetExtendClientAreaToDecorationsHint(bool hint)
         {
@@ -1357,6 +1358,6 @@ namespace Modern.WindowKit.Win32
             public void Dispose() => _owner._resizeReason = _restore;
         }
 
-        //public ITextInputMethodImpl TextInputMethod => Imm32InputMethod.Current;
-    }
+        public ITextInputMethodImpl TextInputMethod => Imm32InputMethod.Current;
+}
 }

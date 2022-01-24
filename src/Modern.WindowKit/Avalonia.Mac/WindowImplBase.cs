@@ -306,11 +306,28 @@ namespace Modern.WindowKit.Native
             switch (type)
             {
                 case AvnRawMouseEventType.Wheel:
-                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, _inputRoot, point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, _inputRoot,
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    break;
+                
+                case AvnRawMouseEventType.Magnify:
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Magnify, 
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    break;
+                    
+                case AvnRawMouseEventType.Rotate:
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Rotate, 
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    break;
+
+                case AvnRawMouseEventType.Swipe:
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Swipe,
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
 
                 default:
-                    var e = new RawPointerEventArgs(_mouse, timeStamp, _inputRoot, (RawPointerEventType)type, point.ToAvaloniaPoint(), (RawInputModifiers)modifiers);
+                    var e = new RawPointerEventArgs(_mouse, timeStamp, _inputRoot, (RawPointerEventType)type,
+                        point.ToAvaloniaPoint(), (RawInputModifiers)modifiers);
                     
                     if(!ChromeHitTest(e))
                     {
@@ -318,27 +335,27 @@ namespace Modern.WindowKit.Native
                     }
                     break;
             }
-        }
+        //    }
 
         public void Resize(Size clientSize, PlatformResizeReason reason)
         {
             _native?.Resize(clientSize.Width, clientSize.Height, (AvnPlatformResizeReason)reason);
         }
 
-        //public IRenderer CreateRenderer(IRenderRoot root)
-        //{
-        //    if (_deferredRendering)
-        //    {
-        //        var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-        //        var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+        public IRenderer CreateRenderer(IRenderRoot root)
+        {
+            if (_deferredRendering)
+            {
+                var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+                var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+            
+                if (customRendererFactory != null)
+                    return customRendererFactory.Create(root, loop);
+                return new DeferredRenderer(root, loop);
+            }
 
-        //        if (customRendererFactory != null)
-        //            return customRendererFactory.Create(root, loop);
-        //        return new DeferredRenderer(root, loop);
-        //    }
-
-        //    return new ImmediateRenderer(root);
-        //}
+            return new ImmediateRenderer(root);
+        }
 
         public virtual void Dispose()
         {
@@ -346,8 +363,8 @@ namespace Modern.WindowKit.Native
             _native?.Dispose();
             _native = null;
 
-            //_nativeControlHost?.Dispose();
-            //_nativeControlHost = null;
+            _nativeControlHost?.Dispose();
+            _nativeControlHost = null;
             
             (Screen as ScreenImpl)?.Dispose();
             _mouse.Dispose();
@@ -418,7 +435,7 @@ namespace Modern.WindowKit.Native
             {
                 return;
             }
-            
+
             var newCursor = cursor as AvaloniaNativeCursor;
             newCursor = newCursor ?? (_cursorFactory.GetCursor(StandardCursorType.Arrow) as AvaloniaNativeCursor);
             _native.SetCursor(newCursor.Cursor);

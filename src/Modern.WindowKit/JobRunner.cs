@@ -121,11 +121,26 @@ namespace Modern.WindowKit.Threading
             return null;
         }
 
+        public bool HasJobsWithPriority(DispatcherPriority minimumPriority)
+        {
+            for (int c = (int)minimumPriority; c < (int)DispatcherPriority.MaxValue; c++)
+            {
+                var q = _queues[c];
+                lock (q)
+                {
+                    if (q.Count > 0)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         private interface IJob
         {
-        /// <summary>
+            /// <summary>
             /// Gets the job priority.
-        /// </summary>
+            /// </summary>
             DispatcherPriority Priority { get; }
 
             /// <summary>
@@ -134,12 +149,12 @@ namespace Modern.WindowKit.Threading
             void Run();
         }
 
-            /// </summary>
+        /// <summary>
         /// A job to run.
         /// </summary>
         private sealed class Job : IJob
         {
-            /// </summary>
+            /// <summary>
             /// The method to call.
             /// </summary>
             private readonly Action _action;
@@ -176,7 +191,7 @@ namespace Modern.WindowKit.Threading
                 {
                     _action();
                     return;
-        }
+                }
                 try
                 {
                     _action();
@@ -201,7 +216,7 @@ namespace Modern.WindowKit.Threading
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Job"/> class.
-            /// <summary>
+            /// </summary>
             /// <param name="action">The method to call.</param>
             /// <param name="parameter">The parameter of method to call.</param>
             /// <param name="priority">The job priority.</param>
@@ -213,7 +228,7 @@ namespace Modern.WindowKit.Threading
                 _parameter = parameter;
                 Priority = priority;
                 _taskCompletionSource = throwOnUiThread ? null : new TaskCompletionSource<bool>();
-                }
+            }
 
             /// <inheritdoc/>
             public DispatcherPriority Priority { get; }
