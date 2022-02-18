@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Modern.WindowKit.Platform;
 
-namespace Modern.WindowKit.Shared.PlatformSupport
+namespace Modern.WindowKit.PlatformSupport
 {
-    internal partial class StandardRuntimePlatform : IRuntimePlatform
+    internal class StandardRuntimePlatform : IRuntimePlatform
     {
         public IDisposable StartSystemTimer(TimeSpan interval, Action tick)
         {
@@ -16,15 +15,15 @@ namespace Modern.WindowKit.Shared.PlatformSupport
         }
 
         public IUnmanagedBlob AllocBlob(int size) => new UnmanagedBlob(this, size);
-        
-        class UnmanagedBlob : IUnmanagedBlob
+
+        private class UnmanagedBlob : IUnmanagedBlob
         {
             private readonly StandardRuntimePlatform _plat;
             private IntPtr _address;
             private readonly object _lock = new object();
 #if DEBUG
             private static readonly List<string> Backtraces = new List<string>();
-            private static Thread GCThread;
+            private static Thread? GCThread;
             private readonly string _backtrace;
             private static readonly object _btlock = new object();
 
@@ -44,9 +43,8 @@ namespace Modern.WindowKit.Shared.PlatformSupport
                 Spawn();
                 GC.WaitForPendingFinalizers();
             }
-            
 #endif
-            
+
             public UnmanagedBlob(StandardRuntimePlatform plat, int size)
             {
                 try
@@ -122,9 +120,7 @@ namespace Modern.WindowKit.Shared.PlatformSupport
             public bool IsDisposed { get; private set; }
         }
         
-        
-        
-#if NET461 || NETCOREAPP2_0
+#if NET461 || NETCOREAPP2_0_OR_GREATER
         [DllImport("libc", SetLastError = true)]
         private static extern IntPtr mmap(IntPtr addr, IntPtr length, int prot, int flags, int fd, IntPtr offset);
         [DllImport("libc", SetLastError = true)]
@@ -169,5 +165,54 @@ namespace Modern.WindowKit.Shared.PlatformSupport
         IntPtr Alloc(int size) => Marshal.AllocHGlobal(size);
         void Free(IntPtr ptr, int len) => Marshal.FreeHGlobal(ptr);
 #endif
+
+        private static readonly Lazy<RuntimePlatformInfo> Info = new Lazy<RuntimePlatformInfo>(() =>
+        {
+            OperatingSystemType os;
+
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsWindows())
+                os = OperatingSystemType.WinNT;
+            else if (OperatingSystem.IsMacOS())
+                os = OperatingSystemType.OSX;
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsFreeBSD())
+                os = OperatingSystemType.Linux;
+            else if (OperatingSystem.IsAndroid())
+                os = OperatingSystemType.Android;
+            else if (OperatingSystem.IsIOS())
+                os = OperatingSystemType.iOS;
+            else if (OperatingSystem.IsBrowser())
+                os = OperatingSystemType.Browser;
+            else
+                throw new Exception("Unknown OS platform " + RuntimeInformation.OSDescription);
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                os = OperatingSystemType.OSX;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                os = OperatingSystemType.Linux;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                os = OperatingSystemType.WinNT;
+            else
+                throw new Exception("Unknown OS platform " + RuntimeInformation.OSDescription);
+#endif
+
+            return new RuntimePlatformInfo
+            {
+#if NETCOREAPP
+                IsCoreClr = true,
+#elif NETFRAMEWORK
+                IsDotNetFramework = true,
+#endif
+                IsDesktop = os == OperatingSystemType.Linux || os == OperatingSystemType.OSX || os == OperatingSystemType.WinNT,
+                IsMono = os == OperatingSystemType.Android || os == OperatingSystemType.iOS || os == OperatingSystemType.Browser,
+                IsMobile = os == OperatingSystemType.Android || os == OperatingSystemType.iOS,
+                IsUnix = os == OperatingSystemType.Linux || os == OperatingSystemType.OSX || os == OperatingSystemType.Android,
+                IsBrowser = os == OperatingSystemType.Browser,
+                OperatingSystem = os,
+            };
+        });
+
+
+        public virtual RuntimePlatformInfo GetRuntimeInfo() => Info.Value;
     }
 }

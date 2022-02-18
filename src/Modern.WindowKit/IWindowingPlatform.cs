@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Modern.WindowKit.Platform
+﻿namespace Modern.WindowKit.Platform
 {
     public interface IWindowingPlatform
     {

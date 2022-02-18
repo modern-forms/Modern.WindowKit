@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 
-#nullable enable
-
 namespace Modern.WindowKit.Controls.Platform
 {
     /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
-using Modern.WindowKit.Shared.PlatformSupport;
+using Modern.WindowKit.PlatformSupport;
 using Modern.WindowKit.Win32;
 using Modern.WindowKit.X11;
 
