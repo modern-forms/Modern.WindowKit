@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls.Platform;
 
-#nullable enable
-
 namespace Modern.WindowKit.Controls
 {
     /// <summary>
@@ -55,6 +53,11 @@ namespace Modern.WindowKit.Controls
         public string? DefaultExtension { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to display a warning if the user specifies the name of a file that already exists.
+        /// </summary>
+        public bool? ShowOverwritePrompt { get; set; }
+
+        /// <summary>
         /// Shows the save file dialog.
         /// </summary>
         /// <param name="parent">The parent window.</param>
@@ -72,9 +75,9 @@ namespace Modern.WindowKit.Controls
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Represents a system dialog that allows the user to select one or more files to open.
-    /// </summary>
+        /// </summary>
     public class OpenFileDialog : FileDialog
     {
         /// <summary>
@@ -129,9 +132,9 @@ namespace Modern.WindowKit.Controls
     }
 
 
-    /// <summary>
+        /// <summary>
     /// Base class for system dialogs.
-    /// </summary>
+        /// </summary>
     public abstract class SystemDialog
     {
         /// <summary>
@@ -140,9 +143,9 @@ namespace Modern.WindowKit.Controls
         public string? Title { get; set; }
     }
 
-    /// <summary>
+        /// <summary>
     /// Represents a filter in an <see cref="OpenFileDialog"/> or an <see cref="SaveFileDialog"/>.
-    /// </summary>
+        /// </summary>
     public class FileDialogFilter
     {
         /// <summary>

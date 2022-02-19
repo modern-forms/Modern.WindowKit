@@ -4,10 +4,10 @@ namespace Modern.WindowKit.Platform
 {
     public class LockedFramebuffer : ILockedFramebuffer
     {
-        private readonly Action _onDispose;
+        private readonly Action? _onDispose;
 
         public LockedFramebuffer(IntPtr address, PixelSize size, int rowBytes, Vector dpi, PixelFormat format,
-            Action onDispose)
+            Action? onDispose)
         {
             _onDispose = onDispose;
             Address = address;

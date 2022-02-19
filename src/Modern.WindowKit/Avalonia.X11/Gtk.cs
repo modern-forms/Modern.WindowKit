@@ -63,7 +63,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
         public static IDisposable ConnectSignal<T>(IntPtr obj, string name, T handler)
         {
             var handle = GCHandle.Alloc(handler);
-            var ptr = Marshal.GetFunctionPointerForDelegate((Delegate)(object)handler);
+            var ptr = Marshal.GetFunctionPointerForDelegate<T>(handler);
             using (var utf = new Utf8Buffer(name))
             {
                 var id = g_signal_connect_object(obj, utf, ptr, IntPtr.Zero, 0);
@@ -181,6 +181,9 @@ namespace Modern.WindowKit.X11.NativeDialogs
         public static extern void gtk_file_chooser_set_select_multiple(IntPtr chooser, bool allow);
 
         [DllImport(GtkName)]
+        public static extern void gtk_file_chooser_set_do_overwrite_confirmation(IntPtr chooser, bool do_overwrite_confirmation);
+
+        [DllImport(GtkName)]
         public static extern void
             gtk_dialog_add_button(IntPtr raw, Utf8Buffer button_text, GtkResponseType response_id);
 
@@ -189,7 +192,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
 
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_filename(IntPtr chooser, Utf8Buffer file);
-
+        
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_current_name(IntPtr chooser, Utf8Buffer file);
         
@@ -201,16 +204,16 @@ namespace Modern.WindowKit.X11.NativeDialogs
         
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_filter_add_pattern(IntPtr filter, Utf8Buffer pattern);
-        
+
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_chooser_add_filter(IntPtr chooser, IntPtr filter);
-
+        
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_chooser_get_filter(IntPtr chooser);
         
         [DllImport(GtkName)]
         public static extern void gtk_widget_realize(IntPtr gtkWidget);
-        
+
         [DllImport(GtkName)]
         public static extern void gtk_widget_destroy(IntPtr gtkWidget);
 
@@ -222,10 +225,10 @@ namespace Modern.WindowKit.X11.NativeDialogs
 
         [DllImport(GtkName)]
         static extern bool gtk_init_check(int argc, IntPtr argv);
-
+        
         [DllImport(GdkName)]
         static extern IntPtr gdk_x11_window_foreign_new_for_display(IntPtr display, IntPtr xid);
-        
+
         [DllImport(GdkName)]
         public static extern IntPtr gdk_x11_window_get_xid(IntPtr window);
 
@@ -248,7 +251,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
         public static IntPtr GetForeignWindow(IntPtr xid) => gdk_x11_window_foreign_new_for_display(s_display, xid);
 
         public static Task<bool> StartGtk()
-        {
+            {
             var tcs = new TaskCompletionSource<bool>();
             new Thread(() =>
             {

@@ -23,7 +23,7 @@ namespace Modern.WindowKit.Platform
         /// Sets the title of the window.
         /// </summary>
         /// <param name="title">The title.</param>
-        void SetTitle(string title);
+        void SetTitle(string? title);
 
         /// <summary>
         /// Sets the parent of the window.

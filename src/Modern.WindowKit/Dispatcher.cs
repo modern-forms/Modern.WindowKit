@@ -75,13 +75,20 @@ namespace Modern.WindowKit.Threading
         /// <param name="minimumPriority"></param>
         public void RunJobs(DispatcherPriority minimumPriority) => _jobRunner.RunJobs(minimumPriority);
 
+        /// <summary>
+        /// Use this method to check if there are more prioritized tasks
+        /// </summary>
+        /// <param name="minimumPriority"></param>
+        public bool HasJobsWithPriority(DispatcherPriority minimumPriority) =>
+            _jobRunner.HasJobsWithPriority(minimumPriority);
+        
         /// <inheritdoc/>
         public Task InvokeAsync(Action action, DispatcherPriority priority = DispatcherPriority.Normal)
         {
             _ = action ?? throw new ArgumentNullException(nameof(action));
             return _jobRunner.InvokeAsync(action, priority);
         }
-        
+
         /// <inheritdoc/>
         public Task<TResult> InvokeAsync<TResult>(Func<TResult> function, DispatcherPriority priority = DispatcherPriority.Normal)
         {

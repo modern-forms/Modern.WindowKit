@@ -66,6 +66,7 @@ CopyFile ("Avalonia.Visuals/Media/PixelSize.cs", "PixelSize.cs");
 CopyFile ("Avalonia.Base/Platform/PlatformHandle.cs", "PlatformHandle.cs");
 CopyFile ("Avalonia.Visuals/Point.cs", "Point.cs");
 CopyFile ("Avalonia.Input/Pointer.cs", "Pointer.cs");
+CopyFile ("Shared/RawEventGrouping.cs", "RawEventGrouper.cs");
 CopyFile ("Avalonia.Input/Raw/RawInputEventArgs.cs", "RawInputEventArgs.cs");
 CopyFile ("Avalonia.Input/Raw/RawKeyEventArgs.cs", "RawKeyEventArgs.cs");
 CopyFile ("Avalonia.Input/Raw/RawPointerEventArgs.cs", "RawPointerEventArgs.cs");
@@ -78,7 +79,7 @@ CopyFile ("Avalonia.Controls/Platform/Screen.cs", "Screen.cs");
 CopyFile ("Avalonia.Controls/Screens.cs", "Screens.cs");
 CopyFile ("Avalonia.Controls/ApplicationLifetimes/ShutdownRequestedEventArgs.cs", "ShutdownRequestedEventArgs.cs");
 CopyFile ("Avalonia.Visuals/Size.cs", "Size.cs");
-CopyFile ("Shared/PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
+CopyFile ("Avalonia.PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
 CopyFile ("Avalonia.Controls/SystemDialog.cs", "SystemDialog.cs");
 CopyFile ("Avalonia.Visuals/Thickness.cs", "Thickness.cs");
@@ -258,7 +259,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("static class", "public static class");
             break;
         case "IWindowImpl.cs":
-            text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap?");
+            text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap");
             break;
         case "PopupImpl.cs":        // Mac
             text = text.Replace ("base(opts, glFeature)", "base(opts)");
@@ -295,6 +296,12 @@ private void CopyFile (string src, string dst)
         case "X11Window.Ime.cs":
             text = text.Replace ("UpdateImePosition() => _imeControl?", "UpdateImePosition() { } // => _imeControl?");
             text = text.Replace ("_inputRoot, text),", "_inputRoot, text, (RawInputModifiers)ev.KeyEvent.state),");
+            break;
+        case "RawEventGrouper.cs":
+            text = text.Replace ("PooledList", "List");
+            break;
+        case "StandardRuntimePlatform.cs":
+            text = text.Replace ("public class", "internal class");
             break;
     }
 
