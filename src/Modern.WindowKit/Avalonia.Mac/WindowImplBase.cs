@@ -151,7 +151,7 @@ namespace Modern.WindowKit.Native
         public IMouseDevice MouseDevice => _mouse;
         public abstract IPopupImpl CreatePopup();
 
-        protected unsafe partial class WindowBaseEvents : CallbackBase, IAvnWindowBaseEvents
+        protected unsafe partial class WindowBaseEvents : NativeCallbackBase, IAvnWindowBaseEvents
         {
             private readonly WindowBaseImpl _parent;
 

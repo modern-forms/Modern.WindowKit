@@ -79,7 +79,7 @@ namespace Modern.WindowKit.Native
             _factory = factory;
         }
 
-        class GCHandleDeallocator : CallbackBase, IAvnGCHandleDeallocatorCallback
+        class GCHandleDeallocator : NativeCallbackBase, IAvnGCHandleDeallocatorCallback
         {
             public void FreeGCHandle(IntPtr handle)
             {

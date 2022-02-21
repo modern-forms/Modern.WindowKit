@@ -27,7 +27,7 @@ namespace Modern.WindowKit.Native
         public Vector Dpi { get; set; }
         public PixelFormat Format { get; set; }
 
-        class Disposer : CallbackBase
+        class Disposer : NativeCallbackBase
         {
             private IntPtr _ptr;
 
