@@ -529,8 +529,9 @@ namespace Modern.WindowKit.Win32
             //if (_dropTarget != null)
             //{
             //    OleContext.Current?.UnregisterDragDrop(Handle);
-            //    _dropTarget = null;
-            //}
+                _dropTarget.Dispose();
+                _dropTarget = null;
+            }
 
             if (_hwnd != IntPtr.Zero)
             {
@@ -551,7 +552,7 @@ namespace Modern.WindowKit.Win32
                 _className = null;
             }
 
-            //_framebuffer.Dispose();
+            _framebuffer.Dispose();
         }
 
         public void Invalidate(Rect rect)
@@ -622,10 +623,10 @@ namespace Modern.WindowKit.Win32
 
         public void BeginMoveDrag(PointerPressedEventArgs e)
         {
-            //_mouseDevice.Capture(null);
+            _mouseDevice.Capture(null);
             DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
                 new IntPtr((int)HitTestValues.HTCAPTION), IntPtr.Zero);
-            //e.Pointer.Capture(null);
+            e.Pointer.Capture(null);
         }
 
         public void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e)
@@ -633,7 +634,7 @@ namespace Modern.WindowKit.Win32
 #if USE_MANAGED_DRAG
             _managedDrag.BeginResizeDrag(edge, ScreenToClient(MouseDevice.Position.ToPoint(_scaling)));
 #else
-            //_mouseDevice.Capture(null);
+            _mouseDevice.Capture(null);
             DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
                 new IntPtr((int)s_edgeLookup[edge]), IntPtr.Zero);
 #endif
@@ -653,20 +654,20 @@ namespace Modern.WindowKit.Win32
                 var hCursor = impl?.Handle ?? DefaultCursor;
                 SetClassLong(_hwnd, ClassLongIndex.GCLP_HCURSOR, hCursor);
 
-                //if (_owner.IsPointerOver)
-                //{
-                //    UnmanagedMethods.SetCursor(hCursor);
-                //}
+                if (_owner.IsPointerOver)
+                {
+                    UnmanagedMethods.SetCursor(hCursor);
             }
         }
+        }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    var impl = (IconImpl)icon;
-        //    var hIcon = impl?.HIcon ?? IntPtr.Zero;
-        //    PostMessage(_hwnd, (int)WindowsMessage.WM_SETICON,
-        //        new IntPtr((int)Icons.ICON_BIG), hIcon);
-        //}
+        public void SetIcon(IWindowIconImpl icon)
+        {
+            var impl = (IconImpl)icon;
+            var hIcon = impl?.HIcon ?? IntPtr.Zero;
+            PostMessage(_hwnd, (int)WindowsMessage.WM_SETICON,
+                new IntPtr((int)Icons.ICON_BIG), hIcon);
+        }
 
         public void ShowTaskbarIcon(bool value)
         {
@@ -785,18 +786,18 @@ namespace Modern.WindowKit.Win32
                     out var dpiy) == 0)
                 {
                     _scaling = dpix / 96.0;
-                }
             }
+        }
         }
 
         private void CreateDropTarget()
         {
-            //var odt = new OleDropTarget(this, _owner);
+            var odt = new OleDropTarget(this, _owner);
 
-            //if (OleContext.Current?.RegisterDragDrop(Handle, odt) ?? false)
-            //{
-            //    _dropTarget = odt;
-            //}
+            if (OleContext.Current?.RegisterDragDrop(Handle, odt) ?? false)
+            {
+                _dropTarget = odt;
+        }
         }
 
         /// <summary>
@@ -855,7 +856,7 @@ namespace Modern.WindowKit.Win32
                 UpdateWindowProperties(_windowProperties, true);
             }
 
-            //TaskBarList.MarkFullscreen(_hwnd, fullscreen);
+            TaskBarList.MarkFullscreen(_hwnd, fullscreen);
             
             ExtendClientArea();
         }
@@ -1007,11 +1008,11 @@ namespace Modern.WindowKit.Win32
                 MaximizeWithoutCoveringTaskbar();
             }
 
-            //if (!Design.IsDesignMode && activate)
-            //{
-            //    SetFocus(_hwnd);
-            //    SetForegroundWindow(_hwnd);
-            //}
+            if (!Design.IsDesignMode && activate)
+            {
+                SetFocus(_hwnd);
+                SetForegroundWindow(_hwnd);
+        }
         }
         
         private void BeforeCloseCleanup(bool isDisposing)
@@ -1036,8 +1037,8 @@ namespace Modern.WindowKit.Win32
                 if (wasActive)
                 {
                     SetActiveWindow(_parent._hwnd);
-                }
             }
+        }
         }
 
         private void MaximizeWithoutCoveringTaskbar()
@@ -1056,8 +1057,8 @@ namespace Modern.WindowKit.Win32
                     var cy = Math.Abs(monitorInfo.rcWork.bottom - y);
 
                     SetWindowPos(_hwnd, WindowPosZOrder.HWND_NOTOPMOST, x, y, cx, cy, SetWindowPosFlags.SWP_SHOWWINDOW);
-                }
             }
+        }        
         }        
 
         private WindowStyles GetWindowStateStyles()
@@ -1074,7 +1075,7 @@ namespace Modern.WindowKit.Win32
             else
             {
                 return (WindowStyles)GetWindowLong(_hwnd, (int)WindowLongParam.GWL_STYLE);
-            }
+        }
         }
 
         private WindowStyles GetExtendedStyle()
@@ -1086,7 +1087,7 @@ namespace Modern.WindowKit.Win32
             else
             {
                 return (WindowStyles)GetWindowLong(_hwnd, (int)WindowLongParam.GWL_EXSTYLE);
-            }
+        }
         }
 
         private void SetStyle(WindowStyles style, bool save = true)
@@ -1099,7 +1100,7 @@ namespace Modern.WindowKit.Win32
             if (!_isFullScreenActive)
             {
                 SetWindowLong(_hwnd, (int)WindowLongParam.GWL_STYLE, (uint)style);
-            }
+        }
         }
 
         private void SetExtendedStyle(WindowStyles style, bool save = true)
@@ -1112,7 +1113,7 @@ namespace Modern.WindowKit.Win32
             if (!_isFullScreenActive)
             {
                 SetWindowLong(_hwnd, (int)WindowLongParam.GWL_EXSTYLE, (uint)style);
-            }
+        }
         }
 
         private void UpdateWindowProperties(WindowProperties newProperties, bool forceChanges = false)
@@ -1147,7 +1148,7 @@ namespace Modern.WindowKit.Win32
 
                         if (shown)
                             Show(activated, false);
-                    }
+                }
                 }
                 else
                 {
@@ -1234,8 +1235,8 @@ namespace Modern.WindowKit.Win32
                     SetWindowPos(_hwnd, IntPtr.Zero, newRect.left, newRect.top, newRect.Width, newRect.Height,
                         SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOACTIVATE |
                         SetWindowPosFlags.SWP_FRAMECHANGED);
-                }
             }            
+        }
         }
 
         private const int MF_BYCOMMAND = 0x0;
@@ -1266,21 +1267,21 @@ namespace Modern.WindowKit.Win32
         }
 #endif
 
-        //PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
-        //{
-        //    get
-        //    {
-        //        GetClientRect(_hwnd, out var rect);
+        PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
+        {
+            get
+            {
+                GetClientRect(_hwnd, out var rect);
 
-        //        return new PixelSize(
-        //            Math.Max(1, rect.right - rect.left),
-        //            Math.Max(1, rect.bottom - rect.top));
-        //    }
+                return new PixelSize(
+                    Math.Max(1, rect.right - rect.left),
+                    Math.Max(1, rect.bottom - rect.top));
         //}
+        }
 
-        //double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
+        double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
 
-        //IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
+        IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
 
         public void SetExtendClientAreaToDecorationsHint(bool hint)
         {
@@ -1358,6 +1359,6 @@ namespace Modern.WindowKit.Win32
             public void Dispose() => _owner._resizeReason = _restore;
         }
 
-        //public ITextInputMethodImpl TextInputMethod => Imm32InputMethod.Current;
-    }
+        public ITextInputMethodImpl TextInputMethod => Imm32InputMethod.Current;
+}
 }

@@ -62,7 +62,7 @@ namespace Modern.WindowKit.Native
         }
     }
 
-    internal unsafe class SystemDialogEvents : CallbackBase, IAvnSystemDialogEvents
+    internal unsafe class SystemDialogEvents : NativeCallbackBase, IAvnSystemDialogEvents
     {
         private TaskCompletionSource<string[]> _tcs;
 
