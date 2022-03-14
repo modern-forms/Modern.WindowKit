@@ -2,12 +2,15 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
+using Modern.WindowKit.Automation.Peers;
 using Modern.WindowKit.Controls;
-//using Modern.WindowKit.Controls.Remote;
+using Modern.WindowKit.Controls.Remote;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Win32.Automation;
 using Modern.WindowKit.Win32.Input;
+using Modern.WindowKit.Win32.Interop.Automation;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32
@@ -19,6 +22,7 @@ namespace Modern.WindowKit.Win32
         protected virtual unsafe IntPtr AppWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             const double wheelDelta = 120.0;
+            const long UiaRootObjectId = -25;
             uint timestamp = unchecked((uint)GetMessageTime());
             RawInputEventArgs e = null;
             var shouldTakeFocus = false;
@@ -26,7 +30,7 @@ namespace Modern.WindowKit.Win32
             switch ((WindowsMessage)msg)
             {
                 case WindowsMessage.WM_ACTIVATE:
-                    {
+                        {
                         var wa = (WindowActivate)(ToInt32(wParam) & 0xffff);
 
                         switch (wa)
@@ -43,7 +47,7 @@ namespace Modern.WindowKit.Win32
                                 {
                                     Deactivated?.Invoke();
                                     break;
-                                }
+                    }
                         }
 
                         return IntPtr.Zero;
@@ -77,6 +81,8 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_DESTROY:
                     {
+                        UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, IntPtr.Zero, IntPtr.Zero, null);
+
                         //Window doesn't exist anymore
                         _hwnd = IntPtr.Zero;
                         //Remove root reference to this class, so unmanaged delegate can be collected
@@ -219,8 +225,8 @@ namespace Modern.WindowKit.Win32
                     }
                 // Mouse capture is lost
                 case WindowsMessage.WM_CANCELMODE:
-                    //_mouseDevice.Capture(null);
-                    break;
+                    _mouseDevice.Capture(null);
+                            break;
 
                 case WindowsMessage.WM_MOUSEMOVE:
                     {
@@ -290,7 +296,7 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_NCRBUTTONDOWN:
                 case WindowsMessage.WM_NCMBUTTONDOWN:
                 case WindowsMessage.WM_NCXBUTTONDOWN:
-                    {
+                            {
                         e = new RawPointerEventArgs(
                             _mouseDevice,
                             timestamp,
@@ -337,7 +343,7 @@ namespace Modern.WindowKit.Win32
                         }
 
                         break;
-                    }
+                        }
                 case WindowsMessage.WM_NCPAINT:
                     {
                         if (!HasFullDecorations)
@@ -360,9 +366,9 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_PAINT:
                 {
-                    //using(NonPumpingSyncContext.Use())
-                    //using (_rendererLock.Lock())
-                    //{
+                    using(NonPumpingSyncContext.Use())
+                    using (_rendererLock.Lock())
+                    {
                         if (BeginPaint(_hwnd, out PAINTSTRUCT ps) != IntPtr.Zero)
                         {
                             var f = RenderScaling;
@@ -371,7 +377,7 @@ namespace Modern.WindowKit.Win32
                                 (r.bottom - r.top) / f));
                             EndPaint(_hwnd, ref ps);
                         }
-                    //}
+                    }
 
                     return IntPtr.Zero;
                 }
@@ -383,11 +389,11 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_SIZE:
                     {
-                        //using(NonPumpingSyncContext.Use())
-                        //using (_rendererLock.Lock())
-                        //{
-                        //    // Do nothing here, just block until the pending frame render is completed on the render thread
-                        //}
+                        using(NonPumpingSyncContext.Use())
+                        using (_rendererLock.Lock())
+                        {
+                            // Do nothing here, just block until the pending frame render is completed on the render thread
+                        }
 
                         var size = (SizeCommand)wParam;
 
@@ -404,7 +410,7 @@ namespace Modern.WindowKit.Win32
                             (size == SizeCommand.Minimized ? WindowState.Minimized : WindowState.Normal);
 
                         if (windowState != _lastWindowState)
-                        {
+                            {
                             _lastWindowState = windowState;
 
                             WindowStateChanged?.Invoke(windowState);
@@ -432,7 +438,7 @@ namespace Modern.WindowKit.Win32
                     }
 
                 case WindowsMessage.WM_GETMINMAXINFO:
-                    {
+                        {
                         MINMAXINFO mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
                         
                         _maxTrackSize = mmi.ptMaxTrackSize;
@@ -473,7 +479,7 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_KILLFOCUS:
                     LostFocus?.Invoke();
-                    break;
+                        break;
 
                 case WindowsMessage.WM_INPUTLANGCHANGE:
                     {
@@ -496,13 +502,22 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_IME_KEYUP:
                 case WindowsMessage.WM_IME_NOTIFY:
                 case WindowsMessage.WM_IME_SELECT:
+                //    break;
+                case WindowsMessage.WM_IME_STARTCOMPOSITION:
+                    Imm32InputMethod.Current.IsComposing = true;
                     break;
-                //case WindowsMessage.WM_IME_STARTCOMPOSITION:
-                //    Imm32InputMethod.Current.IsComposing = true;
-                //    break;
-                //case WindowsMessage.WM_IME_ENDCOMPOSITION:
-                //    Imm32InputMethod.Current.IsComposing = false;
-                //    break;
+                case WindowsMessage.WM_IME_ENDCOMPOSITION:
+                    Imm32InputMethod.Current.IsComposing = false;
+                    break;
+            
+                case WindowsMessage.WM_GETOBJECT:
+                    if ((long)lParam == UiaRootObjectId)
+                    {
+                        var peer = ControlAutomationPeer.CreatePeerForElement((Control)_owner);
+                        var node = AutomationNode.GetOrCreate(peer);
+                        return UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, wParam, lParam, node);
+                    }
+                    break;
             }
 
 #if USE_MANAGED_DRAG
@@ -520,7 +535,7 @@ namespace Modern.WindowKit.Win32
                 Input(e);
 
                 if ((WindowsMessage)msg == WindowsMessage.WM_KEYDOWN)
-                {
+            //{
                     // Handling a WM_KEYDOWN message should cause the subsequent WM_CHAR message to
                     // be ignored. This should be safe to do as WM_CHAR should only be produced in
                     // response to the call to TranslateMessage/DispatchMessage after a WM_KEYDOWN
@@ -532,25 +547,25 @@ namespace Modern.WindowKit.Win32
                 {
                     return IntPtr.Zero;
                 }
-            }
+            //} 
 
-            //using (_rendererLock.Lock())
-            //{
+            using (_rendererLock.Lock())
+            {
                 return DefWindowProc(hWnd, msg, wParam, lParam);
-            //}
+        }
         }
 
         private void UpdateInputMethod(IntPtr hkl)
         {
             // note: for non-ime language, also create it so that emoji panel tracks cursor
             var langid = LGID(hkl);
-            //if (langid == _langid && Imm32InputMethod.Current.HWND == Hwnd)
-            //{
-            //    return;
-            //} 
-            //_langid = langid;
+            if (langid == _langid && Imm32InputMethod.Current.HWND == Hwnd)
+            {
+                return;
+            } 
+            _langid = langid;
 
-            //Imm32InputMethod.Current.SetLanguageAndWindow(this, Hwnd, hkl);
+            Imm32InputMethod.Current.SetLanguageAndWindow(this, Hwnd, hkl);
             
         }
 
@@ -587,10 +602,10 @@ namespace Modern.WindowKit.Win32
 
             var info = GetMessageExtraInfo().ToInt64();
             return (info & marker) == marker;
-        }
+            }
 
         private static RawInputModifiers GetMouseModifiers(IntPtr wParam)
-        {
+            {
             var keys = (ModifierKeys)ToInt32(wParam);
             var modifiers = WindowsKeyboardDevice.Instance.Modifiers;
 
@@ -607,7 +622,7 @@ namespace Modern.WindowKit.Win32
             if (keys.HasAllFlags(ModifierKeys.MK_MBUTTON))
             {
                 modifiers |= RawInputModifiers.MiddleMouseButton;
-            }
+}
 
             if (keys.HasAllFlags(ModifierKeys.MK_XBUTTON1))
             {
