@@ -147,423 +147,425 @@ namespace Modern.WindowKit.Input
         //    if(mouse._disposed)
         //        return;
 
-        //    _position = e.Root.PointToScreen(e.Position);
-        //    var props = CreateProperties(e);
-        //    var keyModifiers = KeyModifiersUtils.ConvertToKey(e.InputModifiers);
-        //    switch (e.Type)
-        //    {
-        //        case RawPointerEventType.LeaveWindow:
-        //            LeaveWindow(mouse, e.Timestamp, e.Root, props, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.LeftButtonDown:
-        //        case RawPointerEventType.RightButtonDown:
-        //        case RawPointerEventType.MiddleButtonDown:
-        //        case RawPointerEventType.XButton1Down:
-        //        case RawPointerEventType.XButton2Down:
-        //            if (ButtonCount(props) > 1)
-        //                e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
-        //            else
-        //                e.Handled = MouseDown(mouse, e.Timestamp, e.Root, e.Position,
-        //                    props, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.LeftButtonUp:
-        //        case RawPointerEventType.RightButtonUp:
-        //        case RawPointerEventType.MiddleButtonUp:
-        //        case RawPointerEventType.XButton1Up:
-        //        case RawPointerEventType.XButton2Up:
-        //            if (ButtonCount(props) != 0)
-        //                e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
-        //            else
-        //                e.Handled = MouseUp(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.Move:
-        //            e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
-        //            break;
-        //        case RawPointerEventType.Wheel:
-        //            e.Handled = MouseWheel(mouse, e.Timestamp, e.Root, e.Position, props, ((RawMouseWheelEventArgs)e).Delta, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.Magnify:
-        //            e.Handled = GestureMagnify(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.Rotate:
-        //            e.Handled = GestureRotate(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
-        //            break;
-        //        case RawPointerEventType.Swipe:
-        //            e.Handled = GestureSwipe(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
-        //            break;
-        //    }
-        //}
+            if (e.Type == RawPointerEventType.NonClientLeftButtonDown) return;
 
-        //private void LeaveWindow(IMouseDevice device, ulong timestamp, IInputRoot root, PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+            _position = e.Root.PointToScreen(e.Position);
+            var props = CreateProperties(e);
+            var keyModifiers = KeyModifiersUtils.ConvertToKey(e.InputModifiers);
+            switch (e.Type)
+            {
+                case RawPointerEventType.LeaveWindow:
+                    LeaveWindow(mouse, e.Timestamp, e.Root, props, keyModifiers);
+                    break;
+                case RawPointerEventType.LeftButtonDown:
+                case RawPointerEventType.RightButtonDown:
+                case RawPointerEventType.MiddleButtonDown:
+                case RawPointerEventType.XButton1Down:
+                case RawPointerEventType.XButton2Down:
+                    if (ButtonCount(props) > 1)
+                        e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
+                    else
+                        e.Handled = MouseDown(mouse, e.Timestamp, e.Root, e.Position,
+                            props, keyModifiers);
+                    break;
+                case RawPointerEventType.LeftButtonUp:
+                case RawPointerEventType.RightButtonUp:
+                case RawPointerEventType.MiddleButtonUp:
+                case RawPointerEventType.XButton1Up:
+                case RawPointerEventType.XButton2Up:
+                    if (ButtonCount(props) != 0)
+                        e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
+                    else
+                        e.Handled = MouseUp(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers);
+                    break;
+                case RawPointerEventType.Move:
+                    e.Handled = MouseMove(mouse, e.Timestamp, e.Root, e.Position, props, keyModifiers, e.IntermediatePoints);
+                    break;
+                case RawPointerEventType.Wheel:
+                    e.Handled = MouseWheel(mouse, e.Timestamp, e.Root, e.Position, props, ((RawMouseWheelEventArgs)e).Delta, keyModifiers);
+                    break;
+                case RawPointerEventType.Magnify:
+                    e.Handled = GestureMagnify(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
+                    break;
+                case RawPointerEventType.Rotate:
+                    e.Handled = GestureRotate(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
+                    break;
+                case RawPointerEventType.Swipe:
+                    e.Handled = GestureSwipe(mouse, e.Timestamp, e.Root, e.Position, props, ((RawPointerGestureEventArgs)e).Delta, keyModifiers);
+                    break;
+            }
+        }
 
-        //    _position = null;
-        //    ClearPointerOver(this, timestamp, root, properties, inputModifiers);
-        //}
+        private void LeaveWindow(IMouseDevice device, ulong timestamp, IInputRoot root, PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
+
+            _position = null;
+            ClearPointerOver(this, timestamp, root, properties, inputModifiers);
+        }
 
 
-        //PointerPointProperties CreateProperties(RawPointerEventArgs args)
-        //{
+        PointerPointProperties CreateProperties(RawPointerEventArgs args)
+        {
 
-        //    var kind = PointerUpdateKind.Other;
+            var kind = PointerUpdateKind.Other;
 
-        //    if (args.Type == RawPointerEventType.LeftButtonDown)
-        //        kind = PointerUpdateKind.LeftButtonPressed;
-        //    if (args.Type == RawPointerEventType.MiddleButtonDown)
-        //        kind = PointerUpdateKind.MiddleButtonPressed;
-        //    if (args.Type == RawPointerEventType.RightButtonDown)
-        //        kind = PointerUpdateKind.RightButtonPressed;
-        //    if (args.Type == RawPointerEventType.XButton1Down)
-        //        kind = PointerUpdateKind.XButton1Pressed;
-        //    if (args.Type == RawPointerEventType.XButton2Down)
-        //        kind = PointerUpdateKind.XButton2Pressed;
-        //    if (args.Type == RawPointerEventType.LeftButtonUp)
-        //        kind = PointerUpdateKind.LeftButtonReleased;
-        //    if (args.Type == RawPointerEventType.MiddleButtonUp)
-        //        kind = PointerUpdateKind.MiddleButtonReleased;
-        //    if (args.Type == RawPointerEventType.RightButtonUp)
-        //        kind = PointerUpdateKind.RightButtonReleased;
-        //    if (args.Type == RawPointerEventType.XButton1Up)
-        //        kind = PointerUpdateKind.XButton1Released;
-        //    if (args.Type == RawPointerEventType.XButton2Up)
-        //        kind = PointerUpdateKind.XButton2Released;
+            if (args.Type == RawPointerEventType.LeftButtonDown)
+                kind = PointerUpdateKind.LeftButtonPressed;
+            if (args.Type == RawPointerEventType.MiddleButtonDown)
+                kind = PointerUpdateKind.MiddleButtonPressed;
+            if (args.Type == RawPointerEventType.RightButtonDown)
+                kind = PointerUpdateKind.RightButtonPressed;
+            if (args.Type == RawPointerEventType.XButton1Down)
+                kind = PointerUpdateKind.XButton1Pressed;
+            if (args.Type == RawPointerEventType.XButton2Down)
+                kind = PointerUpdateKind.XButton2Pressed;
+            if (args.Type == RawPointerEventType.LeftButtonUp)
+                kind = PointerUpdateKind.LeftButtonReleased;
+            if (args.Type == RawPointerEventType.MiddleButtonUp)
+                kind = PointerUpdateKind.MiddleButtonReleased;
+            if (args.Type == RawPointerEventType.RightButtonUp)
+                kind = PointerUpdateKind.RightButtonReleased;
+            if (args.Type == RawPointerEventType.XButton1Up)
+                kind = PointerUpdateKind.XButton1Released;
+            if (args.Type == RawPointerEventType.XButton2Up)
+                kind = PointerUpdateKind.XButton2Released;
             
-        //    return new PointerPointProperties(args.InputModifiers, kind);
-        //}
+            return new PointerPointProperties(args.InputModifiers, kind);
+        }
 
-        //private MouseButton _lastMouseDownButton;
-        //private bool MouseDown(IMouseDevice device, ulong timestamp, IInputElement root, Point p,
-        //    PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private MouseButton _lastMouseDownButton;
+        private bool MouseDown(IMouseDevice device, ulong timestamp, IInputElement root, Point p,
+            PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    var hit = HitTest(root, p);
+            var hit = HitTest(root, p);
 
-        //    if (hit != null)
-        //    {
-        //        _pointer.Capture(hit);
-        //        var source = GetSource(hit);
-        //        if (source != null)
-        //        {
-        //            var settings = AvaloniaLocator.Current.GetService<IPlatformSettings>();
-        //            var doubleClickTime = settings?.DoubleClickTime.TotalMilliseconds ?? 500;
-        //            var doubleClickSize = settings?.DoubleClickSize ?? new Size(4, 4);
+            if (hit != null)
+            {
+                _pointer.Capture(hit);
+                var source = GetSource(hit);
+                if (source != null)
+                {
+                    var settings = AvaloniaLocator.Current.GetService<IPlatformSettings>();
+                    var doubleClickTime = settings?.DoubleClickTime.TotalMilliseconds ?? 500;
+                    var doubleClickSize = settings?.DoubleClickSize ?? new Size(4, 4);
 
-        //            if (!_lastClickRect.Contains(p) || timestamp - _lastClickTime > doubleClickTime)
-        //            {
-        //                _clickCount = 0;
-        //            }
+                    if (!_lastClickRect.Contains(p) || timestamp - _lastClickTime > doubleClickTime)
+                    {
+                        _clickCount = 0;
+                    }
 
-        //            ++_clickCount;
-        //            _lastClickTime = timestamp;
-        //            _lastClickRect = new Rect(p, new Size())
-        //                .Inflate(new Thickness(doubleClickSize.Width / 2, doubleClickSize.Height / 2));
-        //            _lastMouseDownButton = properties.PointerUpdateKind.GetMouseButton();
-        //            var e = new PointerPressedEventArgs(source, _pointer, root, p, timestamp, properties, inputModifiers, _clickCount);
-        //            source.RaiseEvent(e);
-        //            return e.Handled;
-        //        }
-        //    }
+                    ++_clickCount;
+                    _lastClickTime = timestamp;
+                    _lastClickRect = new Rect(p, new Size())
+                        .Inflate(new Thickness(doubleClickSize.Width / 2, doubleClickSize.Height / 2));
+                    _lastMouseDownButton = properties.PointerUpdateKind.GetMouseButton();
+                    var e = new PointerPressedEventArgs(source, _pointer, root, p, timestamp, properties, inputModifiers, _clickCount);
+                    source.RaiseEvent(e);
+                    return e.Handled;
+                }
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //private bool MouseMove(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties properties,
-        //    KeyModifiers inputModifiers, Lazy<IReadOnlyList<RawPointerPoint>?>? intermediatePoints)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private bool MouseMove(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties properties,
+            KeyModifiers inputModifiers, Lazy<IReadOnlyList<RawPointerPoint>?>? intermediatePoints)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    IInputElement? source;
+            IInputElement? source;
 
-        //    if (_pointer.Captured == null)
-        //    {
-        //        source = SetPointerOver(this, timestamp, root, p,  properties, inputModifiers);
-        //    }
-        //    else
-        //    {
-        //        SetPointerOver(this, timestamp, root, _pointer.Captured, properties, inputModifiers);
-        //        source = _pointer.Captured;
-        //    }
+            if (_pointer.Captured == null)
+            {
+                source = SetPointerOver(this, timestamp, root, p,  properties, inputModifiers);
+            }
+            else
+            {
+                SetPointerOver(this, timestamp, root, _pointer.Captured, properties, inputModifiers);
+                source = _pointer.Captured;
+            }
 
-        //    if (source is object)
-        //    {
-        //        var e = new PointerEventArgs(InputElement.PointerMovedEvent, source, _pointer, root,
-        //            p, timestamp, properties, inputModifiers, intermediatePoints);
+            if (source is object)
+            {
+                var e = new PointerEventArgs(InputElement.PointerMovedEvent, source, _pointer, root,
+                    p, timestamp, properties, inputModifiers, intermediatePoints);
 
-        //        source.RaiseEvent(e);
-        //        return e.Handled;
-        //    }
+                source.RaiseEvent(e);
+                return e.Handled;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //private bool MouseUp(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties props,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private bool MouseUp(IMouseDevice device, ulong timestamp, IInputRoot root, Point p, PointerPointProperties props,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    var hit = HitTest(root, p);
-        //    var source = GetSource(hit);
+            var hit = HitTest(root, p);
+            var source = GetSource(hit);
 
-        //    if (source is not null)
-        //    {
-        //        var e = new PointerReleasedEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers,
-        //            _lastMouseDownButton);
+            if (source is not null)
+            {
+                var e = new PointerReleasedEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers,
+                    _lastMouseDownButton);
 
-        //        source?.RaiseEvent(e);
-        //        _pointer.Capture(null);
-        //        return e.Handled;
-        //    }
+                source?.RaiseEvent(e);
+                _pointer.Capture(null);
+                return e.Handled;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //private bool MouseWheel(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
-        //    PointerPointProperties props,
-        //    Vector delta, KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private bool MouseWheel(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
+            PointerPointProperties props,
+            Vector delta, KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    var hit = HitTest(root, p);
-        //    var source = GetSource(hit);
+            var hit = HitTest(root, p);
+            var source = GetSource(hit);
 
             // KeyModifiers.Shift should scroll in horizontal direction. This does not work on every platform. 
             // If Shift-Key is pressed and X is close to 0 we swap the Vector.
-        //    if (inputModifiers == KeyModifiers.Shift && MathUtilities.IsZero(delta.X))
-        //    {
-        //        delta = new Vector(delta.Y, delta.X);
-        //    }
+            if (inputModifiers == KeyModifiers.Shift && MathUtilities.IsZero(delta.X))
+            {
+                delta = new Vector(delta.Y, delta.X);
+            }
 
-        //    if (source is not null)
-        //    {
-        //        var e = new PointerWheelEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers, delta);
+            if (source is not null)
+            {
+                var e = new PointerWheelEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers, delta);
 
-        //        source?.RaiseEvent(e);
-        //        return e.Handled;
-        //    }
+                source?.RaiseEvent(e);
+                return e.Handled;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
         
-        //private bool GestureMagnify(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
-        //    PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private bool GestureMagnify(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
+            PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    var hit = HitTest(root, p);
+            var hit = HitTest(root, p);
 
-        //    if (hit != null)
-        //    {
-        //        var source = GetSource(hit);
-        //        var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureMagnifyEvent, source,
-        //            _pointer, root, p, timestamp, props, inputModifiers, delta);
+            if (hit != null)
+            {
+                var source = GetSource(hit);
+                var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureMagnifyEvent, source,
+                    _pointer, root, p, timestamp, props, inputModifiers, delta);
 
-        //        source?.RaiseEvent(e);
-        //        return e.Handled;
-        //}
+                source?.RaiseEvent(e);
+                return e.Handled;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
         
-        //private bool GestureRotate(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
-        //    PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+        private bool GestureRotate(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
+            PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
 
-        //    var hit = HitTest(root, p);
+            var hit = HitTest(root, p);
 
-        //    if (hit != null)
-        //    {
-        //        var source = GetSource(hit);
-        //        var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureRotateEvent, source,
-        //            _pointer, root, p, timestamp, props, inputModifiers, delta);
+            if (hit != null)
+            {
+                var source = GetSource(hit);
+                var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureRotateEvent, source,
+                    _pointer, root, p, timestamp, props, inputModifiers, delta);
 
-        //        source?.RaiseEvent(e);
-        //        return e.Handled;
-        //    }
+                source?.RaiseEvent(e);
+                return e.Handled;
+            }
 
-        //    return false;
-        ////    }
+            return false;
+        }
+        
+        private bool GestureSwipe(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
+            PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
+
+            var hit = HitTest(root, p);
+
+            if (hit != null)
+            {
+                var source = GetSource(hit);
+                var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureSwipeEvent, source, 
+                    _pointer, root, p, timestamp, props, inputModifiers, delta);
+
+                source?.RaiseEvent(e);
+                return e.Handled;
+            }
+
+            return false;
+        }
+
+        private IInteractive? GetSource(IVisual? hit)
+        {
+            if (hit is null)
+                return null;
+
+            return _pointer.Captured ??
+                (hit as IInteractive) ??
+                hit.GetSelfAndVisualAncestors().OfType<IInteractive>().FirstOrDefault();
+        }
+
+        private IInputElement? HitTest(IInputElement root, Point p)
+        {
+            root = root ?? throw new ArgumentNullException(nameof(root));
+
+            return _pointer.Captured ?? root.InputHitTest(p);
+        }
+
+        PointerEventArgs CreateSimpleEvent(RoutedEvent ev, ulong timestamp, IInteractive? source,
+            PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            return new PointerEventArgs(ev, source, _pointer, null, default,
+                timestamp, properties, inputModifiers);
+        }
+
+        private void ClearPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root,
+            PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
+
+            var element = root.PointerOverElement;
+            var e = CreateSimpleEvent(InputElement.PointerLeaveEvent, timestamp, element, properties, inputModifiers);
+
+            if (element!=null && !element.IsAttachedToVisualTree)
+            {
+                // element has been removed from visual tree so do top down cleanup
+                if (root.IsPointerOver)
+                    ClearChildrenPointerOver(e, root,true);
+            }
+            while (element != null)
+            {
+                e.Source = element;
+                e.Handled = false;
+                element.RaiseEvent(e);
+                element = (IInputElement?)element.VisualParent;
+            }
             
-        //private bool GestureSwipe(IMouseDevice device, ulong timestamp, IInputRoot root, Point p,
-        //    PointerPointProperties props, Vector delta, KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
+            root.PointerOverElement = null;
+        }
 
-        //    var hit = HitTest(root, p);
-
-        //    if (hit != null)
+        private void ClearChildrenPointerOver(PointerEventArgs e, IInputElement element,bool clearRoot)
         //    {
-        //        var source = GetSource(hit);
-        //        var e = new PointerDeltaEventArgs(Gestures.PointerTouchPadGestureSwipeEvent, source, 
-        //            _pointer, root, p, timestamp, props, inputModifiers, delta);
+            foreach (IInputElement el in element.VisualChildren)
+        //        {
+                if (el.IsPointerOver)
+                {
+                    ClearChildrenPointerOver(e, el, true);
+                    break;
+                }
+            }
+            if(clearRoot)
+            {
+                e.Source = element;
+                e.Handled = false;
+                element.RaiseEvent(e);
+            }
+        }
 
-        //        source?.RaiseEvent(e);
-        //        return e.Handled;
+        private IInputElement? SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, Point p, 
+            PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
+
+            var element = root.InputHitTest(p);
+
+            if (element != root.PointerOverElement)
+        //        {
+                if (element != null)
+                {
+                    SetPointerOver(device, timestamp, root, element, properties, inputModifiers);
+                }
+                else
+                {
+                    ClearPointerOver(device, timestamp, root, properties, inputModifiers);
+                }
+            }
+
+            return element;
+        }
+
+        private void SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, IInputElement element,
+            PointerPointProperties properties,
+            KeyModifiers inputModifiers)
+        {
+            device = device ?? throw new ArgumentNullException(nameof(device));
+            root = root ?? throw new ArgumentNullException(nameof(root));
+            element = element ?? throw new ArgumentNullException(nameof(element));
+
+            IInputElement? branch = null;
+
+            IInputElement? el = element;
+
+            while (el != null)
+        //        {
+                if (el.IsPointerOver)
+                {
+                    branch = el;
+                    break;
         //    }
+                el = (IInputElement?)el.VisualParent;
+            }
 
-        //    return false;
-        //}
+            el = root.PointerOverElement;
 
-        //private IInteractive? GetSource(IVisual? hit)
-        //{
-        //    if (hit is null)
-        //        return null;
-
-        //    return _pointer.Captured ??
-        //        (hit as IInteractive) ??
-        //        hit.GetSelfAndVisualAncestors().OfType<IInteractive>().FirstOrDefault();
-        //}
-
-        //private IInputElement? HitTest(IInputElement root, Point p)
-        //{
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
-
-        //    return _pointer.Captured ?? root.InputHitTest(p);
-        //}
-
-        //PointerEventArgs CreateSimpleEvent(RoutedEvent ev, ulong timestamp, IInteractive? source,
-        //    PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    return new PointerEventArgs(ev, source, _pointer, null, default,
-        //        timestamp, properties, inputModifiers);
-        //}
-
-        //private void ClearPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root,
-        //    PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
-
-        //    var element = root.PointerOverElement;
-        //    var e = CreateSimpleEvent(InputElement.PointerLeaveEvent, timestamp, element, properties, inputModifiers);
-
-        //    if (element!=null && !element.IsAttachedToVisualTree)
-        //    {
-        //        // element has been removed from visual tree so do top down cleanup
-        //        if (root.IsPointerOver)
-        //            ClearChildrenPointerOver(e, root,true);
-        //    }
-        //    while (element != null)
-        //    {
-        //        e.Source = element;
-        //        e.Handled = false;
-        //        element.RaiseEvent(e);
-        //        element = (IInputElement?)element.VisualParent;
-        //    }
+            var e = CreateSimpleEvent(InputElement.PointerLeaveEvent, timestamp, el, properties, inputModifiers);
+            if (el!=null && branch!=null && !el.IsAttachedToVisualTree)
+            {
+                ClearChildrenPointerOver(e,branch,false);
+            }
             
-        //    root.PointerOverElement = null;
-        //}
+            while (el != null && el != branch)
+            {
+                e.Source = el;
+                e.Handled = false;
+                el.RaiseEvent(e);
+                el = (IInputElement?)el.VisualParent;
+            }            
 
-        //private void ClearChildrenPointerOver(PointerEventArgs e, IInputElement element,bool clearRoot)
-        //{
-        //    foreach (IInputElement el in element.VisualChildren)
-        //    {
-        //        if (el.IsPointerOver)
-        //        {
-        //            ClearChildrenPointerOver(e, el, true);
-        //            break;
-        //        }
-        //    }
-        //    if(clearRoot)
-        //    {
-        //        e.Source = element;
-        //        e.Handled = false;
-        //        element.RaiseEvent(e);
-        //    }
-        //}
+            el = root.PointerOverElement = element;
+            e.RoutedEvent = InputElement.PointerEnterEvent;
 
-        //private IInputElement? SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, Point p, 
-        //    PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
-
-        //    var element = root.InputHitTest(p);
-
-        //    if (element != root.PointerOverElement)
-        //    {
-        //        if (element != null)
-        //        {
-        //            SetPointerOver(device, timestamp, root, element, properties, inputModifiers);
-        //        }
-        //        else
-        //        {
-        //            ClearPointerOver(device, timestamp, root, properties, inputModifiers);
-        //        }
-        //    }
-
-        //    return element;
-        //}
-
-        //private void SetPointerOver(IPointerDevice device, ulong timestamp, IInputRoot root, IInputElement element,
-        //    PointerPointProperties properties,
-        //    KeyModifiers inputModifiers)
-        //{
-        //    device = device ?? throw new ArgumentNullException(nameof(device));
-        //    root = root ?? throw new ArgumentNullException(nameof(root));
-        //    element = element ?? throw new ArgumentNullException(nameof(element));
-
-        //    IInputElement? branch = null;
-
-        //    IInputElement? el = element;
-
-        //    while (el != null)
-        //    {
-        //        if (el.IsPointerOver)
-        //        {
-        //            branch = el;
-        //            break;
-        //        }
-        //        el = (IInputElement?)el.VisualParent;
-        //    }
-
-        //    el = root.PointerOverElement;
-
-        //    var e = CreateSimpleEvent(InputElement.PointerLeaveEvent, timestamp, el, properties, inputModifiers);
-        //    if (el!=null && branch!=null && !el.IsAttachedToVisualTree)
-        //    {
-        //        ClearChildrenPointerOver(e,branch,false);
-        //    }
-            
-        //    while (el != null && el != branch)
-        //    {
-        //        e.Source = el;
-        //        e.Handled = false;
-        //        el.RaiseEvent(e);
-        //        el = (IInputElement?)el.VisualParent;
-        //    }            
-
-        //    el = root.PointerOverElement = element;
-        //    e.RoutedEvent = InputElement.PointerEnterEvent;
-
-        //    while (el != null && el != branch)
-        //    {
-        //        e.Source = el;
-        //        e.Handled = false;
-        //        el.RaiseEvent(e);
-        //        el = (IInputElement?)el.VisualParent;
-        //    }
-        //}
+            while (el != null && el != branch)
+            {
+                e.Source = el;
+                e.Handled = false;
+                el.RaiseEvent(e);
+                el = (IInputElement?)el.VisualParent;
+            }
+        }
 
         public void Dispose()
         {
             _disposed = true;
             _pointer?.Dispose();
-        }
+}
     }
 }

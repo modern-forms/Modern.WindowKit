@@ -13,29 +13,27 @@ namespace Modern.WindowKit.Native
 {
     internal partial class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
     {
-        private readonly IAvaloniaNativeFactory _factory;
         private readonly AvaloniaNativePlatformOptions _opts;
-        //private readonly AvaloniaNativePlatformOpenGlInterface _glFeature;
+        private readonly AvaloniaNativePlatformOpenGlInterface _glFeature;
         IAvnWindow _native;
         private double _extendTitleBarHeight = -1;
-        //private DoubleClickHelper _doubleClickHelper;
+        private DoubleClickHelper _doubleClickHelper;
         
-
+        
         internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts
-            ) : base(opts)
+            AvaloniaNativePlatformOpenGlInterface glFeature) : base(factory, opts, glFeature)
         {
-            _factory = factory;
             _opts = opts;
-            //_glFeature = glFeature;
-            //_doubleClickHelper = new DoubleClickHelper();
+            _glFeature = glFeature;
+            _doubleClickHelper = new DoubleClickHelper();
             
             using (var e = new WindowEvents(this))
             {
-                //var context = _opts.UseGpu ? glFeature?.MainContext : null;
+                var context = _opts.UseGpu ? glFeature?.MainContext : null;
                 Init(_native = factory.CreateWindow(e, null), factory.CreateScreens());
             }
 
-            //NativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
+            NativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
         }
 
         class WindowEvents : WindowBaseEvents, IAvnWindowEvents
@@ -50,7 +48,7 @@ namespace Modern.WindowKit.Native
             int IAvnWindowEvents.Closing()
             {
                 if (_parent.Closing != null)
-                {
+            {
                     return _parent.Closing().AsComBool();
                 }
 
@@ -77,17 +75,20 @@ namespace Modern.WindowKit.Native
             _native.SetCanResize(value.AsComBool());
         }
 
-        //public void SetSystemDecorations(Controls.SystemDecorations enabled)
-        //{
-        //    _native.SetDecorations((Interop.SystemDecorations)enabled);
-        //}
+        public void SetSystemDecorations(Controls.SystemDecorations enabled)
+        {
+            _native.SetDecorations((Interop.SystemDecorations)enabled);
+        }
 
-        //public void SetTitleBarColor(Avalonia.Media.Color color)
-        //{
-        //    _native.SetTitleBarColor(new AvnColor { Alpha = color.A, Red = color.R, Green = color.G, Blue = color.B });
-        //}
+        public void SetTitleBarColor(Avalonia.Media.Color color)
+        {
+            _native.SetTitleBarColor(new AvnColor { Alpha = color.A, Red = color.R, Green = color.G, Blue = color.B });
+        }
 
-        public void SetTitle(string title) => _native.SetTitle(title);
+        public void SetTitle(string title)
+        {
+            _native.SetTitle(title ?? "");
+        }
 
         public WindowState WindowState
         {
@@ -108,40 +109,40 @@ namespace Modern.WindowKit.Native
 
         protected override bool ChromeHitTest (RawPointerEventArgs e)
         {
-            //if(_isExtended)
-            //{
-            //    if(e.Type == RawPointerEventType.LeftButtonDown)
-            //    {
-            //        var visual = (_inputRoot as Window).Renderer.HitTestFirst(e.Position, _inputRoot as Window, x =>
-            //                {
-            //                    if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsVisible))
-            //                    {
-            //                        return false;
-            //                    }
-            //                    return true;
-            //                });
+            if(_isExtended)
+            {
+                if(e.Type == RawPointerEventType.LeftButtonDown)
+                {
+                    var visual = (_inputRoot as Window).Renderer.HitTestFirst(e.Position, _inputRoot as Window, x =>
+                            {
+                                if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsVisible))
+                                {
+                                    return false;
+                                }
+                                return true;
+                            });
 
-            //        if(visual == null)
-            //        {
-            //            if (_doubleClickHelper.IsDoubleClick(e.Timestamp, e.Position))
-            //            {
-            //                // TOGGLE WINDOW STATE.
-            //                if (WindowState == WindowState.Maximized || WindowState == WindowState.FullScreen)
-            //                {
-            //                    WindowState = WindowState.Normal;
-            //                }
-            //                else
-            //                {
-            //                    WindowState = WindowState.Maximized;
-            //                }
+                    if(visual == null)
+                    {
+                        if (_doubleClickHelper.IsDoubleClick(e.Timestamp, e.Position))
+                        {
+                            // TOGGLE WINDOW STATE.
+                            if (WindowState == WindowState.Maximized || WindowState == WindowState.FullScreen)
+                            {
+                                WindowState = WindowState.Normal;
+                            }
+                            else
+                            {
+                                WindowState = WindowState.Maximized;
             //            }
-            //            else
-            //            {
-            //                _native.BeginMoveDrag();   
-            //            }
+                        }
+                        else
+                        {
+                            _native.BeginMoveDrag();   
             //        }
             //    }
             //}
+            }
 
             return false;
         }
@@ -195,19 +196,19 @@ namespace Modern.WindowKit.Native
             // NO OP On OSX
         }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    // NO OP on OSX
-        //}
+        public void SetIcon(IWindowIconImpl icon)
+        {
+            // NO OP on OSX
+        }
 
         public Func<bool> Closing { get; set; }
 
-        //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
+        public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
 
         public void Move(PixelPoint point) => Position = point;
 
-        //public override IPopupImpl CreatePopup() =>
-        //    _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, _glFeature, this);
+        public override IPopupImpl CreatePopup() =>
+            _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, _glFeature, this);
 
         public Action GotInputWhenDisabled { get; set; }
 
@@ -219,6 +220,6 @@ namespace Modern.WindowKit.Native
         public void SetEnabled(bool enable)
         {
             _native.SetEnabled(enable.AsComBool());
-        }
     }
+}
 }
