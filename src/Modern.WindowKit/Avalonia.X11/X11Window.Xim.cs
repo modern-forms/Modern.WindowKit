@@ -10,8 +10,7 @@ namespace Modern.WindowKit.X11
 {
     partial class X11Window
     {
-
-        class XimInputMethod //: ITextInputMethodImpl, IX11InputMethodControl
+        class XimInputMethod : ITextInputMethodImpl, IX11InputMethodControl
         {
             private readonly X11Window _parent;
             private bool _controlActive, _windowActive, _imeActive;
@@ -58,9 +57,9 @@ namespace Modern.WindowKit.X11
                 UpdateActive();
             }
 
-            public void SetActive(bool active)
+            public void SetClient(ITextInputMethodClient client)
             {
-                _controlActive = active;
+                _controlActive = client is { };
                 UpdateActive();
             }
 
@@ -80,17 +79,17 @@ namespace Modern.WindowKit.X11
                     else
                         XUnsetICFocus(_parent._xic);
                 }
-            }
+                }
             
             public void UpdateWindowInfo(PixelPoint position, double scaling)
             {
                 // No-op
             }
             
-            //public void SetOptions(TextInputOptionsQueryEventArgs options)
-            //{
-            //    // No-op
-            //}
+            public void SetOptions(TextInputOptions options)
+            {
+                // No-op
+            }
 
             public void Reset()
             {
@@ -113,9 +112,9 @@ namespace Modern.WindowKit.X11
                 new ValueTask<bool>(false);
 
             public event Action<string> Commit { add { } remove { } }
-            //public event Action<X11InputMethodForwardedKey> ForwardKey { add { } remove { } }
+            public event Action<X11InputMethodForwardedKey> ForwardKey { add { } remove { } }
 
         }
         
     }
-}
+    }

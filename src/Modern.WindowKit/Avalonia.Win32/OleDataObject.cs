@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,17 +8,20 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Modern.WindowKit.Input;
+using Avalonia.MicroCom;
 using Modern.WindowKit.Win32.Interop;
 
-namespace Modern.WindowKit.Win32
-{
-    class OleDataObject : Modern.WindowKit.Input.IDataObject
-    {
-        private IOleDataObject _wrapped;
+using IDataObject = Modern.WindowKit.Input.IDataObject;
 
-        public OleDataObject(IOleDataObject wrapped)
+namespace Modern.WindowKit.Win32
+    {
+    internal class OleDataObject : IDataObject, IDisposable
+    {
+        private readonly Win32Com.IDataObject _wrapped;
+
+        public OleDataObject(Win32Com.IDataObject wrapped)
         {
-            _wrapped = wrapped;
+            _wrapped = wrapped.CloneReference();
         }
 
         public bool Contains(string dataFormat)
@@ -34,12 +36,12 @@ namespace Modern.WindowKit.Win32
 
         public string GetText()
         {
-            return GetDataFromOleHGLOBAL(DataFormats.Text, DVASPECT.DVASPECT_CONTENT) as string;
+            return (string)GetDataFromOleHGLOBAL(DataFormats.Text, DVASPECT.DVASPECT_CONTENT);
         }
 
         public IEnumerable<string> GetFileNames()
         {
-            return GetDataFromOleHGLOBAL(DataFormats.FileNames, DVASPECT.DVASPECT_CONTENT) as IEnumerable<string>;
+            return (IEnumerable<string>)GetDataFromOleHGLOBAL(DataFormats.FileNames, DVASPECT.DVASPECT_CONTENT);
         }
 
         public object Get(string dataFormat)
@@ -47,16 +49,17 @@ namespace Modern.WindowKit.Win32
             return GetDataFromOleHGLOBAL(dataFormat, DVASPECT.DVASPECT_CONTENT);
         }
 
-        private object GetDataFromOleHGLOBAL(string format, DVASPECT aspect)
+        private unsafe object GetDataFromOleHGLOBAL(string format, DVASPECT aspect)
         {
-            FORMATETC formatEtc = new FORMATETC();
+            var formatEtc = new Interop.FORMATETC();
             formatEtc.cfFormat = ClipboardFormats.GetFormat(format);
             formatEtc.dwAspect = aspect;
             formatEtc.lindex = -1;
             formatEtc.tymed = TYMED.TYMED_HGLOBAL;
-            if (_wrapped.QueryGetData(ref formatEtc) == 0)
+            if (_wrapped.QueryGetData(&formatEtc) == 0)
             {
-                _wrapped.GetData(ref formatEtc, out STGMEDIUM medium);
+                Interop.STGMEDIUM medium = default;
+                _ = _wrapped.GetData(&formatEtc, &medium);
                 try
                 {
                     if (medium.unionmember != IntPtr.Zero && medium.tymed == TYMED.TYMED_HGLOBAL)
@@ -75,15 +78,15 @@ namespace Modern.WindowKit.Win32
                                 ms.Position = DataObject.SerializedObjectGUID.Length;
                                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                                 return binaryFormatter.Deserialize(ms);
-                            }
-                        }
+                    }
+                }
                         return data;
                     }
                 }
                 finally
                 {
                     UnmanagedMethods.ReleaseStgMedium(ref medium);
-                }
+        }
             }
             return null;
         }
@@ -106,13 +109,13 @@ namespace Modern.WindowKit.Win32
                     {
                         files.Add(sb.ToString());
                     }
-                }
+        }
             }
             return files;
         }
 
         private static string ReadStringFromHGlobal(IntPtr hGlobal)
-        {
+            {
             IntPtr ptr = UnmanagedMethods.GlobalLock(hGlobal);
             try
             {
@@ -125,7 +128,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private static byte[] ReadBytesFromHGlobal(IntPtr hGlobal)
-        {
+            {
             IntPtr source = UnmanagedMethods.GlobalLock(hGlobal);
             try
             {
@@ -140,38 +143,53 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        private IEnumerable<string> GetDataFormatsCore()
+        private unsafe IEnumerable<string> GetDataFormatsCore()
         {
-            var enumFormat = _wrapped.EnumFormatEtc(DATADIR.DATADIR_GET);
-
+            var formatsList = new List<string>();
+            var enumFormat = _wrapped.EnumFormatEtc((int)DATADIR.DATADIR_GET);
+                
             if (enumFormat != null)
             {
                 enumFormat.Reset();
                 
-                var formats = ArrayPool<FORMATETC>.Shared.Rent(1);
-                var fetched = ArrayPool<int>.Shared.Rent(1);
+                var formats = ArrayPool<Interop.FORMATETC>.Shared.Rent(1);
 
                 try
                 {
+                    uint fetched = 0;
                     do
                     {
-                        fetched[0] = 0;
-                        if (enumFormat.Next(1, formats, fetched) == 0 && fetched[0] > 0)
+                        fixed (Interop.FORMATETC* formatsPtr = formats)
+                        {
+                            // Read one item at a time.
+                            // When "celt" parameter is 1, "pceltFetched" is ignored.
+                            var res = enumFormat.Next(1, formatsPtr, &fetched);
+                            if (res != 0)
+                            {
+                                break;
+                            }
+                        }
+                        if (fetched > 0)
                         {
                             if (formats[0].ptd != IntPtr.Zero)
                                 Marshal.FreeCoTaskMem(formats[0].ptd);
 
-                            yield return ClipboardFormats.GetFormat(formats[0].cfFormat);
+                            formatsList.Add(ClipboardFormats.GetFormat(formats[0].cfFormat));
                         }
                     }
-                    while (fetched[0] > 0);
+                    while (fetched > 0);
                 }
                 finally
                 {
-                    ArrayPool<FORMATETC>.Shared.Return(formats);
-                    ArrayPool<int>.Shared.Return(fetched);
+                    ArrayPool<Interop.FORMATETC>.Shared.Return(formats);
                 }
             }
+            return formatsList;
+        }
+
+        public void Dispose()
+        {
+            _wrapped.Dispose();
         }
     }
 }
