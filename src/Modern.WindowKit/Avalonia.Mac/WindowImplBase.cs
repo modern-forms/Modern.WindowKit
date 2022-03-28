@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Modern.WindowKit.Automation.Peers;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Controls.Platform.Surfaces;
@@ -40,12 +41,13 @@ namespace Modern.WindowKit.Native
         public IntPtr GetNSWindowRetained()
         {
             return _native?.ObtainNSWindowHandleRetained() ?? IntPtr.Zero;
-        }
+    }
     }
 
     internal abstract partial class WindowBaseImpl : IWindowBaseImpl,
-        IFramebufferPlatformSurface//, ITopLevelImplWithNativeControlHost
+        IFramebufferPlatformSurface, ITopLevelImplWithNativeControlHost
     {
+        protected readonly IAvaloniaNativeFactory _factory;
         protected IInputRoot _inputRoot;
         IAvnWindowBase _native;
         private object _syncRoot = new object();
@@ -57,13 +59,15 @@ namespace Modern.WindowKit.Native
         private Size _savedLogicalSize;
         private Size _lastRenderedLogicalSize;
         private double _savedScaling;
-        //private GlPlatformSurface _glSurface;
-        //private NativeControlHostImpl _nativeControlHost;
-        //private IGlContext _glContext;
+        private GlPlatformSurface _glSurface;
+        private NativeControlHostImpl _nativeControlHost;
+        private IGlContext _glContext;
 
-        internal WindowBaseImpl(AvaloniaNativePlatformOptions opts)
+        internal WindowBaseImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts,
+            AvaloniaNativePlatformOpenGlInterface glFeature)
         {
-            //_gpu = opts.UseGpu && glFeature != null;
+            _factory = factory;
+            _gpu = opts.UseGpu && glFeature != null;
             _deferredRendering = opts.UseDeferredRendering;
 
             _keyboard = AvaloniaNativePlatform.KeyboardDevice;
@@ -74,21 +78,23 @@ namespace Modern.WindowKit.Native
         protected void Init(IAvnWindowBase window, IAvnScreens screens)
         {
             _native = window;
-            //_glContext = glContext;
+            _glContext = glContext;
 
             Handle = new MacOSTopLevelWindowHandle(window);
-            //if (_gpu)
-            //    _glSurface = new GlPlatformSurface(window, _glContext);
+            if (_gpu)
+                _glSurface = new GlPlatformSurface(window, _glContext);
             Screen = new ScreenImpl(screens);
             _savedLogicalSize = ClientSize;
             _savedScaling = RenderScaling;
-            //_nativeControlHost = new NativeControlHostImpl(_native.CreateNativeControlHost());
+            _nativeControlHost = new NativeControlHostImpl(_native.CreateNativeControlHost());
 
             var monitor = Screen.AllScreens.OrderBy(x => x.PixelDensity)
                     .FirstOrDefault(m => m.Bounds.Contains(Position));
 
             Resize(new Size(monitor.WorkingArea.Width * 0.75d, monitor.WorkingArea.Height * 0.7d), PlatformResizeReason.Layout);
         }
+
+        public IAvnWindowBase Native => _native;
 
         public Size ClientSize 
         {
@@ -119,11 +125,11 @@ namespace Modern.WindowKit.Native
         }
 
         public IEnumerable<object> Surfaces => new[] {
-            //(_gpu ? _glSurface : (object)null),
+            (_gpu ? _glSurface : (object)null),
             this 
         };
 
-        //public INativeControlHostImpl NativeControlHost => _nativeControlHost;
+        public INativeControlHostImpl NativeControlHost => _nativeControlHost;
 
         public ILockedFramebuffer Lock()
         {
@@ -144,12 +150,17 @@ namespace Modern.WindowKit.Native
         }
 
         public Action LostFocus { get; set; }
-        
+
         public Action<Rect> Paint { get; set; }
         public Action<Size, PlatformResizeReason> Resized { get; set; }
         public Action Closed { get; set; }
         public IMouseDevice MouseDevice => _mouse;
         public abstract IPopupImpl CreatePopup();
+
+        public AutomationPeer GetAutomationPeer()
+        {
+            return _inputRoot is Control c ? ControlAutomationPeer.CreatePeerForElement(c) : null;
+        }
 
         protected unsafe partial class WindowBaseEvents : NativeCallbackBase, IAvnWindowBaseEvents
         {
@@ -193,7 +204,7 @@ namespace Modern.WindowKit.Native
                     var s = new Size(size->Width, size->Height);
                     _parent._savedLogicalSize = s;
                     _parent.Resized?.Invoke(s, (PlatformResizeReason)reason);
-                }
+            }
             }
 
             void IAvnWindowBaseEvents.PositionChanged(AvnPoint position)
@@ -216,7 +227,6 @@ namespace Modern.WindowKit.Native
                 return _parent.RawTextInputEvent(timeStamp, text).AsComBool();
             }
 
-
             void IAvnWindowBaseEvents.ScalingChanged(double scaling)
             {
                 _parent._savedScaling = scaling;
@@ -233,31 +243,36 @@ namespace Modern.WindowKit.Native
                 _parent.LostFocus?.Invoke();
             }
 
-            //public AvnDragDropEffects DragEvent(AvnDragEventType type, AvnPoint position,
-            //    AvnInputModifiers modifiers,
-            //    AvnDragDropEffects effects,
-            //    IAvnClipboard clipboard, IntPtr dataObjectHandle)
-            //{
-            //    var device = AvaloniaLocator.Current.GetService<IDragDropDevice>();
+            public AvnDragDropEffects DragEvent(AvnDragEventType type, AvnPoint position,
+                AvnInputModifiers modifiers,
+                AvnDragDropEffects effects,
+                IAvnClipboard clipboard, IntPtr dataObjectHandle)
+            {
+                var device = AvaloniaLocator.Current.GetService<IDragDropDevice>();
 
-            //    IDataObject dataObject = null;
-            //    if (dataObjectHandle != IntPtr.Zero)
-            //        dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
+                IDataObject dataObject = null;
+                if (dataObjectHandle != IntPtr.Zero)
+                    dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
                 
-            //    using(var clipboardDataObject = new ClipboardDataObject(clipboard))
-            //    {
-            //        if (dataObject == null)
-            //            dataObject = clipboardDataObject;
+                using(var clipboardDataObject = new ClipboardDataObject(clipboard))
+                {
+                    if (dataObject == null)
+                        dataObject = clipboardDataObject;
                     
-            //        var args = new RawDragEvent(device, (RawDragEventType)type,
-            //            _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
-            //            (RawInputModifiers)modifiers);
-            //        _parent.Input(args);
-            //        return (AvnDragDropEffects)args.Effects;
-            //    }
-            //}
-        }
+                    var args = new RawDragEvent(device, (RawDragEventType)type,
+                        _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
+                        (RawInputModifiers)modifiers);
+                    _parent.Input(args);
+                    return (AvnDragDropEffects)args.Effects;
+                }
+            }
 
+            IAvnAutomationPeer IAvnWindowBaseEvents.AutomationPeer
+            {
+                get => AvnAutomationPeer.Wrap(_parent.GetAutomationPeer());
+            }
+        }
+       
         public void Activate()
         {
             _native?.Activate();
@@ -265,8 +280,8 @@ namespace Modern.WindowKit.Native
 
         public bool RawTextInputEvent(uint timeStamp, string text)
         {
-            //if (_inputRoot is null) 
-            //    return false;
+            if (_inputRoot is null) 
+                return false;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
@@ -279,13 +294,13 @@ namespace Modern.WindowKit.Native
 
         public bool RawKeyEvent(AvnRawKeyEventType type, uint timeStamp, AvnInputModifiers modifiers, uint key)
         {
-            //if (_inputRoot is null) 
-            //    return false;
+            if (_inputRoot is null) 
+                return false;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
             var args = new RawKeyEventArgs(_keyboard, timeStamp, _inputRoot, (RawKeyEventType)type, (Key)key, (RawInputModifiers)modifiers);
-
+            
             Input?.Invoke(args);
 
             return args.Handled;
@@ -298,8 +313,8 @@ namespace Modern.WindowKit.Native
 
         public void RawMouseEvent(AvnRawMouseEventType type, uint timeStamp, AvnInputModifiers modifiers, AvnPoint point, AvnVector delta)
         {
-            //if (_inputRoot is null) 
-            //    return;
+            if (_inputRoot is null) 
+                return;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
@@ -307,22 +322,22 @@ namespace Modern.WindowKit.Native
             {
                 case AvnRawMouseEventType.Wheel:
                     Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, _inputRoot,
-                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
-                    break;
-                
-                case AvnRawMouseEventType.Magnify:
-                    //Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Magnify, 
-                    //    point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
-                    break;
-                    
-                case AvnRawMouseEventType.Rotate:
-                    //Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Rotate, 
                     //    point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
 
+                case AvnRawMouseEventType.Magnify:
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Magnify, 
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    break;
+                    
+                case AvnRawMouseEventType.Rotate:
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Rotate, 
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    break;
+                
                 case AvnRawMouseEventType.Swipe:
-                    //Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Swipe,
-                    //    point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Swipe,
+                        point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
 
                 default:
@@ -330,7 +345,7 @@ namespace Modern.WindowKit.Native
                         point.ToAvaloniaPoint(), (RawInputModifiers)modifiers);
                     
                     if(!ChromeHitTest(e))
-                    {
+        //    {
                         Input?.Invoke(e);
                     }
                     break;
@@ -340,22 +355,22 @@ namespace Modern.WindowKit.Native
         public void Resize(Size clientSize, PlatformResizeReason reason)
         {
             _native?.Resize(clientSize.Width, clientSize.Height, (AvnPlatformResizeReason)reason);
-        }
-
-        //public IRenderer CreateRenderer(IRenderRoot root)
-        //{
-        //    if (_deferredRendering)
-        //    {
-        //        var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-        //        var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
-            
-        //        if (customRendererFactory != null)
-        //            return customRendererFactory.Create(root, loop);
-        //        return new DeferredRenderer(root, loop);
-        //    }
-
-        //    return new ImmediateRenderer(root);
         //}
+
+        public IRenderer CreateRenderer(IRenderRoot root)
+        {
+            if (_deferredRendering)
+            {
+                var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+                var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+
+                if (customRendererFactory != null)
+                    return customRendererFactory.Create(root, loop);
+                return new DeferredRenderer(root, loop);
+            }
+
+            return new ImmediateRenderer(root);
+        }
 
         public virtual void Dispose()
         {
@@ -363,9 +378,9 @@ namespace Modern.WindowKit.Native
             _native?.Dispose();
             _native = null;
 
-            //_nativeControlHost?.Dispose();
-            //_nativeControlHost = null;
-            
+            _nativeControlHost?.Dispose();
+            _nativeControlHost = null;
+
             (Screen as ScreenImpl)?.Dispose();
             _mouse.Dispose();
         }
@@ -459,9 +474,9 @@ namespace Modern.WindowKit.Native
         }
 
         public void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e)
-        {
+                {
 
-        }
+                }
 
         internal void BeginDraggingSession(AvnDragDropEffects effects, AvnPoint point, IAvnClipboard clipboard,
             IAvnDndResultCallback callback, IntPtr sourceHandle)
@@ -481,7 +496,7 @@ namespace Modern.WindowKit.Native
                 if(transparencyLevel == WindowTransparencyLevel.None)
                 {
                     transparencyLevel = WindowTransparencyLevel.Transparent;
-                }
+}
 
                 TransparencyLevel = transparencyLevel;
 
