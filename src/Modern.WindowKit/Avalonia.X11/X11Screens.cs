@@ -200,6 +200,21 @@ namespace Modern.WindowKit.X11
 
         }
 
+        public Screen ScreenFromPoint(PixelPoint point)
+        {
+            return ScreenHelper.ScreenFromPoint(point, AllScreens);
+        }
+
+        public Screen ScreenFromRect(PixelRect rect)
+        {
+            return ScreenHelper.ScreenFromRect(rect, AllScreens);
+        }
+
+        public Screen ScreenFromWindow(IWindowBaseImpl window)
+        {
+            return ScreenHelper.ScreenFromWindow(window, AllScreens);
+        }
+
         public int ScreenCount => _impl.Screens.Length;
 
         public IReadOnlyList<Screen> AllScreens =>
@@ -212,7 +227,7 @@ namespace Modern.WindowKit.X11
     }
 
     class X11ScreensUserSettings
-    {
+            {
         public double GlobalScaleFactor { get; set; } = 1;
         public Dictionary<string, double> NamedScaleFactors { get; set; }
 
@@ -245,10 +260,10 @@ namespace Modern.WindowKit.X11
                         rv.NamedScaleFactors = screenFactors.Split(';').Where(x => !string.IsNullOrWhiteSpace(x))
                             .Select(x => x.Split('=')).ToDictionary(x => x[0],
                                 x => double.Parse(x[1], CultureInfo.InvariantCulture));
-                    }
+    }
                 }
                 catch
-                {
+    {
                     //Ignore
                 }
 
@@ -280,7 +295,7 @@ namespace Modern.WindowKit.X11
             Name = name;
             Bounds = bounds;
             if (physicalSize == null && pixelDensity == null)
-            {
+        {
                 PixelDensity = 1;
             }
             else if (pixelDensity == null)

@@ -254,6 +254,18 @@ namespace Modern.WindowKit
         }
 
         /// <summary>
+        /// Determines whether a point is in the bounds of the rectangle, exclusive of the
+        /// rectangle's bottom/right edge.
+        /// </summary>
+        /// <param name="p">The point.</param>
+        /// <returns>true if the point is in the bounds of the rectangle; otherwise false.</returns>    
+        public bool ContainsExclusive(Point p)
+        {
+            return p.X >= _x && p.X < _x + _width &&
+                   p.Y >= _y && p.Y < _y + _height;
+        }
+
+        /// </summary>
         /// Determines whether the rectangle fully contains another rectangle.
         /// </summary>
         /// <param name="r">The rectangle.</param>
@@ -265,7 +277,7 @@ namespace Modern.WindowKit
 
         /// <summary>
         /// Centers another rectangle in this rectangle.
-        /// </summary>
+        /// <summary>
         /// <param name="rect">The rectangle to center.</param>
         /// <returns>The centered rectangle.</returns>
         public Rect CenterRect(Rect rect)
@@ -277,7 +289,7 @@ namespace Modern.WindowKit
                 rect._height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Inflates the rectangle.
         /// </summary>
         /// <param name="thickness">The thickness to be subtracted for each side of the rectangle.</param>
@@ -299,7 +311,7 @@ namespace Modern.WindowKit
                 Size.Inflate(thickness));
         }
 
-        /// <summary>
+        /// </summary>
         /// Deflates the rectangle.
         /// </summary>
         /// <param name="thickness">The thickness to be subtracted for each side of the rectangle.</param>
@@ -382,48 +394,48 @@ namespace Modern.WindowKit
             }
         }
 
-        /// <summary>
+        ///// <summary>
         /// Determines whether a rectangle intersects with this rectangle.
-        /// </summary>
+        ///// </summary>
         /// <param name="rect">The other rectangle.</param>
         /// <returns>
         /// True if the specified rectangle intersects with this one; otherwise false.
         /// </returns>
         public bool Intersects(Rect rect)
-        {
+        //    {
             return (rect.X < Right) && (X < rect.Right) && (rect.Y < Bottom) && (Y < rect.Bottom);
         }
 
-        ///// <summary>
-        ///// Returns the axis-aligned bounding box of a transformed rectangle.
-        ///// </summary>
-        ///// <param name="matrix">The transform.</param>
-        ///// <returns>The bounding box</returns>
-        //public Rect TransformToAABB(Matrix matrix)
-        //{
-        //    ReadOnlySpan<Point> points = stackalloc Point[4]
-        //    {
-        //        TopLeft.Transform(matrix),
-        //        TopRight.Transform(matrix),
-        //        BottomRight.Transform(matrix),
-        //        BottomLeft.Transform(matrix)
-        //    };
+        /// <summary>
+        /// Returns the axis-aligned bounding box of a transformed rectangle.
+        /// </summary>
+        /// <param name="matrix">The transform.</param>
+        /// <returns>The bounding box</returns>
+        public Rect TransformToAABB(Matrix matrix)
+        {
+            ReadOnlySpan<Point> points = stackalloc Point[4]
+            {
+                TopLeft.Transform(matrix),
+                TopRight.Transform(matrix),
+                BottomRight.Transform(matrix),
+                BottomLeft.Transform(matrix)
+            };
 
-        //    var left = double.MaxValue;
-        //    var right = double.MinValue;
-        //    var top = double.MaxValue;
-        //    var bottom = double.MinValue;
+            var left = double.MaxValue;
+            var right = double.MinValue;
+            var top = double.MaxValue;
+            var bottom = double.MinValue;
 
-        //    foreach (var p in points)
-        //    {
-        //        if (p.X < left) left = p.X;
-        //        if (p.X > right) right = p.X;
-        //        if (p.Y < top) top = p.Y;
-        //        if (p.Y > bottom) bottom = p.Y;
-        //    }
+            foreach (var p in points)
+            {
+                if (p.X < left) left = p.X;
+                if (p.X > right) right = p.X;
+                if (p.Y < top) top = p.Y;
+                if (p.Y > bottom) bottom = p.Y;
+            }
 
-        //    return new Rect(new Point(left, top), new Point(right, bottom));
-        //}
+            return new Rect(new Point(left, top), new Point(right, bottom));
+        }
 
         /// <summary>
         /// Translates the rectangle by an offset.
@@ -500,7 +512,7 @@ namespace Modern.WindowKit
             }
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="Rect"/> with the specified X position.
         /// </summary>
         /// <param name="x">The x position.</param>
@@ -510,7 +522,7 @@ namespace Modern.WindowKit
             return new Rect(x, _y, _width, _height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="Rect"/> with the specified Y position.
         /// </summary>
         /// <param name="y">The y position.</param>
@@ -520,7 +532,7 @@ namespace Modern.WindowKit
             return new Rect(_x, y, _width, _height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="Rect"/> with the specified width.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -530,7 +542,7 @@ namespace Modern.WindowKit
             return new Rect(_x, _y, width, _height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="Rect"/> with the specified height.
         /// </summary>
         /// <param name="height">The height.</param>
