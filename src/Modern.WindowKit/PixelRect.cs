@@ -170,6 +170,18 @@ namespace Modern.WindowKit
         }
 
         /// <summary>
+        /// Determines whether a point is in the bounds of the rectangle, exclusive of the
+        /// rectangle's bottom/right edge.
+        /// </summary>
+        /// <param name="p">The point.</param>
+        /// <returns>true if the point is in the bounds of the rectangle; otherwise false.</returns>    
+        public bool ContainsExclusive(PixelPoint p)
+        {
+            return p.X >= X && p.X < X + Width &&
+                   p.Y >= Y && p.Y < Y + Height;
+        }
+
+        /// </summary>
         /// Determines whether the rectangle fully contains another rectangle.
         /// </summary>
         /// <param name="r">The rectangle.</param>
@@ -181,7 +193,7 @@ namespace Modern.WindowKit
 
         /// <summary>
         /// Centers another rectangle in this rectangle.
-        /// </summary>
+        /// <summary>
         /// <param name="rect">The rectangle to center.</param>
         /// <returns>The centered rectangle.</returns>
         public PixelRect CenterRect(PixelRect rect)
@@ -193,7 +205,7 @@ namespace Modern.WindowKit
                 rect.Height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a boolean indicating whether the rect is equal to the other given rect.
         /// </summary>
         /// <param name="other">The other rect to test equality against.</param>
@@ -248,10 +260,10 @@ namespace Modern.WindowKit
                 return Empty;
             }
         }
-
-        /// <summary>
+        
+        ///// <summary>
         /// Determines whether a rectangle intersects with this rectangle.
-        /// </summary>
+        ///// </summary>
         /// <param name="rect">The other rectangle.</param>
         /// <returns>
         /// True if the specified rectangle intersects with this one; otherwise false.
@@ -261,15 +273,15 @@ namespace Modern.WindowKit
             return (rect.X < Right) && (X < rect.Right) && (rect.Y < Bottom) && (Y < rect.Bottom);
         }
         
-        ///// <summary>
-        ///// Translates the rectangle by an offset.
-        ///// </summary>
-        ///// <param name="offset">The offset.</param>
-        ///// <returns>The translated rectangle.</returns>
-        //public PixelRect Translate(PixelVector offset)
-        //{
-        //    return new PixelRect(Position + offset, Size);
-        //}
+        /// </summary>
+        /// Translates the rectangle by an offset.
+        /// </summary>
+        /// <param name="offset">The offset.</param>
+        /// <returns>The translated rectangle.</returns>
+        public PixelRect Translate(PixelVector offset)
+            {
+            return new PixelRect(Position + offset, Size);
+            }
 
         /// <summary>
         /// Gets the union of two rectangles.
@@ -297,7 +309,7 @@ namespace Modern.WindowKit
             }
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="PixelRect"/> with the specified X position.
         /// </summary>
         /// <param name="x">The x position.</param>
@@ -307,7 +319,7 @@ namespace Modern.WindowKit
             return new PixelRect(x, Y, Width, Height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="PixelRect"/> with the specified Y position.
         /// </summary>
         /// <param name="y">The y position.</param>
@@ -317,7 +329,7 @@ namespace Modern.WindowKit
             return new PixelRect(X, y, Width, Height);
         }
 
-        /// <summary>
+        /// </summary>
         /// Returns a new <see cref="PixelRect"/> with the specified width.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -369,7 +381,7 @@ namespace Modern.WindowKit
         /// <returns>The device-independent rect.</returns>
         public Rect ToRectWithDpi(Vector dpi) => new Rect(Position.ToPointWithDpi(dpi), Size.ToSizeWithDpi(dpi));
 
-        /// <summary>
+        /// </summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified scaling factor.
         /// </summary>
         /// <param name="rect">The rect.</param>
@@ -379,7 +391,7 @@ namespace Modern.WindowKit
             PixelPoint.FromPoint(rect.Position, scale),
             FromPointCeiling(rect.BottomRight, new Vector(scale, scale)));
 
-        /// <summary>
+        /// </summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified scaling factor.
         /// </summary>
         /// <param name="rect">The rect.</param>
@@ -389,7 +401,7 @@ namespace Modern.WindowKit
             PixelPoint.FromPoint(rect.Position, scale),
             FromPointCeiling(rect.BottomRight, scale));
 
-        /// <summary>
+        /// </summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified dots per inch (DPI).
         /// </summary>
         /// <param name="rect">The rect.</param>
@@ -399,7 +411,7 @@ namespace Modern.WindowKit
             PixelPoint.FromPointWithDpi(rect.Position, dpi),
             FromPointCeiling(rect.BottomRight, new Vector(dpi / 96, dpi / 96)));
 
-        /// <summary>
+        /// </summary>
         /// Converts a <see cref="Rect"/> to device pixels using the specified dots per inch (DPI).
         /// </summary>
         /// <param name="rect">The rect.</param>

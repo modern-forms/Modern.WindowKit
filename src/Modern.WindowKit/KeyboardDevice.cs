@@ -24,163 +24,143 @@ namespace Modern.WindowKit.Input
         // the source of truth about the input focus is in KeyboardDevice
         //private readonly TextInputMethodManager _textInputManager = new TextInputMethodManager();
 
-        //public IInputElement? FocusedElement
-        //{
-        //    get
+        public IInputElement? FocusedElement => _focusedElement;
+
+        private void ClearFocusWithinAncestors(IInputElement? element)
         //    {
-        //        return _focusedElement;
-        //    }
-
-        //    private set
-        //    {
-        //        _focusedElement = value;
-
-        //        if (_focusedElement != null && _focusedElement.IsAttachedToVisualTree)
-        //        {
-        //            _focusedRoot = _focusedElement.VisualRoot as IInputRoot;
-        //        }
-        //        else
-        //        {
-        //            _focusedRoot = null;
-        //        }
-                
-        //        RaisePropertyChanged();
-        //        _textInputManager.SetFocusedElement(value);
-        //    }
-        //}
-
-        //private void ClearFocusWithinAncestors(IInputElement? element)
-        //{
-        //    var el = element;
+            var el = element;
             
-        //    while (el != null)
-        //    {
-        //        if (el is InputElement ie)
-        //        {
-        //            ie.IsKeyboardFocusWithin = false;
-        //        }
+            while (el != null)
+            {
+                if (el is InputElement ie)
+                {
+                    ie.IsKeyboardFocusWithin = false;
+                }
 
-        //        el = (IInputElement?)el.VisualParent;
-        //    }
-        //}
+                el = (IInputElement?)el.VisualParent;
+        //        }
+        }
         
-        //private void ClearFocusWithin(IInputElement element, bool clearRoot)
-        //{
-        //    foreach (var visual in element.VisualChildren)
-        //    {
-        //        if (visual is IInputElement el && el.IsKeyboardFocusWithin)
-        //        {
-        //            ClearFocusWithin(el, true);
-        //            break;
-        //        }
-        //    }
+        private void ClearFocusWithin(IInputElement element, bool clearRoot)
+        {
+            foreach (var visual in element.VisualChildren)
+            {
+                if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+                {
+                    ClearFocusWithin(el, true);
+                    break;
+                }
+            }
             
-        //    if (clearRoot)
-        //    {
-        //        if (element is InputElement ie)
-        //        {
-        //            ie.IsKeyboardFocusWithin = false;
+            if (clearRoot)
+            {
+                if (element is InputElement ie)
+                {
+                    ie.IsKeyboardFocusWithin = false;
+                }
         //        }
-        //    }
+        }
+
+        private void SetIsFocusWithin(IInputElement? oldElement, IInputElement? newElement)
+        {
+            if (newElement == null && oldElement != null)
+            {
+                ClearFocusWithinAncestors(oldElement);
+                return;
+            }
+            
+            IInputElement? branch = null;
+
+            var el = newElement;
+
+            while (el != null)
+            {
+                if (el.IsKeyboardFocusWithin)
+        //    {
+                    branch = el;
+                    break;
+                }
+
+                el = el.VisualParent as IInputElement;
         //}
 
-        //private void SetIsFocusWithin(IInputElement? oldElement, IInputElement? newElement)
-        //{
-        //    if (newElement == null && oldElement != null)
+            el = oldElement;
+
+            if (el != null && branch != null)
         //    {
-        //        ClearFocusWithinAncestors(oldElement);
-        //        return;
-        //    }
+                ClearFocusWithin(branch, false);
+            }
+
+            el = newElement;
             
-        //    IInputElement? branch = null;
+            while (el != null && el != branch)
+            {
+                if (el is InputElement ie)
+                {
+                    ie.IsKeyboardFocusWithin = true;
+                }
 
-        //    var el = newElement;
-
-        //    while (el != null)
-        //    {
-        //        if (el.IsKeyboardFocusWithin)
-        //        {
-        //            branch = el;
-        //            break;
+                el = el.VisualParent as IInputElement;
+            }
         //        }
 
-        //        el = el.VisualParent as IInputElement;
+        private void ClearChildrenFocusWithin(IInputElement element, bool clearRoot)
+        {
+            foreach (var visual in element.VisualChildren)
+            {
+                if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+                {
+                    ClearChildrenFocusWithin(el, true);
+                    break;
         //    }
-
-        //    el = oldElement;
-
-        //    if (el != null && branch != null)
-        //    {
-        //        ClearFocusWithin(branch, false);
-        //    }
-
-        //    el = newElement;
+            }
             
-        //    while (el != null && el != branch)
-        //    {
-        //        if (el is InputElement ie)
-        //        {
-        //            ie.IsKeyboardFocusWithin = true;
-        //        }
+            if (clearRoot && element is InputElement ie)
+            {
+                ie.IsKeyboardFocusWithin = false;
+            }
+        }
 
-        //        el = el.VisualParent as IInputElement;
-        //    }
-        //}
-        
-        //private void ClearChildrenFocusWithin(IInputElement element, bool clearRoot)
-        //{
-        //    foreach (var visual in element.VisualChildren)
-        //    {
-        //        if (visual is IInputElement el && el.IsKeyboardFocusWithin)
-        //        {
-        //            ClearChildrenFocusWithin(el, true);
-        //            break;
-        //        }
+        public void SetFocusedElement(
+            IInputElement? element, 
+            NavigationMethod method,
+            KeyModifiers keyModifiers)
+        {
+            if (element != FocusedElement)
+            {
+                var interactive = FocusedElement as IInteractive;
+
+                if (FocusedElement != null && 
+                    (!FocusedElement.IsAttachedToVisualTree ||
+                     _focusedRoot != element?.VisualRoot as IInputRoot) &&
+                    _focusedRoot != null)
+                {
+                    ClearChildrenFocusWithin(_focusedRoot, true);
         //    }
             
-        //    if (clearRoot && element is InputElement ie)
-        //    {
-        //        ie.IsKeyboardFocusWithin = false;
-        //    }
-        //}
+                SetIsFocusWithin(FocusedElement, element);
+                _focusedElement = element;
+                _focusedRoot = _focusedElement?.VisualRoot as IInputRoot;
 
-        //public void SetFocusedElement(
-        //    IInputElement? element, 
-        //    NavigationMethod method,
-        //    KeyModifiers keyModifiers)
-        //{
-        //    if (element != FocusedElement)
-        //    {
-        //        var interactive = FocusedElement as IInteractive;
+                interactive?.RaiseEvent(new RoutedEventArgs
+                {
+                    RoutedEvent = InputElement.LostFocusEvent,
+                });
 
-        //        if (FocusedElement != null && 
-        //            (!FocusedElement.IsAttachedToVisualTree ||
-        //             _focusedRoot != element?.VisualRoot as IInputRoot) &&
-        //            _focusedRoot != null)
-        //        {
-        //            ClearChildrenFocusWithin(_focusedRoot, true);
+                interactive = element as IInteractive;
+
+                interactive?.RaiseEvent(new GotFocusEventArgs
+        //    {
+                    RoutedEvent = InputElement.GotFocusEvent,
+                    NavigationMethod = method,
+                    KeyModifiers = keyModifiers,
+                });
+
+                _textInputManager.SetFocusedElement(element);
+                RaisePropertyChanged(nameof(FocusedElement));
+            }
         //        }
                 
-        //        SetIsFocusWithin(FocusedElement, element);
-                
-        //        FocusedElement = element;
-
-        //        interactive?.RaiseEvent(new RoutedEventArgs
-        //        {
-        //            RoutedEvent = InputElement.LostFocusEvent,
-        //        });
-
-        //        interactive = element as IInteractive;
-
-        //        interactive?.RaiseEvent(new GotFocusEventArgs
-        //        {
-        //            RoutedEvent = InputElement.GotFocusEvent,
-        //            NavigationMethod = method,
-        //            KeyModifiers = keyModifiers,
-        //        });
-        //    }
-        //}
-
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -191,79 +171,79 @@ namespace Modern.WindowKit.Input
             if(e.Handled)
                 return;
 
-            //var element = FocusedElement ?? e.Root;
+            var element = FocusedElement ?? e.Root;
 
-            //if (e is RawKeyEventArgs keyInput)
+            if (e is RawKeyEventArgs keyInput)
+            {
+                switch (keyInput.Type)
+                {
+                    case RawKeyEventType.KeyDown:
+                    case RawKeyEventType.KeyUp:
+                        var routedEvent = keyInput.Type == RawKeyEventType.KeyDown
+                            ? InputElement.KeyDownEvent
+                            : InputElement.KeyUpEvent;
+
+                        KeyEventArgs ev = new KeyEventArgs
+                        {
+                            RoutedEvent = routedEvent,
+                            Device = this,
+                            Key = keyInput.Key,
+                            KeyModifiers = KeyModifiersUtils.ConvertToKey(keyInput.Modifiers),
+                            Source = element,
+                        };
+
+                        IVisual? currentHandler = element;
+                        while (currentHandler != null && !ev.Handled && keyInput.Type == RawKeyEventType.KeyDown)
             //{
-            //    switch (keyInput.Type)
-            //    {
-            //        case RawKeyEventType.KeyDown:
-            //        case RawKeyEventType.KeyUp:
-            //            var routedEvent = keyInput.Type == RawKeyEventType.KeyDown
-            //                ? InputElement.KeyDownEvent
-            //                : InputElement.KeyUpEvent;
-
-            //            KeyEventArgs ev = new KeyEventArgs
-            //            {
-            //                RoutedEvent = routedEvent,
-            //                Device = this,
-            //                Key = keyInput.Key,
-            //                KeyModifiers = KeyModifiersUtils.ConvertToKey(keyInput.Modifiers),
-            //                Source = element,
-            //            };
-
-            //            IVisual? currentHandler = element;
-            //            while (currentHandler != null && !ev.Handled && keyInput.Type == RawKeyEventType.KeyDown)
-            //            {
-            //                var bindings = (currentHandler as IInputElement)?.KeyBindings;
-            //                if (bindings != null)
-                            //{
-                            //    KeyBinding[]? bindingsCopy = null;
+                            var bindings = (currentHandler as IInputElement)?.KeyBindings;
+                            if (bindings != null)
+                            {
+                                KeyBinding[]? bindingsCopy = null;
 
                                 // Create a copy of the KeyBindings list if there's a binding which matches the event.
                                 // If we don't do this the foreach loop will throw an InvalidOperationException when the KeyBindings list is changed.
                                 // This can happen when a new view is loaded which adds its own KeyBindings to the handler.
-                                //foreach (var binding in bindings)
-                                //{
-                                //    if (binding.Gesture?.Matches(ev) == true)
-                                //    {
-                                //        bindingsCopy = bindings.ToArray();
-            //            break;
+                                foreach (var binding in bindings)
+            //            {
+                                    if (binding.Gesture?.Matches(ev) == true)
+                                    {
+                                        bindingsCopy = bindings.ToArray();
+                                        break;
+                                    }
+                                }
+
+                                if (bindingsCopy is object)
+                                {
+                                    foreach (var binding in bindingsCopy)
+                                    {
+                                        if (ev.Handled)
+                                            break;
+                                        binding.TryHandle(ev);
+                                    }
+                                }
+                            }
+                            currentHandler = currentHandler.VisualParent;
+                        }
+
+                        element.RaiseEvent(ev);
+                        e.Handled = ev.Handled;
+                        break;
+                }
             //    }
-            //}
 
-                                //if (bindingsCopy is object)
-            //{
-                                    //foreach (var binding in bindingsCopy)
-            //    {
-                //                        if (ev.Handled)
-                //                            break;
-                //                        binding.TryHandle(ev);
-                //                    }
-                //                }
-                //            }
-                //            currentHandler = currentHandler.VisualParent;
+            if (e is RawTextInputEventArgs text)
+            {
+                var ev = new TextInputEventArgs()
+                {
+                    Device = this,
+                    Text = text.Text,
+                    Source = element,
+                    RoutedEvent = InputElement.TextInputEvent
+                };
+
+                element.RaiseEvent(ev);
+                e.Handled = ev.Handled;
                 //        }
-
-                //        element.RaiseEvent(ev);
-                //        e.Handled = ev.Handled;
-                //        break;
-                //}
-            //}
-
-            //if (e is RawTextInputEventArgs text)
-            //{
-            //    var ev = new TextInputEventArgs()
-            //    {
-            //        Device = this,
-            //        Text = text.Text,
-            //        Source = element,
-            //        RoutedEvent = InputElement.TextInputEvent
-            //    };
-
-            //    element.RaiseEvent(ev);
-            //    e.Handled = ev.Handled;
-            //}
         }
     }
 }

@@ -78,12 +78,13 @@ namespace Modern.WindowKit.Win32
         public async Task SetDataObjectAsync(IDataObject data)
         {
             Dispatcher.UIThread.VerifyAccess();
-            var wrapper = new DataObject(data);
+            using var wrapper = new DataObject(data);
             var i = OleRetryCount;
 
             while (true)
             {
-                var hr = UnmanagedMethods.OleSetClipboard(wrapper);
+                var ptr = MicroCom.MicroComRuntime.GetNativeIntPtr<Win32Com.IDataObject>(wrapper);
+                var hr = UnmanagedMethods.OleSetClipboard(ptr);
 
                 if (hr == 0)
                     break;
@@ -92,7 +93,7 @@ namespace Modern.WindowKit.Win32
                     Marshal.ThrowExceptionForHR(hr);
                 
                 await Task.Delay(OleRetryDelay);
-            }
+        }
         }
 
         public async Task<string[]> GetFormatsAsync()
@@ -106,9 +107,9 @@ namespace Modern.WindowKit.Win32
 
                 if (hr == 0)
                 {
-                    var wrapper = new OleDataObject(dataObject);
+                    using var proxy = MicroCom.MicroComRuntime.CreateProxyFor<Win32Com.IDataObject>(dataObject, true);
+                    using var wrapper = new OleDataObject(proxy);
                     var formats = wrapper.GetDataFormats().ToArray();
-                    Marshal.ReleaseComObject(dataObject);
                     return formats;
                 }
 
@@ -116,7 +117,7 @@ namespace Modern.WindowKit.Win32
                     Marshal.ThrowExceptionForHR(hr);
 
                 await Task.Delay(OleRetryDelay);
-            }
+        }
         }
 
         public async Task<object> GetDataAsync(string format)
@@ -130,9 +131,9 @@ namespace Modern.WindowKit.Win32
 
                 if (hr == 0)
                 {
-                    var wrapper = new OleDataObject(dataObject);
+                    using var proxy = MicroCom.MicroComRuntime.CreateProxyFor<Win32Com.IDataObject>(dataObject, true);
+                    using var wrapper = new OleDataObject(proxy);
                     var rv = wrapper.Get(format);
-                    Marshal.ReleaseComObject(dataObject);
                     return rv;
                 }
 
@@ -140,7 +141,7 @@ namespace Modern.WindowKit.Win32
                     Marshal.ThrowExceptionForHR(hr);
 
                 await Task.Delay(OleRetryDelay);
-            }
         }
     }
+}
 }
