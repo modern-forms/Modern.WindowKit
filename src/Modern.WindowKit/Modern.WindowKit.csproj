@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Modern.WindowKit</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/modern-forms/Modern.WindowKit</PackageProjectUrl>
     <Description>Cross-platform library for creating and interacting with OS windows.</Description>
@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="Modern.WindowKit.Backend.Mac" Version="0.1.2" />
-    <PackageReference Include="SkiaSharp" Version="2.80.3" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
+    <PackageReference Include="SkiaSharp" Version="2.88.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
