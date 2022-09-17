@@ -16,12 +16,15 @@
     <Description>Cross-platform library for creating and interacting with OS windows.</Description>
     <PackageTags>Modern;WindowKit;GUI;UI;Cross;Platform</PackageTags>
     <PackageOutputPath>../../nupkg</PackageOutputPath>
+
+    <!-- Include symbol files (*.pdb) in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Modern.WindowKit.Backend.Mac" Version="0.1.2" />
-    <PackageReference Include="SkiaSharp" Version="2.88.1" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.1" />
+    <PackageReference Include="SkiaSharp" Version="2.88.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.2" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
