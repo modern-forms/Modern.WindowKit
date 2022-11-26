@@ -1,6 +1,6 @@
-﻿using System.Text;
-using Modern.WindowKit.Controls;
+﻿using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
+using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Interop;
 
 namespace Modern.WindowKit.Win32.Input
@@ -49,7 +49,7 @@ namespace Modern.WindowKit.Win32.Input
 
         public string StringFromVirtualKey(uint virtualKey)
         {
-            StringBuilder result = new StringBuilder(256);
+            var result = StringBuilderCache.Acquire(256);
             int length = UnmanagedMethods.ToUnicode(
                 virtualKey,
                 0,
@@ -57,7 +57,7 @@ namespace Modern.WindowKit.Win32.Input
                 result,
                 256,
                 0);
-            return result.ToString();
+            return StringBuilderCache.GetStringAndRelease(result);
         }
 
         private void UpdateKeyStates()
