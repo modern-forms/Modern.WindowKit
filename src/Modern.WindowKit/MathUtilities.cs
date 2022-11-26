@@ -11,7 +11,7 @@ namespace Modern.WindowKit.Utilities
     static class MathUtilities
     {
         // smallest such that 1.0+DoubleEpsilon != 1.0
-        internal static readonly double DoubleEpsilon = 2.2204460492503131e-016;
+        internal const double DoubleEpsilon = 2.2204460492503131e-016;
 
         private const float FloatEpsilon = 1.192092896e-07F;
 
@@ -255,6 +255,20 @@ namespace Modern.WindowKit.Utilities
         /// <summary>
         /// Clamps a value between a minimum and maximum value.
         /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The minimum value.</param>
+        /// <param name="max">The maximum value.</param>
+        /// <returns>The clamped value.</returns>
+        public static float Clamp(float value, float min, float max)
+        {
+            var amax = Math.Max(min, max);
+            var amin = Math.Min(min, max);
+            return Math.Min(Math.Max(value, amin), amax);
+            }
+
+        /// <summary>
+        /// Clamps a value between a minimum and maximum value.
+        /// </summary>
         /// <param name="val">The value.</param>
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
@@ -264,7 +278,7 @@ namespace Modern.WindowKit.Utilities
             if (min > max)
             {
                 ThrowCannotBeGreaterThanException(min, max);
-            }
+        }
 
             if (val < min)
             {
@@ -308,6 +322,41 @@ namespace Modern.WindowKit.Utilities
         public static double Turn2Rad(double angle)
         {
             return angle * 2 * Math.PI;
+        }
+
+        /// <summary>
+        /// Calculates the point of an angle on an ellipse.
+        /// </summary>
+        /// <param name="centre">The centre point of the ellipse.</param>
+        /// <param name="radiusX">The x radius of the ellipse.</param>
+        /// <param name="radiusY">The y radius of the ellipse.</param>
+        /// <param name="angle">The angle in radians.</param>
+        /// <returns>A point on the ellipse.</returns>
+        public static Point GetEllipsePoint(Point centre, double radiusX, double radiusY, double angle)
+        {
+            return new Point(radiusX * Math.Cos(angle) + centre.X, radiusY * Math.Sin(angle) + centre.Y);
+        }
+
+        /// <summary>
+        /// Gets the minimum and maximum from the specified numbers.
+        /// </summary>
+        /// <param name="a">The first number.</param>
+        /// <param name="b">The second number.</param>
+        /// <returns>A tuple containing the minimum and maximum of the two specified numbers.</returns>
+        public static (double min, double max) GetMinMax(double a, double b)
+        {
+            return a < b ? (a, b) : (b, a);
+        }
+
+        /// <summary>
+        /// Gets the minimum and maximum from the specified number and the difference with that number.
+        /// </summary>
+        /// <param name="initialValue">The initial value to use.</param>
+        /// <param name="delta">The difference for <paramref name="initialValue"/>.</param>
+        /// <returns>A tuple containing the minimum and maximum of the specified number and the difference with that number.</returns>
+        public static (double min, double max) GetMinMaxFromDelta(double initialValue, double delta)
+        {
+            return GetMinMax(initialValue, initialValue + delta);
         }
 
         private static void ThrowCannotBeGreaterThanException<T>(T min, T max)

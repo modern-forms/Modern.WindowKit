@@ -15,4 +15,3 @@ namespace Modern.WindowKit.Metadata
     {
     }
 }
-

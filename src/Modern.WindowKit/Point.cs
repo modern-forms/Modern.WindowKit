@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Numerics;
 #if !BUILDTASK
 //using Modern.WindowKit.Animation.Animators;
 #endif
@@ -192,7 +193,7 @@ namespace Modern.WindowKit
         }
 
         /// <summary>
-        /// Returns a boolean indicating whether the point is equal to the other given point.
+        /// Returns a boolean indicating whether the point is equal to the other given point (bitwise).
         /// </summary>
         /// <param name="other">The other point to test equality against.</param>
         /// <returns>True if this point is equal to other; False otherwise.</returns>
@@ -202,6 +203,18 @@ namespace Modern.WindowKit
             return _x == other._x &&
                    _y == other._y;
             // ReSharper enable CompareOfFloatsByEqualityOperator
+        }
+
+        /// <summary>
+        /// Returns a boolean indicating whether the point is equal to the other given point
+        /// (numerically).
+        /// </summary>
+        /// <param name="other">The other point to test equality against.</param>
+        /// <returns>True if this point is equal to other; False otherwise.</returns>
+        public bool NearlyEquals(Point other)
+        {
+            return MathUtilities.AreClose(_x, other._x) &&
+                   MathUtilities.AreClose(_y, other._y);
         }
 
         /// <summary>
