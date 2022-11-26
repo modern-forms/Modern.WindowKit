@@ -51,7 +51,7 @@ namespace Modern.WindowKit.Native
 
             var nativeParent = GetNativeWindow(parent);
 
-            _native.SelectFolderDialog(nativeParent, events, dialog.Title ?? "", dialog.Directory ?? "");
+            //_native.SelectFolderDialog(nativeParent, events, dialog.Title ?? "", dialog.Directory ?? "");
 
             return events.Task.ContinueWith(t => { events.Dispose(); return t.Result.FirstOrDefault(); });
         }

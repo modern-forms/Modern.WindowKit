@@ -109,10 +109,12 @@ namespace Modern.WindowKit.Native
             get
             {
                 if (_native != null)
-                {
-                    var s = _native.FrameSize;
-                    return new Size(s.Width, s.Height);
-                }
+                    unsafe
+                    {
+                        var s = new AvnSize { Width = -1, Height = -1 };
+                        _native.GetFrameSize(&s);
+                        return s.Width < 0 && s.Height < 0 ? null : new Size(s.Width, s.Height);
+                    }
 
                 return default;
             }
@@ -243,12 +245,12 @@ namespace Modern.WindowKit.Native
             //    IDataObject dataObject = null;
             //    if (dataObjectHandle != IntPtr.Zero)
             //        dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
-                
+
             //    using(var clipboardDataObject = new ClipboardDataObject(clipboard))
             //    {
             //        if (dataObject == null)
             //            dataObject = clipboardDataObject;
-                    
+
             //        var args = new RawDragEvent(device, (RawDragEventType)type,
             //            _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
             //            (RawInputModifiers)modifiers);
@@ -256,6 +258,11 @@ namespace Modern.WindowKit.Native
             //        return (AvnDragDropEffects)args.Effects;
             //    }
             //}
+
+            IAvnAutomationPeer IAvnWindowBaseEvents.AutomationPeer
+            {
+                get => null;
+            }
         }
 
         public void Activate()
@@ -473,19 +480,17 @@ namespace Modern.WindowKit.Native
         {
             if (TransparencyLevel != transparencyLevel)
             {
-                if (transparencyLevel >= WindowTransparencyLevel.Blur)
-                {
+                if (transparencyLevel > WindowTransparencyLevel.Transparent)
                     transparencyLevel = WindowTransparencyLevel.AcrylicBlur;
-                }
-
-                if(transparencyLevel == WindowTransparencyLevel.None)
-                {
-                    transparencyLevel = WindowTransparencyLevel.Transparent;
-                }
 
                 TransparencyLevel = transparencyLevel;
 
-                _native?.SetBlurEnabled((TransparencyLevel >= WindowTransparencyLevel.Blur).AsComBool());
+                _native.SetTransparencyMode(transparencyLevel == WindowTransparencyLevel.None
+                    ? AvnWindowTransparencyMode.Opaque
+                    : transparencyLevel == WindowTransparencyLevel.Transparent
+                        ? AvnWindowTransparencyMode.Transparent
+                        : AvnWindowTransparencyMode.Blur);
+
                 TransparencyLevelChanged?.Invoke(TransparencyLevel);
             }
         }
