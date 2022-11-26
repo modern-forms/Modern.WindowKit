@@ -534,9 +534,9 @@ namespace Modern.WindowKit.X11
                 newScaling = _scalingOverride.Value;
             else
             {
-                var monitor = _platform.X11Screens.Screens.OrderBy(x => x.PixelDensity)
+                var monitor = _platform.X11Screens.Screens.OrderBy(x => x.Scaling)
                     .FirstOrDefault(m => m.Bounds.Contains(Position));
-                newScaling = monitor?.PixelDensity ?? RenderScaling;
+                newScaling = monitor?.Scaling ?? RenderScaling;
             }
 
             if (RenderScaling != newScaling)
@@ -934,7 +934,7 @@ namespace Modern.WindowKit.X11
 
         public IScreenImpl Screen => _platform.Screens;
 
-        public Size MaxAutoSizeHint => _platform.X11Screens.Screens.Select(s => s.Bounds.Size.ToSize(s.PixelDensity))
+        public Size MaxAutoSizeHint => _platform.X11Screens.Screens.Select(s => s.Bounds.Size.ToSize(s.Scaling))
             .OrderByDescending(x => x.Width + x.Height).FirstOrDefault();
 
 

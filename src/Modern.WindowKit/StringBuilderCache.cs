@@ -66,4 +66,3 @@ internal static class StringBuilderCache
         return result;
     }
 }
-

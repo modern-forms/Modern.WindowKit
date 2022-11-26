@@ -15,5 +15,11 @@ namespace Modern.WindowKit.Platform
         /// Gets the list of all screens available on the device.
         /// </summary>
         IReadOnlyList<Screen> AllScreens { get; }
+
+        Screen? ScreenFromWindow(IWindowBaseImpl window);
+
+        Screen? ScreenFromPoint(PixelPoint point);
+
+        Screen? ScreenFromRect(PixelRect rect);
     }
 }
