@@ -8,10 +8,13 @@ using Avalonia.Native.Interop;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
+//using JetBrains.Annotations;
+//using MicroCom.Runtime;
 
 namespace Modern.WindowKit.Native
 {
-    partial class AvaloniaNativePlatform : IPlatformSettings, IWindowingPlatform
+    partial class AvaloniaNativePlatform : IWindowingPlatform
     {
         private readonly IAvaloniaNativeFactory _factory;
         private AvaloniaNativePlatformOptions _options;

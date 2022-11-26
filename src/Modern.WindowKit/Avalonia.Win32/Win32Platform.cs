@@ -14,6 +14,7 @@ using Modern.WindowKit.Input.Platform;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
 using Modern.WindowKit.Threading;
 using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Input;
@@ -48,6 +49,8 @@ namespace Modern.WindowKit
         /// Immediate re-renders the whole scene when some element is changed on the scene. Deferred re-renders only changed elements.
         /// </remarks>
         public bool UseDeferredRendering { get; set; } = true;
+
+        public bool UseCompositor { get; set; } = true;
 
         /// <summary>
         /// Enables ANGLE for Windows. For every Windows version that is above Windows 7, the default is true otherwise it's false.
@@ -390,5 +393,25 @@ namespace Modern.WindowKit.Win32
 
             SetProcessDPIAware();
         }
+
+        Size IPlatformSettings.GetTapSize(PointerType type)
+        {
+            return type switch
+            {
+                PointerType.Touch => new(10, 10),
+                _ => new(GetSystemMetrics(SystemMetric.SM_CXDRAG), GetSystemMetrics(SystemMetric.SM_CYDRAG)),
+            };
+        }
+
+        Size IPlatformSettings.GetDoubleTapSize(PointerType type)
+        {
+            return type switch
+            {
+                PointerType.Touch => new(16, 16),
+                _ => new(GetSystemMetrics(SystemMetric.SM_CXDOUBLECLK), GetSystemMetrics(SystemMetric.SM_CYDOUBLECLK)),
+            };
+        }
+
+        TimeSpan IPlatformSettings.GetDoubleTapTime(PointerType type) => TimeSpan.FromMilliseconds(GetDoubleClickTime());
     }
 }
