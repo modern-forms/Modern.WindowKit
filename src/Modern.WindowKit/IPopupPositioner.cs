@@ -35,7 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 The above is the version of the MIT "Expat" License used by X.org:
 
-    http://cgit.freedesktop.org/xorg/xserver/tree/COPYING
+    https://cgit.freedesktop.org/xorg/xserver/tree/COPYING
     
     
 Adjustments for Avalonia needs:
@@ -45,7 +45,10 @@ Copyright © 2019 Nikita Tsukanov
 */
 
 using System;
+using Modern.WindowKit.Input;
+using Modern.WindowKit.Metadata;
 //using Modern.WindowKit.VisualTree;
+//using Modern.WindowKit.Media;
 
 namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
 {
@@ -60,6 +63,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
     /// requirement that a popup must intersect with or be at least partially adjacent to its parent
     /// surface.
     /// </remarks>
+    [Unstable]
     public struct PopupPositionerParameters
     {
         private PopupGravity _gravity;

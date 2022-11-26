@@ -151,12 +151,6 @@ namespace Modern.WindowKit.Platform
         /// </summary>
         Action? LostFocus { get; set; }
 
-        /// <summary>
-        /// Gets a mouse device associated with toplevel
-        /// </summary>
-        //[CanBeNull]
-        //IMouseDevice MouseDevice { get; }
-
         IPopupImpl? CreatePopup();
 
         /// <summary>

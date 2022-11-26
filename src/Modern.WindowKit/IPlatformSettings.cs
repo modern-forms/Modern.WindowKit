@@ -1,7 +1,10 @@
 ﻿using System;
+using Modern.WindowKit.Input;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Platform
-{
+    {
+    [Unstable]
     public interface IPlatformSettings
     {
         Size DoubleClickSize { get; }

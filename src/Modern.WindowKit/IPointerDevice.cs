@@ -1,8 +1,9 @@
-﻿using System;
-//using Modern.WindowKit.VisualTree;
+﻿using Modern.WindowKit.Input.Raw;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
 {
+    [NotClientImplementable]
     public interface IPointerDevice : IInputDevice
     {
         //[Obsolete("Use IPointer")]
