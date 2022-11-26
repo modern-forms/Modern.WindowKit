@@ -2,6 +2,7 @@
 using System.Runtime.ExceptionServices;
 using Avalonia.MicroCom;
 using Modern.WindowKit.Platform;
+//using MicroCom.Runtime;
 
 namespace Modern.WindowKit.Native
 {
@@ -14,7 +15,7 @@ namespace Modern.WindowKit.Native
                 threadingInterface.TerminateNativeApp();
 
                 threadingInterface.DispatchException(ExceptionDispatchInfo.Capture(e));
-            }
         }
         }
+}
 }

@@ -1,4 +1,5 @@
 ﻿using Avalonia.Native.Interop;
+//using JetBrains.Annotations;
 
 namespace Modern.WindowKit.Native
 {
@@ -22,6 +23,11 @@ namespace Modern.WindowKit.Native
         public static AvnPoint ToAvnPoint(this PixelPoint pt)
         {
             return new AvnPoint { X = pt.X, Y = pt.Y };
+        }
+
+        public static AvnRect ToAvnRect (this Rect rect)
+        {
+            return new AvnRect() { X = rect.X, Y= rect.Y, Height = rect.Height, Width = rect.Width };
         }
 
         public static AvnSize ToAvnSize (this Size size)
