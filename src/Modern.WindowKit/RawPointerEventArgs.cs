@@ -56,11 +56,12 @@ namespace Modern.WindowKit.Input.Raw
             //Contract.Requires<ArgumentNullException>(device != null);
             //Contract.Requires<ArgumentNullException>(root != null);
 
+            Point = new RawPointerPoint();
             Position = position;
             Type = type;
             InputModifiers = inputModifiers;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RawPointerEventArgs"/> class.
         /// </summary>
@@ -86,6 +87,11 @@ namespace Modern.WindowKit.Input.Raw
             Type = type;
             InputModifiers = inputModifiers;
         }
+
+        /// <summary>
+        /// Gets the raw pointer identifier.
+        /// </summary>
+        public long RawPointerId { get; set; }
 
         /// <summary>
         /// Gets the pointer properties and position, in client DIPs.
@@ -120,6 +126,8 @@ namespace Modern.WindowKit.Input.Raw
         /// only valid for Move and TouchUpdate
         /// </summary>
         public Lazy<IReadOnlyList<RawPointerPoint>?>? IntermediatePoints { get; set; }
+
+        //internal IInputElement? InputHitTestResult { get; set; }
     }
 
     public struct RawPointerPoint
@@ -128,10 +136,21 @@ namespace Modern.WindowKit.Input.Raw
         /// Pointer position, in client DIPs.
         /// </summary>
         public Point Position { get; set; }
-        
+
+        /// <inheritdoc cref="PointerPointProperties.Twist" />
+        public float Twist { get; set; }
+        /// <inheritdoc cref="PointerPointProperties.Pressure" />
+        public float Pressure { get; set; }
+        /// <inheritdoc cref="PointerPointProperties.XTilt" />
+        public float XTilt { get; set; }
+        /// <inheritdoc cref="PointerPointProperties.YTilt" />
+        public float YTilt { get; set; }
+
+
         public RawPointerPoint()
         {
-            Position = default;
+            this = default;
+            Pressure = 0.5f;
         }
     }
 }

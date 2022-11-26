@@ -140,7 +140,7 @@ public class Program
         if (e.Type == RawPointerEventType.TouchUpdate)
         {
             var radius = Scale(5);
-            var color = touch_colors[e.TouchPointId % 10];
+            var color = touch_colors[e.RawPointerId % 10];
             var paint = new SKPaint { Color = color, IsStroke = false };
             GetCanvas().Canvas.DrawCircle(x, y, radius, paint);
             Invalidate();
