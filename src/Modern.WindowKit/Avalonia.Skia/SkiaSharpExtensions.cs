@@ -1,7 +1,7 @@
 ﻿using System;
 //using Modern.WindowKit.Media;
 using Modern.WindowKit.Platform;
-using Modern.WindowKit.Visuals.Media.Imaging;
+using Modern.WindowKit.Media.Imaging;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia

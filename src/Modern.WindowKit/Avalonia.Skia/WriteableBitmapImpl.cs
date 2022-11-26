@@ -4,7 +4,7 @@ using System.Threading;
 //using Modern.WindowKit.Media.Imaging;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Skia.Helpers;
-using Modern.WindowKit.Visuals.Media.Imaging;
+using Modern.WindowKit.Media.Imaging;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia
