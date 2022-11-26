@@ -4,8 +4,8 @@ using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Layout;
+using Modern.WindowKit.Metadata;
 //using Modern.WindowKit.Rendering;
-//using JetBrains.Annotations;
 
 namespace Modern.WindowKit.Platform
 {
@@ -50,6 +50,7 @@ namespace Modern.WindowKit.Platform
     /// This interface is the common interface to <see cref="IWindowImpl"/> and
     /// <see cref="IPopupImpl"/>.
     /// </remarks>
+    [Unstable]
     public interface ITopLevelImpl : IDisposable
     {
         /// <summary>

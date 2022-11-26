@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Platform
 {
     /// <summary>
     /// Defines the platform-specific interface for a <see cref="Avalonia.Media.Imaging.Bitmap"/>.
     /// </summary>
+    [Unstable]
     public interface IBitmapImpl : IDisposable
     {
         /// <summary>

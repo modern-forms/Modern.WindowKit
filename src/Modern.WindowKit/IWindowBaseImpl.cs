@@ -1,7 +1,10 @@
 ﻿using System;
+//using Modern.WindowKit.Automation.Peers;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Platform
-{
+    {
+    [Unstable]
     public interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
@@ -15,7 +18,7 @@ namespace Modern.WindowKit.Platform
         /// Hides the window.
         /// </summary>
         void Hide();
-
+        
         /// <summary>
         /// Gets the scaling factor for Window positioning and sizing.
         /// </summary>
@@ -50,7 +53,7 @@ namespace Modern.WindowKit.Platform
         /// Gets the platform window handle.
         /// </summary>
         IPlatformHandle Handle { get; }
-
+       
         /// <summary>
         /// Gets a maximum client size hint for an auto-sizing window, in device-independent pixels.
         /// </summary>

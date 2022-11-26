@@ -1,11 +1,19 @@
 ﻿using System.Collections.Generic;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Platform
 {
+    [Unstable]
     public interface IScreenImpl
     {
+        /// <summary>
+        /// Gets the total number of screens available on the device.
+        /// </summary>
         int ScreenCount { get; }
 
+        /// <summary>
+        /// Gets the list of all screens available on the device.
+        /// </summary>
         IReadOnlyList<Screen> AllScreens { get; }
     }
 }
