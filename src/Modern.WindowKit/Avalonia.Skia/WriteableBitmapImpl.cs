@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-//using Modern.WindowKit.Media.Imaging;
+using Modern.WindowKit.Media.Imaging;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Skia.Helpers;
-using Modern.WindowKit.Media.Imaging;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia
@@ -25,8 +24,9 @@ namespace Modern.WindowKit.Skia
         public WriteableBitmapImpl(Stream stream)
         {
             using (var skiaStream = new SKManagedStream(stream))
+            using (var skData = SKData.Create(skiaStream))
             {
-                _bitmap = SKBitmap.Decode(skiaStream);
+                _bitmap = SKBitmap.Decode(skData);
 
                 if (_bitmap == null)
                 {
@@ -41,7 +41,8 @@ namespace Modern.WindowKit.Skia
         public WriteableBitmapImpl(Stream stream, int decodeSize, bool horizontal, BitmapInterpolationMode interpolationMode)
         {
             using (var skStream = new SKManagedStream(stream))
-            using (var codec = SKCodec.Create(skStream))
+            using (var skData = SKData.Create(skStream))
+            using (var codec = SKCodec.Create(skData))
             {
                 var info = codec.Info;
 
@@ -78,7 +79,7 @@ namespace Modern.WindowKit.Skia
 
                 PixelSize = new PixelSize(bmp.Width, bmp.Height);
                 Dpi = SkiaPlatform.DefaultDpi;
-            }
+        }
         }
         
         /// <summary>
@@ -136,21 +137,21 @@ namespace Modern.WindowKit.Skia
         }
 
         /// <inheritdoc />
-        public void Save(Stream stream)
+        public void Save(Stream stream, int? quality = null)
         {
             using (var image = GetSnapshot())
             {
-                ImageSavingHelper.SaveImage(image, stream);
-            }
+                ImageSavingHelper.SaveImage(image, stream, quality);
+        }
         }
 
         /// <inheritdoc />
-        public void Save(string fileName)
+        public void Save(string fileName, int? quality = null)
         {
             using (var image = GetSnapshot())
             {
-                ImageSavingHelper.SaveImage(image, fileName);
-            }
+                ImageSavingHelper.SaveImage(image, fileName, quality);
+        }
         }
 
         /// <inheritdoc />
@@ -220,6 +221,6 @@ namespace Modern.WindowKit.Skia
 
             /// <inheritdoc />
             public PixelFormat Format => _bitmap.ColorType.ToPixelFormat();
-        }
     }
+}
 }

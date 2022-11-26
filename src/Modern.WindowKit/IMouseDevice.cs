@@ -1,20 +1,12 @@
-﻿using System;
+﻿using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
 {
     /// <summary>
     /// Represents a mouse device.
     /// </summary>
+    [NotClientImplementable]
     public interface IMouseDevice : IPointerDevice
     {
-        /// <summary>
-        /// Gets the mouse position, in screen coordinates.
-        /// </summary>
-        [Obsolete("Use PointerEventArgs.GetPosition")]
-        PixelPoint Position { get; }
-
-        //void TopLevelClosed(IInputRoot root);
-
-        //void SceneInvalidated(IInputRoot root, Rect rect);
     }
 }

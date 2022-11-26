@@ -1,21 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
 {
-    //[Flags, Obsolete("Use KeyModifiers and PointerPointProperties")]
-    //public enum InputModifiers
-    //{
-    //    None = 0,
-    //    Alt = 1,
-    //    Control = 2,
-    //    Shift = 4,
-    //    Windows = 8,
-    //    LeftMouseButton = 16,
-    //    RightMouseButton = 32,
-    //    MiddleMouseButton = 64
-    //}
-
     [Flags]
     public enum KeyModifiers
     {
@@ -42,27 +30,27 @@ namespace Modern.WindowKit.Input
         Control = 2,
         Shift = 4,
         Meta = 8,
+
         LeftMouseButton = 16,
         RightMouseButton = 32,
         MiddleMouseButton = 64,
         XButton1MouseButton = 128,
         XButton2MouseButton = 256,
-        KeyboardMask = Alt | Control | Shift | Meta
+        KeyboardMask = Alt | Control | Shift | Meta,
+
+        PenInverted = 512,
+        PenEraser = 1024,
+        PenBarrelButton = 2048
     }
 
-    internal static class KeyModifiersUtils
-    {
-        public static KeyModifiers ConvertToKey(RawInputModifiers modifiers) =>
-            (KeyModifiers)(modifiers & RawInputModifiers.KeyboardMask);
-    }
-
+    [NotClientImplementable]
     public interface IKeyboardDevice : IInputDevice, INotifyPropertyChanged
     {
-    //    IInputElement? FocusedElement { get; }
+        //IInputElement? FocusedElement { get; }
 
-    //    void SetFocusedElement(
-    //        IInputElement? element, 
-    //        NavigationMethod method,
-    //        KeyModifiers modifiers);
+        //void SetFocusedElement(
+        //    IInputElement? element, 
+        //    NavigationMethod method,
+        //    KeyModifiers modifiers);
     }
 }
