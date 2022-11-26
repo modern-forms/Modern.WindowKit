@@ -565,5 +565,10 @@ namespace Modern.WindowKit.Input
             _disposed = true;
             _pointer?.Dispose();
         }
+
+        public IPointer? TryGetPointer(RawPointerEventArgs ev)
+        {
+            return _pointer;
+        }
     }
 }
