@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Modern.WindowKit.Platform;
 
@@ -13,7 +14,7 @@ namespace Modern.WindowKit.Threading
     {
         private IPlatformThreadingInterface? _platform;
 
-        private readonly Queue<IJob>[] _queues = Enumerable.Range(0, (int) DispatcherPriority.MaxValue + 1)
+        private readonly Queue<IJob>[] _queues = Enumerable.Range(0, (int)DispatcherPriority.MaxValue + 1)
             .Select(_ => new Queue<IJob>()).ToArray();
 
         public JobRunner(IPlatformThreadingInterface? platform)
@@ -35,7 +36,7 @@ namespace Modern.WindowKit.Threading
                     return;
 
                 job.Run();
-            }
+        }
         }
 
         /// <summary>
@@ -81,9 +82,9 @@ namespace Modern.WindowKit.Threading
         /// <param name="action">The method to call.</param>
         /// <param name="parameter">The parameter of method to call.</param>
         /// <param name="priority">The priority with which to invoke the method.</param>
-        internal void Post<T>(Action<T> action, T parameter, DispatcherPriority priority)
+        internal void Post(SendOrPostCallback action, object? parameter, DispatcherPriority priority)
         {
-            AddJob(new Job<T>(action, parameter, priority, true));
+            AddJob(new JobWithArg(action, parameter, priority, true));
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace Modern.WindowKit.Threading
             }
             if (needWake)
                 _platform?.Signal(job.Priority);
-                }
+        }
 
         private IJob? GetNextJob(DispatcherPriority minimumPriority)
         {
@@ -116,7 +117,7 @@ namespace Modern.WindowKit.Threading
                 {
                     if (q.Count > 0)
                         return q.Dequeue();
-                }
+            }
             }
             return null;
         }
@@ -130,7 +131,7 @@ namespace Modern.WindowKit.Threading
                 {
                     if (q.Count > 0)
                         return true;
-                }
+            }
             }
 
             return false;
@@ -138,9 +139,9 @@ namespace Modern.WindowKit.Threading
 
         private interface IJob
         {
-        /// <summary>
+            /// <summary>
             /// Gets the job priority.
-        /// </summary>
+            /// </summary>
             DispatcherPriority Priority { get; }
 
             /// <summary>
@@ -149,12 +150,12 @@ namespace Modern.WindowKit.Threading
             void Run();
         }
 
-            /// </summary>
+        /// <summary>
         /// A job to run.
         /// </summary>
         private sealed class Job : IJob
         {
-            /// </summary>
+            /// <summary>
             /// The method to call.
             /// </summary>
             private readonly Action _action;
@@ -191,7 +192,7 @@ namespace Modern.WindowKit.Threading
                 {
                     _action();
                     return;
-        }
+                }
                 try
                 {
                     _action();
@@ -200,18 +201,17 @@ namespace Modern.WindowKit.Threading
                 catch (Exception e)
                 {
                     _taskCompletionSource.SetException(e);
-                }
             }
+        }
         }
 
         /// <summary>
         /// A typed job to run.
         /// </summary>
-        /// <typeparam name="T">Type of job parameter</typeparam>
-        private sealed class Job<T> : IJob
+        private sealed class JobWithArg : IJob
         {
-            private readonly Action<T> _action;
-            private readonly T _parameter;
+            private readonly SendOrPostCallback _action;
+            private readonly object? _parameter;
             private readonly TaskCompletionSource<bool>? _taskCompletionSource;
 
             /// <summary>
@@ -222,7 +222,7 @@ namespace Modern.WindowKit.Threading
             /// <param name="priority">The job priority.</param>
             /// <param name="throwOnUiThread">Do not wrap exception in TaskCompletionSource</param>
 
-            public Job(Action<T> action, T parameter, DispatcherPriority priority, bool throwOnUiThread)
+            public JobWithArg(SendOrPostCallback action, object? parameter, DispatcherPriority priority, bool throwOnUiThread)
             {
                 _action = action;
                 _parameter = parameter;
