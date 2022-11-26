@@ -52,4 +52,3 @@ namespace Modern.WindowKit.Platform
         }
     }
 }
-

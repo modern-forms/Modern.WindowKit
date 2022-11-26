@@ -23,8 +23,9 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
 
         public IReadOnlyList<ManagedPopupPositionerScreenInfo> Screens =>
 
-            _parent.Screen.AllScreens.Select(s => new ManagedPopupPositionerScreenInfo(
-                s.Bounds.ToRect(1), s.WorkingArea.ToRect(1))).ToList();
+            _parent.Screen.AllScreens
+                .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
+                .ToArray();
 
         public Rect ParentClientAreaScreenGeometry
         {
@@ -35,7 +36,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
                 var size = _parent.ClientSize * Scaling;
                 return new Rect(point.X, point.Y, size.Width, size.Height);
 
-            }
+        }
         }
 
         public void MoveAndResize(Point devicePoint, Size virtualSize)
@@ -44,5 +45,5 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
         }
 
         public virtual double Scaling => _parent.DesktopScaling;
-    }
+}
 }
