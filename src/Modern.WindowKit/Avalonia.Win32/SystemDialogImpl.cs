@@ -58,11 +58,11 @@ namespace Modern.WindowKit.Win32
                 frm.SetFileTypes((uint)filters.Count, filters.ToArray());
                 frm.SetFileTypeIndex(0);
 
-                if (dialog.InitialDirectory != null)
+                if (dialog.Directory != null)
                 {
                     UnmanagedMethods.IShellItem directoryShellItem;
                     Guid riid = UnmanagedMethods.ShellIds.IShellItem;
-                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.InitialDirectory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
+                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.Directory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
                     {
                         frm.SetFolder(directoryShellItem);
                         frm.SetDefaultFolder(directoryShellItem);
@@ -116,21 +116,21 @@ namespace Modern.WindowKit.Win32
                 options |= (uint)(UnmanagedMethods.FOS.FOS_PICKFOLDERS | DefaultDialogOptions);
                 frm.SetOptions(options);
 
-                if (dialog.InitialDirectory != null)
+                if (dialog.Directory != null)
                 {
                     UnmanagedMethods.IShellItem directoryShellItem;
                     Guid riid = UnmanagedMethods.ShellIds.IShellItem;
-                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.InitialDirectory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
+                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.Directory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
                     {
                         frm.SetFolder(directoryShellItem);
                     }
                 }
 
-                if (dialog.DefaultDirectory != null)
+                if (dialog.Directory != null)
                 {
                     UnmanagedMethods.IShellItem directoryShellItem;
                     Guid riid = UnmanagedMethods.ShellIds.IShellItem;
-                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.DefaultDirectory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
+                    if (UnmanagedMethods.SHCreateItemFromParsingName(dialog.Directory, IntPtr.Zero, ref riid, out directoryShellItem) == (uint)UnmanagedMethods.HRESULT.S_OK)
                     {
                         frm.SetDefaultFolder(directoryShellItem);
                     }

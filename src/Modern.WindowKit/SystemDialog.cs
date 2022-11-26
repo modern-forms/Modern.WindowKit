@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls.Platform;
+using Modern.WindowKit.Platform.Storage;
+using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.WindowKit.Controls
 {
     /// <summary>
     /// Base class for system file dialogs.
     /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public abstract class FileDialog : FileSystemDialog
     {
-        /// <summary>
+        /// </summary>
         /// Gets or sets a collection of filters which determine the types of files displayed in an
         /// <see cref="OpenFileDialog"/> or an <see cref="SaveFileDialog"/>.
-        /// </summary>
-        public List<FileDialogFilter> Filters { get; set; } = new List<FileDialogFilter>();
+        /// <summary>
+        public List<FileDialogFilter>? Filters { get; set; } = new List<FileDialogFilter>();
 
         /// <summary>
         /// Gets or sets initial file name that is displayed when the dialog is opened.
@@ -26,15 +29,9 @@ namespace Modern.WindowKit.Controls
     /// <summary>
     /// Base class for system file and directory dialogs.
     /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public abstract class FileSystemDialog : SystemDialog
     {
-        [Obsolete("Use Directory")]
-        public string? InitialDirectory
-        {
-            get => Directory;
-            set => Directory = value;
-        }
-
         /// <summary>
         /// Gets or sets the initial directory that will be displayed when the file system dialog
         /// is opened.
@@ -45,6 +42,7 @@ namespace Modern.WindowKit.Controls
     /// <summary>
     /// Represents a system dialog that prompts the user to select a location for saving a file.
     /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public class SaveFileDialog : FileDialog
     {
         /// <summary>
@@ -73,11 +71,27 @@ namespace Modern.WindowKit.Controls
             return (await service.ShowFileDialogAsync(this, parent) ??
              Array.Empty<string>()).FirstOrDefault();
         }
+
+        public FilePickerSaveOptions ToFilePickerSaveOptions()
+        {
+            return new FilePickerSaveOptions
+            {
+                SuggestedFileName = InitialFileName,
+                DefaultExtension = DefaultExtension,
+                FileTypeChoices = Filters?.Select(f => new FilePickerFileType(f.Name!) { Patterns = f.Extensions.Select(e => $"*.{e}").ToArray() }).ToArray(),
+                Title = Title,
+                SuggestedStartLocation = Directory is { } directory
+                        ? new BclStorageFolder(new System.IO.DirectoryInfo(directory))
+                        : null,
+                ShowOverwritePrompt = ShowOverwritePrompt
+            };
+        }
     }
 
-        /// <summary>
+    /// <summary>
     /// Represents a system dialog that allows the user to select one or more files to open.
-        /// </summary>
+    /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public class OpenFileDialog : FileDialog
     {
         /// <summary>
@@ -100,20 +114,27 @@ namespace Modern.WindowKit.Controls
             var service = AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>();
             return service.ShowFileDialogAsync(this, parent);
         }
+
+        public FilePickerOpenOptions ToFilePickerOpenOptions()
+        {
+            return new FilePickerOpenOptions
+            {
+                AllowMultiple = AllowMultiple,
+                FileTypeFilter = Filters?.Select(f => new FilePickerFileType(f.Name!) { Patterns = f.Extensions.Select(e => $"*.{e}").ToArray() }).ToArray(),
+                Title = Title,
+                SuggestedStartLocation = Directory is { } directory
+                    ? new BclStorageFolder(new System.IO.DirectoryInfo(directory))
+                    : null
+            };
+        }
     }
 
     /// <summary>
     /// Represents a system dialog that allows the user to select a directory.
     /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public class OpenFolderDialog : FileSystemDialog
     {
-        [Obsolete("Use Directory")]
-        public string? DefaultDirectory
-        {
-            get => Directory;
-            set => Directory = value;
-        }
-
         /// <summary>
         /// Shows the open folder dialog.
         /// </summary>
@@ -129,23 +150,45 @@ namespace Modern.WindowKit.Controls
             var service = AvaloniaGlobals.GetRequiredService<ISystemDialogImpl>();
             return service.ShowFolderDialogAsync(this, parent);
         }
+
+        public FolderPickerOpenOptions ToFolderPickerOpenOptions()
+        {
+            return new FolderPickerOpenOptions
+            {
+                Title = Title,
+                SuggestedStartLocation = Directory is { } directory
+                    ? new BclStorageFolder(new System.IO.DirectoryInfo(directory))
+                    : null
+            };
+        }
     }
 
 
-        /// <summary>
+    /// <summary>
     /// Base class for system dialogs.
-        /// </summary>
+    /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public abstract class SystemDialog
     {
+        //static SystemDialog()
+        //{
+        //    if (AvaloniaGlobals.GetService<ISystemDialogImpl>() is null)
+        //    {
+        //        // Register default implementation.
+        //        AvaloniaLocator.CurrentMutable.Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>();
+        //    }
+        //}
+        
         /// <summary>
         /// Gets or sets the dialog title.
         /// </summary>
         public string? Title { get; set; }
     }
 
-        /// <summary>
+    /// <summary>
     /// Represents a filter in an <see cref="OpenFileDialog"/> or an <see cref="SaveFileDialog"/>.
-        /// </summary>
+    /// </summary>
+    [Obsolete("Use Window.StorageProvider API or TopLevel.StorageProvider API")]
     public class FileDialogFilter
     {
         /// <summary>
