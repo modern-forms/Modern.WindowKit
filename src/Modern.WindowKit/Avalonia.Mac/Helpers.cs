@@ -35,6 +35,11 @@ namespace Modern.WindowKit.Native
             return new AvnSize { Height = size.Height, Width = size.Width };
         }
 
+        //public static IAvnString ToAvnString(this string s)
+        //{
+        //    return s != null ? new AvnString(s) : null;
+        //}
+
         public static Size ToAvaloniaSize (this AvnSize size)
         {
             return new Size(size.Width, size.Height);

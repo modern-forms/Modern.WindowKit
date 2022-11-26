@@ -7,7 +7,6 @@ namespace Modern.WindowKit.Native
 {
     class PopupImpl : WindowBaseImpl, IPopupImpl
     {
-        private readonly IAvaloniaNativeFactory _factory;
         private readonly AvaloniaNativePlatformOptions _opts;
         //private readonly AvaloniaNativePlatformOpenGlInterface _glFeature;
         private readonly IWindowBaseImpl _parent;
@@ -15,9 +14,8 @@ namespace Modern.WindowKit.Native
         public PopupImpl(IAvaloniaNativeFactory factory,
             AvaloniaNativePlatformOptions opts,
             //AvaloniaNativePlatformOpenGlInterface glFeature,
-            IWindowBaseImpl parent) : base(opts)
+            IWindowBaseImpl parent) : base(factory, opts)
         {
-            _factory = factory;
             _opts = opts;
             //_glFeature = glFeature;
             _parent = parent;
@@ -27,7 +25,7 @@ namespace Modern.WindowKit.Native
                 Init(factory.CreatePopup(e, null), factory.CreateScreens());
             }
             PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(parent, MoveResize));
-        }
+            }
 
         private void MoveResize(PixelPoint position, Size size, double scaling)
         {

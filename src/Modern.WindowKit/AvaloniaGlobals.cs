@@ -64,11 +64,11 @@ namespace Modern.WindowKit
         private static void InitializeOSX()
         {
             var platform = Native.AvaloniaNativePlatform.Initialize();
-
+            
             AddService<IWindowingPlatform>(platform);
             AddService<IPlatformThreadingInterface>(new Native.PlatformThreadingInterface(platform.Factory.CreatePlatformThreadingInterface()));
             AddService<ICursorFactory>(new Native.CursorFactory(platform.Factory.CreateCursorFactory()));
-            AddService<ISystemDialogImpl>(new Native.SystemDialogs(platform.Factory.CreateSystemDialogs()));
+            //AddService<ISystemDialogImpl>(new Native.SystemDialogs(platform.Factory.CreateSystemDialogs()));
             AddService<IClipboard>(new Native.ClipboardImpl(platform.Factory.CreateClipboard()));
         }
 

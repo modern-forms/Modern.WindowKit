@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+//using Modern.WindowKit.Automation.Peers;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Controls.Platform.Surfaces;
@@ -10,7 +11,9 @@ using Modern.WindowKit.Input.Raw;
 using Avalonia.Native.Interop;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Storage;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
 using Modern.WindowKit.Threading;
 
 namespace Modern.WindowKit.Native
@@ -44,8 +47,9 @@ namespace Modern.WindowKit.Native
     }
 
     internal abstract partial class WindowBaseImpl : IWindowBaseImpl,
-        IFramebufferPlatformSurface//, ITopLevelImplWithNativeControlHost
+        IFramebufferPlatformSurface, ITopLevelImplWithStorageProvider //, ITopLevelImplWithNativeControlHost
     {
+        protected readonly IAvaloniaNativeFactory _factory;
         protected IInputRoot _inputRoot;
         IAvnWindowBase _native;
         private object _syncRoot = new object();
@@ -61,14 +65,17 @@ namespace Modern.WindowKit.Native
         //private NativeControlHostImpl _nativeControlHost;
         //private IGlContext _glContext;
 
-        internal WindowBaseImpl(AvaloniaNativePlatformOptions opts)
+        internal WindowBaseImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts)
+            //AvaloniaNativePlatformOpenGlInterface glFeature)
         {
+            _factory = factory;
             //_gpu = opts.UseGpu && glFeature != null;
             _deferredRendering = opts.UseDeferredRendering;
 
             _keyboard = AvaloniaNativePlatform.KeyboardDevice;
             _mouse = new MouseDevice();
             _cursorFactory = AvaloniaGlobals.GetService<ICursorFactory>();
+            StorageProvider = new SystemDialogs(this, _factory.CreateSystemDialogs());
         }
 
         protected void Init(IAvnWindowBase window, IAvnScreens screens)
@@ -80,22 +87,25 @@ namespace Modern.WindowKit.Native
             //if (_gpu)
             //    _glSurface = new GlPlatformSurface(window, _glContext);
             Screen = new ScreenImpl(screens);
+
             _savedLogicalSize = ClientSize;
             _savedScaling = RenderScaling;
             //_nativeControlHost = new NativeControlHostImpl(_native.CreateNativeControlHost());
 
-            var monitor = Screen.AllScreens.OrderBy(x => x.PixelDensity)
+            var monitor = Screen.AllScreens.OrderBy(x => x.Scaling)
                     .FirstOrDefault(m => m.Bounds.Contains(Position));
 
             Resize(new Size(monitor.WorkingArea.Width * 0.75d, monitor.WorkingArea.Height * 0.7d), PlatformResizeReason.Layout);
         }
+
+        public IAvnWindowBase Native => _native;
 
         public Size ClientSize 
         {
             get
             {
                 if (_native != null)
-                {
+        {
                     var s = _native.ClientSize;
                     return new Size(s.Width, s.Height);
                 }
@@ -109,12 +119,14 @@ namespace Modern.WindowKit.Native
             get
             {
                 if (_native != null)
+                {
                     unsafe
                     {
                         var s = new AvnSize { Width = -1, Height = -1 };
                         _native.GetFrameSize(&s);
-                        return s.Width < 0 && s.Height < 0 ? null : new Size(s.Width, s.Height);
+                        return s.Width < 0  && s.Height < 0 ? null : new Size(s.Width, s.Height);
                     }
+                }
 
                 return default;
             }
@@ -152,6 +164,11 @@ namespace Modern.WindowKit.Native
         public Action Closed { get; set; }
         public IMouseDevice MouseDevice => _mouse;
         public abstract IPopupImpl CreatePopup();
+
+        //public AutomationPeer GetAutomationPeer()
+        //{
+        //    return _inputRoot is Control c ? ControlAutomationPeer.CreatePeerForElement(c) : null;
+        //}
 
         protected unsafe partial class WindowBaseEvents : NativeCallbackBase, IAvnWindowBaseEvents
         {
@@ -212,12 +229,11 @@ namespace Modern.WindowKit.Native
             {
                 return _parent.RawKeyEvent(type, timeStamp, modifiers, key).AsComBool();
             }
-
+            
             int IAvnWindowBaseEvents.RawTextInputEvent(uint timeStamp, string text)
             {
                 return _parent.RawTextInputEvent(timeStamp, text).AsComBool();
             }
-
 
             void IAvnWindowBaseEvents.ScalingChanged(double scaling)
             {
@@ -229,7 +245,7 @@ namespace Modern.WindowKit.Native
             {
                 Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
             }
-            
+
             void IAvnWindowBaseEvents.LostFocus()
             {
                 _parent.LostFocus?.Invoke();
@@ -245,12 +261,12 @@ namespace Modern.WindowKit.Native
             //    IDataObject dataObject = null;
             //    if (dataObjectHandle != IntPtr.Zero)
             //        dataObject = GCHandle.FromIntPtr(dataObjectHandle).Target as IDataObject;
-
+                
             //    using(var clipboardDataObject = new ClipboardDataObject(clipboard))
             //    {
             //        if (dataObject == null)
             //            dataObject = clipboardDataObject;
-
+                    
             //        var args = new RawDragEvent(device, (RawDragEventType)type,
             //            _parent._inputRoot, position.ToAvaloniaPoint(), dataObject, (DragDropEffects)effects,
             //            (RawInputModifiers)modifiers);
@@ -258,7 +274,7 @@ namespace Modern.WindowKit.Native
             //        return (AvnDragDropEffects)args.Effects;
             //    }
             //}
-
+            
             IAvnAutomationPeer IAvnWindowBaseEvents.AutomationPeer
             {
                 get => null;
@@ -274,7 +290,7 @@ namespace Modern.WindowKit.Native
         {
             //if (_inputRoot is null) 
             //    return false;
-            
+
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
             var args = new RawTextInputEventArgs(_keyboard, timeStamp, _inputRoot, text, RawInputModifiers.None);
@@ -326,7 +342,7 @@ namespace Modern.WindowKit.Native
                     //Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Rotate, 
                     //    point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
-
+                
                 case AvnRawMouseEventType.Swipe:
                     //Input?.Invoke(new RawPointerGestureEventArgs(_mouse, timeStamp, _inputRoot, RawPointerEventType.Swipe,
                     //    point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
@@ -351,13 +367,18 @@ namespace Modern.WindowKit.Native
 
         //public IRenderer CreateRenderer(IRenderRoot root)
         //{
+        //    var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
+        //    var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
+        //    if (customRendererFactory != null)
+        //        return customRendererFactory.Create(root, loop);
+            
         //    if (_deferredRendering)
         //    {
-        //        var loop = AvaloniaLocator.Current.GetService<IRenderLoop>();
-        //        var customRendererFactory = AvaloniaLocator.Current.GetService<IRendererFactory>();
-            
-        //        if (customRendererFactory != null)
-        //            return customRendererFactory.Create(root, loop);
+        //        if (AvaloniaNativePlatform.Compositor != null)
+        //            return new CompositingRenderer(root, AvaloniaNativePlatform.Compositor)
+        //            {
+        //                RenderOnlyOnRenderThread = false
+        //            };
         //        return new DeferredRenderer(root, loop);
         //    }
 
@@ -372,7 +393,7 @@ namespace Modern.WindowKit.Native
 
             //_nativeControlHost?.Dispose();
             //_nativeControlHost = null;
-            
+
             (Screen as ScreenImpl)?.Dispose();
             _mouse.Dispose();
         }
@@ -442,7 +463,7 @@ namespace Modern.WindowKit.Native
             {
                 return;
             }
-
+            
             var newCursor = cursor as AvaloniaNativeCursor;
             newCursor = newCursor ?? (_cursorFactory.GetCursor(StandardCursorType.Arrow) as AvaloniaNativeCursor);
             _native.SetCursor(newCursor.Cursor);
@@ -486,8 +507,8 @@ namespace Modern.WindowKit.Native
                 TransparencyLevel = transparencyLevel;
 
                 _native.SetTransparencyMode(transparencyLevel == WindowTransparencyLevel.None
-                    ? AvnWindowTransparencyMode.Opaque
-                    : transparencyLevel == WindowTransparencyLevel.Transparent
+                    ? AvnWindowTransparencyMode.Opaque 
+                    : transparencyLevel == WindowTransparencyLevel.Transparent 
                         ? AvnWindowTransparencyMode.Transparent
                         : AvnWindowTransparencyMode.Blur);
 
@@ -500,5 +521,7 @@ namespace Modern.WindowKit.Native
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0, 0);
 
         public IPlatformHandle Handle { get; private set; }
+
+        public IStorageProvider StorageProvider { get; }
     }
 }

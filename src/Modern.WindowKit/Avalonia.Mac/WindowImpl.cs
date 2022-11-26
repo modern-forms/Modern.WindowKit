@@ -13,18 +13,16 @@ namespace Modern.WindowKit.Native
 {
     internal partial class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
     {
-        private readonly IAvaloniaNativeFactory _factory;
         private readonly AvaloniaNativePlatformOptions _opts;
         //private readonly AvaloniaNativePlatformOpenGlInterface _glFeature;
         IAvnWindow _native;
         private double _extendTitleBarHeight = -1;
         //private DoubleClickHelper _doubleClickHelper;
         
-
+        
         internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts
-            ) : base(opts)
+            ) : base(factory, opts)
         {
-            _factory = factory;
             _opts = opts;
             //_glFeature = glFeature;
             //_doubleClickHelper = new DoubleClickHelper();
@@ -50,7 +48,7 @@ namespace Modern.WindowKit.Native
             int IAvnWindowEvents.Closing()
             {
                 if (_parent.Closing != null)
-                {
+            {
                     return _parent.Closing().AsComBool();
                 }
 
@@ -87,7 +85,10 @@ namespace Modern.WindowKit.Native
         //    _native.SetTitleBarColor(new AvnColor { Alpha = color.A, Red = color.R, Green = color.G, Blue = color.B });
         //}
 
-        public void SetTitle(string title) => _native.SetTitle(title);
+        public void SetTitle(string title)
+        {
+            _native.SetTitle(title ?? "");
+        }
 
         public WindowState WindowState
         {
@@ -106,45 +107,52 @@ namespace Modern.WindowKit.Native
         private bool _isExtended;
         public bool IsClientAreaExtendedToDecorations => _isExtended;
 
-        protected override bool ChromeHitTest (RawPointerEventArgs e)
+        public override void Show(bool activate, bool isDialog)
         {
-            //if(_isExtended)
-            //{
-            //    if(e.Type == RawPointerEventType.LeftButtonDown)
-            //    {
-            //        var visual = (_inputRoot as Window).Renderer.HitTestFirst(e.Position, _inputRoot as Window, x =>
-            //                {
-            //                    if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsVisible))
-            //                    {
-            //                        return false;
-            //                    }
-            //                    return true;
-            //                });
-
-            //        if(visual == null)
-            //        {
-            //            if (_doubleClickHelper.IsDoubleClick(e.Timestamp, e.Position))
-            //            {
-            //                // TOGGLE WINDOW STATE.
-            //                if (WindowState == WindowState.Maximized || WindowState == WindowState.FullScreen)
-            //                {
-            //                    WindowState = WindowState.Normal;
-            //                }
-            //                else
-            //                {
-            //                    WindowState = WindowState.Maximized;
-            //                }
-            //            }
-            //            else
-            //            {
-            //                _native.BeginMoveDrag();   
-            //            }
-            //        }
-            //    }
-            //}
-
-            return false;
+            base.Show(activate, isDialog);
+            
+            InvalidateExtendedMargins();
         }
+
+        //protected override bool ChromeHitTest (RawPointerEventArgs e)
+        //{
+        //    if(_isExtended)
+        //    {
+        //        if(e.Type == RawPointerEventType.LeftButtonDown)
+        //        {
+        //            var visual = (_inputRoot as Window).Renderer.HitTestFirst(e.Position, _inputRoot as Window, x =>
+        //                    {
+        //                        if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsVisible))
+        //                        {
+        //                            return false;
+        //                        }
+        //                        return true;
+        //                    });
+
+        //            if(visual == null)
+        //            {
+        //                if (_doubleClickHelper.IsDoubleClick(e.Timestamp, e.Position))
+        //                {
+        //                    // TOGGLE WINDOW STATE.
+        //                    if (WindowState == WindowState.Maximized || WindowState == WindowState.FullScreen)
+        //                    {
+        //                        WindowState = WindowState.Normal;
+        //                    }
+        //                    else
+        //                    {
+        //                        WindowState = WindowState.Maximized;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    _native.BeginMoveDrag();   
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return false;
+        //}
         
         private void InvalidateExtendedMargins()
         {
