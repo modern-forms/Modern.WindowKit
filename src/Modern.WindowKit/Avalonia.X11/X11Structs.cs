@@ -32,6 +32,7 @@ using System.Collections;
 using System.Drawing;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable IdentifierTypo
@@ -47,7 +48,7 @@ namespace Modern.WindowKit.X11 {
 	// In the structures below, fields of type long are mapped to IntPtr.
 	// This will work on all platforms where sizeof(long)==sizeof(void*), which
 	// is almost all platforms except WIN64.
-	//
+
 
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct XAnyEvent {
@@ -545,8 +546,8 @@ namespace Modern.WindowKit.X11 {
         {
             if (data == null)
                 throw new InvalidOperationException();
-            return *(T*)data;
-        }
+            return Unsafe.ReadUnaligned<T>(data);
+    }
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -651,7 +652,7 @@ namespace Modern.WindowKit.X11 {
 					return ToString (CrossingEvent);
 				default:
 					return type.ToString ();
-			}
+		}
 		}
 		
 		public static string ToString (object ev)
@@ -660,14 +661,14 @@ namespace Modern.WindowKit.X11 {
 			Type type = ev.GetType ();
 			FieldInfo [] fields = type.GetFields (System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Instance);
 			for (int i = 0; i < fields.Length; i++) {
-				if (result != string.Empty) {
+				if (!string.IsNullOrEmpty(result)) {
 					result += ", ";
 				}
 				object value = fields [i].GetValue (ev);
 				result += fields [i].Name + "=" + (value == null ? "<null>" : value.ToString ());
 			}
 			return type.Name + " (" + result + ")";
-		}
+	}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -718,7 +719,7 @@ namespace Modern.WindowKit.X11 {
 		public override string ToString ()
 		{
 			return XEvent.ToString (this);
-		}
+	}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -1107,7 +1108,7 @@ namespace Modern.WindowKit.X11 {
 		public override string ToString ()
 		{
 			return string.Format("MotifWmHints <flags={0}, functions={1}, decorations={2}, input_mode={3}, status={4}", (MotifFlags) flags.ToInt32 (), (MotifFunctions) functions.ToInt32 (), (MotifDecorations) decorations.ToInt32 (), (MotifInputMode) input_mode.ToInt32 (), status.ToInt32 ());
-		}
+	}
 	}
 
 	[Flags]
@@ -1199,7 +1200,7 @@ namespace Modern.WindowKit.X11 {
 				
 			[FieldOffset (31)]
 			public byte last;
-		}
+	}
 	}
 
 	[Flags]
@@ -1761,7 +1762,7 @@ namespace Modern.WindowKit.X11 {
 		~XIMCallback ()
 		{
 			gch.Free ();
-		}
+	}
 	}
     
     [StructLayout(LayoutKind.Sequential)]
@@ -1904,5 +1905,5 @@ namespace Modern.WindowKit.X11 {
         public int MWidth;
         public int MHeight;
         public IntPtr* Outputs;
-    } 
+}
 }

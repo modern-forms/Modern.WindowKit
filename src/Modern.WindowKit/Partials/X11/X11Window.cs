@@ -14,24 +14,24 @@ namespace Modern.WindowKit.X11
         private bool _invalidated;
         private object? glfeature = null;
 
-        void DoPaint()
-        {
-            _invalidated = false;
-            Paint?.Invoke(new Rect());
-        }
+        //void DoPaint()
+        //{
+        //    _invalidated = false;
+        //    Paint?.Invoke(new Rect());
+        //}
 
-        public void Invalidate(Rect rect)
-        {
-            if (_invalidated)
+        //public void Invalidate(Rect rect)
+        //{
+        //    if (_invalidated)
 
-                return;
-            _invalidated = true;
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (_mapped)
-                    DoPaint();
-            });
-        }
+        //        return;
+        //    _invalidated = true;
+        //    Dispatcher.UIThread.InvokeAsync(() =>
+        //    {
+        //        if (_mapped)
+        //            DoPaint();
+        //    });
+        //}
 
         public void ShowDialog(IWindowImpl parent)
         {

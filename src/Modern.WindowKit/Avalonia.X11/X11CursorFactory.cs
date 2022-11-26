@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform;
+//using Modern.WindowKit.SourceGenerator;
 using Modern.WindowKit.Utilities;
 
 #nullable enable
@@ -48,11 +49,14 @@ namespace Modern.WindowKit.X11
                 {StandardCursorType.TopRightCorner, CursorFontShape.XC_top_right_corner},
             };
 
+        //[GenerateEnumValueList]
+        private static CursorFontShape[] GetAllCursorShapes() => Enum.GetValues(typeof(CursorFontShape)).Cast<CursorFontShape>().ToArray();
+
         public X11CursorFactory(IntPtr display)
         {
             _display = display;
             _nullCursor = GetNullCursor(display);
-            _cursors = Enum.GetValues(typeof(CursorFontShape)).Cast<CursorFontShape>()
+            _cursors = GetAllCursorShapes()
                 .ToDictionary(id => id, id => XLib.XCreateFontCursor(_display, id));
         }
 

@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Modern.WindowKit.Platform.Interop;
+//using JetBrains.Annotations;
+
 // ReSharper disable IdentifierTypo
 namespace Modern.WindowKit.X11.NativeDialogs
 {
@@ -50,13 +52,13 @@ namespace Modern.WindowKit.X11.NativeDialogs
             }
 
             public void Dispose()
-            {
+                {
                 if (_handle.IsAllocated)
                 {
                     g_signal_handler_disconnect(_instance, _id);
                     g_object_unref(_instance);
                     _handle.Free();
-                }
+        }
             }
         }
 
@@ -179,7 +181,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
 
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_select_multiple(IntPtr chooser, bool allow);
-
+        
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_do_overwrite_confirmation(IntPtr chooser, bool do_overwrite_confirmation);
 
@@ -192,10 +194,13 @@ namespace Modern.WindowKit.X11.NativeDialogs
 
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_filename(IntPtr chooser, Utf8Buffer file);
-        
+
         [DllImport(GtkName)]
         public static extern void gtk_file_chooser_set_current_name(IntPtr chooser, Utf8Buffer file);
-        
+
+        [DllImport(GtkName)]
+        public static extern void gtk_file_chooser_set_current_folder(IntPtr chooser, Utf8Buffer file);
+
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_filter_new();
         
@@ -204,16 +209,19 @@ namespace Modern.WindowKit.X11.NativeDialogs
         
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_filter_add_pattern(IntPtr filter, Utf8Buffer pattern);
-
+        
+        [DllImport(GtkName)]
+        public static extern IntPtr gtk_file_filter_add_mime_type (IntPtr filter, Utf8Buffer mimeType);
+        
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_chooser_add_filter(IntPtr chooser, IntPtr filter);
-        
+
         [DllImport(GtkName)]
         public static extern IntPtr gtk_file_chooser_get_filter(IntPtr chooser);
         
         [DllImport(GtkName)]
         public static extern void gtk_widget_realize(IntPtr gtkWidget);
-
+        
         [DllImport(GtkName)]
         public static extern void gtk_widget_destroy(IntPtr gtkWidget);
 
@@ -225,10 +233,10 @@ namespace Modern.WindowKit.X11.NativeDialogs
 
         [DllImport(GtkName)]
         static extern bool gtk_init_check(int argc, IntPtr argv);
-        
+
         [DllImport(GdkName)]
         static extern IntPtr gdk_x11_window_foreign_new_for_display(IntPtr display, IntPtr xid);
-
+        
         [DllImport(GdkName)]
         public static extern IntPtr gdk_x11_window_get_xid(IntPtr window);
 
@@ -251,9 +259,13 @@ namespace Modern.WindowKit.X11.NativeDialogs
         public static IntPtr GetForeignWindow(IntPtr xid) => gdk_x11_window_foreign_new_for_display(s_display, xid);
 
         public static Task<bool> StartGtk()
-            {
-            var tcs = new TaskCompletionSource<bool>();
-            new Thread(() =>
+        {
+            return StartGtkCore();
+        }
+
+        private static void GtkThread(TaskCompletionSource<bool> tcs)
+        {
+            try
             {
                 try
                 {
@@ -287,7 +299,17 @@ namespace Modern.WindowKit.X11.NativeDialogs
                 tcs.SetResult(true);
                 while (true)
                     gtk_main_iteration();
-            }) {Name = "GTK3THREAD", IsBackground = true}.Start();
+            }
+            catch
+            {
+                tcs.SetResult(false);
+            }
+        }
+        
+        private static Task<bool> StartGtkCore()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            new Thread(() => GtkThread(tcs)) {Name = "GTK3THREAD", IsBackground = true}.Start();
             return tcs.Task;
         }
     }

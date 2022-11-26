@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
+//using Modern.WindowKit.Dialogs;
 //using Modern.WindowKit.FreeDesktop;
 //using Modern.WindowKit.FreeDesktop.DBusIme;
 using Modern.WindowKit.Input;
@@ -13,9 +14,9 @@ using Modern.WindowKit.Input.Platform;
 //using Modern.WindowKit.OpenGL.Egl;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
 using Modern.WindowKit.X11;
 //using Modern.WindowKit.X11.Glx;
-using Modern.WindowKit.X11.NativeDialogs;
 using static Modern.WindowKit.X11.XLib;
 
 namespace Modern.WindowKit.X11
@@ -29,6 +30,7 @@ namespace Modern.WindowKit.X11
         public XI2Manager XI2;
         public X11Info Info { get; private set; }
         public IX11Screens X11Screens { get; private set; }
+        //public Compositor Compositor { get; private set; }
         public IScreenImpl Screens { get; private set; }
         public X11PlatformOptions Options { get; private set; }
         public IntPtr OrphanedWindow { get; private set; }
@@ -40,12 +42,12 @@ namespace Modern.WindowKit.X11
             Options = options;
             
             bool useXim = false;
-            if (EnableIme(options))
-            {
-                // Attempt to configure DBus-based input method and check if we can fall back to XIM
-                //if (!X11DBusImeHelper.DetectAndRegister() && ShouldUseXim())
-                    useXim = true;
-            }
+            //if (EnableIme(options))
+            //{
+            //    // Attempt to configure DBus-based input method and check if we can fall back to XIM
+            //    if (!X11DBusImeHelper.DetectAndRegister() && ShouldUseXim())
+            //        useXim = true;
+            //}
 
             // XIM doesn't work at all otherwise
             if (useXim)
@@ -78,9 +80,8 @@ namespace Modern.WindowKit.X11
             //    .Bind<IKeyboardDevice>().ToFunc(() => KeyboardDevice)
             //    .Bind<ICursorFactory>().ToConstant(new X11CursorFactory(Display))
             //    .Bind<IClipboard>().ToConstant(new X11Clipboard(this))
-            //    .Bind<IPlatformSettings>().ToConstant(new PlatformSettingsStub())
-            //    .Bind<IPlatformIconLoader>().ToConstant(new X11IconLoader(Info))
-            //    .Bind<ISystemDialogImpl>().ToConstant(new GtkSystemDialog())
+            //    .Bind<IPlatformSettings>().ToSingleton<DefaultPlatformSettings>()
+            //    .Bind<IPlatformIconLoader>().ToConstant(new X11IconLoader())
             //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new LinuxMountedVolumeInfoProvider())
             //    .Bind<IPlatformLifetimeEventsImpl>().ToConstant(new X11PlatformLifetimeEvents(this));
             
@@ -100,8 +101,14 @@ namespace Modern.WindowKit.X11
             //    else
             //        GlxPlatformOpenGlInterface.TryInitialize(Info, Options.GlProfiles);
             //}
-
             
+            //var gl = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
+            //if (gl != null)
+            //    AvaloniaLocator.CurrentMutable.Bind<IPlatformGpu>().ToConstant(gl);
+
+            //if (options.UseCompositor)
+            //    Compositor = new Compositor(AvaloniaLocator.Current.GetService<IRenderLoop>()!, gl);
+
         }
 
         public IntPtr DeferredDisplay { get; set; }
@@ -118,7 +125,7 @@ namespace Modern.WindowKit.X11
         //public ITrayIconImpl CreateTrayIcon()
         //{
         //    var dbusTrayIcon = new DBusTrayIconImpl();
-
+        
         //    if (!dbusTrayIcon.IsActive) return new XEmbedTrayIconImpl();
 
         //    dbusTrayIcon.IconConverterDelegate = X11IconConverter;
@@ -135,7 +142,7 @@ namespace Modern.WindowKit.X11
         {
             throw new NotSupportedException();
         }
-
+            
         bool EnableIme(X11PlatformOptions options)
         {
             // Disable if explicitly asked by user
@@ -210,18 +217,26 @@ namespace Modern.WindowKit
 
         /// <summary>
         /// Enables global menu support on Linux desktop environments where it's supported (e. g. XFCE and MATE with plugin, KDE, etc).
-        /// The default value is false.
+        /// The default value is true.
         /// </summary>
-        public bool UseDBusMenu { get; set; }
+        public bool UseDBusMenu { get; set; } = true;
+
+        /// <summary>
+        /// Enables DBus file picker instead of GTK.
+        /// The default value is true.
+        /// </summary>
+        public bool UseDBusFilePicker { get; set; } = true;
 
         /// <summary>
         /// Deferred renderer would be used when set to true. Immediate renderer when set to false. The default value is true.
         /// </summary>
-        /// <remarks>
+        /// </remarks>
         /// Avalonia has two rendering modes: Immediate and Deferred rendering.
         /// Immediate re-renders the whole scene when some element is changed on the scene. Deferred re-renders only changed elements.
         /// </remarks>
         public bool UseDeferredRendering { get; set; } = true;
+
+        public bool UseCompositor { get; set; } = true;
 
         /// <summary>
         /// Determines whether to use IME.
@@ -262,7 +277,9 @@ namespace Modern.WindowKit
             // and sometimes attempts to use GLX might cause a segfault
             "llvmpipe"
         };
-        public string WmClass { get; set; } = Assembly.GetEntryAssembly()?.GetName()?.Name ?? "AvaloniaApplication";
+
+        
+        public string WmClass { get; set; }
 
         /// <summary>
         /// Enables multitouch support. The default value is true.
@@ -271,6 +288,18 @@ namespace Modern.WindowKit
         /// Multitouch allows a surface (a touchpad or touchscreen) to recognize the presence of more than one point of contact with the surface at the same time.
         /// </remarks>
         public bool? EnableMultiTouch { get; set; } = true;
+
+        public X11PlatformOptions()
+        {
+            try
+            {
+                WmClass = Assembly.GetEntryAssembly()?.GetName()?.Name;
+            }
+            catch
+            {
+                //
+            }
+        }
     }
     public static class AvaloniaX11PlatformExtensions
     {

@@ -18,8 +18,10 @@ using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.OpenGL.Egl;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
 using Modern.WindowKit.Threading;
 //using Modern.WindowKit.X11.Glx;
+using Modern.WindowKit.X11.NativeDialogs;
 using static Modern.WindowKit.X11.XLib;
 // ReSharper disable IdentifierTypo
 // ReSharper disable StringLiteralTypo
@@ -45,6 +47,9 @@ namespace Modern.WindowKit.X11
         private IntPtr _handle;
         private IntPtr _xic;
         private IntPtr _renderHandle;
+        private IntPtr _xSyncCounter;
+        private XSyncValue _xSyncValue;
+        private XSyncState _xSyncState = 0;
         private bool _mapped;
         private bool _wasMappedAtLeastOnce = false;
         private double? _scalingOverride;
@@ -52,6 +57,14 @@ namespace Modern.WindowKit.X11
         private TransparencyHelper _transparencyHelper;
         private RawEventGrouper _rawEventGrouper;
         private bool _useRenderWindow = false;
+
+        enum XSyncState
+        {
+            None,
+            WaitConfigure,
+            WaitPaint
+        }
+        
         public X11Window(AvaloniaX11Platform platform, IWindowImpl popupParent)
         {
             _platform = platform;
@@ -94,7 +107,7 @@ namespace Modern.WindowKit.X11
             var visual = IntPtr.Zero;
             var depth = 24;
             if (visualInfo != null)
-            {
+                {
                 visual = visualInfo.Value.visual;
                 depth = (int)visualInfo.Value.depth;
                 attr.colormap = XCreateColormap(_x11.Display, _x11.RootWindow, visualInfo.Value.visual, 0);
@@ -105,7 +118,7 @@ namespace Modern.WindowKit.X11
 
             if (!_popup && Screen != null)
             {
-                var monitor = Screen.AllScreens.OrderBy(x => x.PixelDensity)
+                var monitor = Screen.AllScreens.OrderBy(x => x.Scaling)
                    .FirstOrDefault(m => m.Bounds.Contains(Position));
 
                 if (monitor != null)
@@ -119,7 +132,7 @@ namespace Modern.WindowKit.X11
             // check if the calculated size is zero then compensate to hardcoded resolution
             defaultWidth = Math.Max(defaultWidth, 300);
             defaultHeight = Math.Max(defaultHeight, 200);
-
+                
             _handle = XCreateWindow(_x11.Display, _x11.RootWindow, 10, 10, defaultWidth, defaultHeight, 0,
                 depth,
                 (int)CreateWindowArgs.InputOutput, 
@@ -134,8 +147,8 @@ namespace Modern.WindowKit.X11
                                        SetWindowValuemask.WinGravity | SetWindowValuemask.BackingStore)), ref attr);
             else
                 _renderHandle = _handle;
-                
-            Handle = new PlatformHandle(_handle, "XID");
+
+            Handle = new SurfacePlatformHandle(this);
             _realSize = new PixelSize(defaultWidth, defaultHeight);
             platform.Windows[_handle] = OnEvent;
             XEventMask ignoredMask = XEventMask.SubstructureRedirectMask
@@ -153,9 +166,8 @@ namespace Modern.WindowKit.X11
             XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_WINDOW_TYPE, _x11.Atoms.XA_ATOM,
                 32, PropertyMode.Replace, new[] {_x11.Atoms._NET_WM_WINDOW_TYPE_NORMAL}, 1);
 
-            if (platform.Options.WmClass != null)
-                SetWmClass(platform.Options.WmClass);
-
+            SetWmClass(_platform.Options.WmClass);
+            
             var surfaces = new List<object>
             {
                 new X11FramebufferSurface(_x11.DeferredDisplay, _renderHandle, 
@@ -169,12 +181,14 @@ namespace Modern.WindowKit.X11
             //if (glx != null)
             //    surfaces.Insert(0, new GlxGlPlatformSurface(glx.Display, glx.DeferredContext,
             //        new SurfaceInfo(this, _x11.Display, _handle, _renderHandle)));
-            
+
+            surfaces.Add(Handle);
+
             Surfaces = surfaces.ToArray();
             UpdateMotifHints();
             UpdateSizeHints(null);
 
-            _rawEventGrouper = new RawEventGrouper(e => Input?.Invoke(e));
+            //_rawEventGrouper = new RawEventGrouper(DispatchInput);
             
             _transparencyHelper = new TransparencyHelper(_x11, _handle, platform.Globals);
             _transparencyHelper.SetTransparencyRequest(WindowTransparencyLevel.None);
@@ -182,12 +196,22 @@ namespace Modern.WindowKit.X11
             CreateIC();
 
             XFlush(_x11.Display);
-            if (_popup)
+            if(_popup)
                 PopupPositioner = new ManagedPopupPositioner(new ManagedPopupPositionerPopupImplHelper(popupParent, MoveResize));
             //if (platform.Options.UseDBusMenu)
             //    NativeMenuExporter = DBusMenuExporter.TryCreateTopLevelNativeMenu(_handle);
             //NativeControlHost = new X11NativeControlHost(_platform, this);
             InitializeIme();
+
+            XChangeProperty(_x11.Display, _handle, _x11.Atoms.WM_PROTOCOLS, _x11.Atoms.XA_ATOM, 32,
+                PropertyMode.Replace, new[] { _x11.Atoms.WM_DELETE_WINDOW, _x11.Atoms._NET_WM_SYNC_REQUEST }, 2);
+
+            if (_x11.HasXSync)
+            {
+                _xSyncCounter = XSyncCreateCounter(_x11.Display, _xSyncValue);
+                XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_SYNC_REQUEST_COUNTER,
+                    _x11.Atoms.XA_CARDINAL, 32, PropertyMode.Replace, ref _xSyncCounter, 1);
+            }
         }
 
         //class SurfaceInfo  : EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo
@@ -215,7 +239,7 @@ namespace Modern.WindowKit.X11
         //            XUnlockDisplay(_display);
         //            return new PixelSize(geo.width, geo.height);
         //        }
-        //    }
+        //}
 
         //    public double Scaling => _window.RenderScaling;
         //}
@@ -270,7 +294,7 @@ namespace Modern.WindowKit.X11
                 min_height = min.Height
             };
             hints.height_inc = hints.width_inc = 1;
-            var flags = XSizeHintsFlags.PMinSize | XSizeHintsFlags.PResizeInc;
+            var flags = XSizeHintsFlags.PMinSize | XSizeHintsFlags.PResizeInc | XSizeHintsFlags.PPosition | XSizeHintsFlags.PSize;
             // People might be passing double.MaxValue
             if (max.Width < 100000 && max.Height < 100000)
             {
@@ -283,7 +307,7 @@ namespace Modern.WindowKit.X11
 
             XSetWMNormalHints(_x11.Display, _handle, ref hints);
         }
-
+        
         public Size ClientSize => new Size(_realSize.Width / RenderScaling, _realSize.Height / RenderScaling);
 
         public Size? FrameSize
@@ -358,13 +382,15 @@ namespace Modern.WindowKit.X11
 
         //    if (customRendererFactory != null)
         //        return customRendererFactory.Create(root, loop);
-            
-        //    return _platform.Options.UseDeferredRendering ?
-        //        new DeferredRenderer(root, loop)
-        //        {
-        //            RenderOnlyOnRenderThread = true
-        //        } :
-        //        (IRenderer)new X11ImmediateRendererProxy(root, loop);
+
+        //    return _platform.Options.UseDeferredRendering
+        //        ? _platform.Options.UseCompositor
+        //            ? new CompositingRenderer(root, this._platform.Compositor)
+        //            : new DeferredRenderer(root, loop)
+        //            {
+        //                RenderOnlyOnRenderThread = true
+        //    }
+        //        : (IRenderer)new X11ImmediateRendererProxy(root, loop);
         //}
 
         void OnEvent(ref XEvent ev)
@@ -381,18 +407,10 @@ namespace Modern.WindowKit.X11
                      (ev.type == XEventName.VisibilityNotify &&
                       ev.VisibilityEvent.state < 2))
             {
-                if (!_triggeredExpose)
-                {
-                    _triggeredExpose = true;
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        _triggeredExpose = false;
-                        DoPaint();
-                    }, DispatcherPriority.Render);
-                }
+                EnqueuePaint();
             }
             else if (ev.type == XEventName.FocusIn)
-            {
+                        {
                 if (ActivateTransientChildIfNeeded())
                     return;
                 Activated?.Invoke();
@@ -446,7 +464,7 @@ namespace Modern.WindowKit.X11
                 if (ev.ButtonEvent.button < 4 || ev.ButtonEvent.button == 8 || ev.ButtonEvent.button == 9)
                     MouseEvent(
                         ev.ButtonEvent.button switch
-                        {
+                    {
                             1 => RawPointerEventType.LeftButtonUp,
                             2 => RawPointerEventType.MiddleButtonUp,
                             3 => RawPointerEventType.RightButtonUp,
@@ -501,6 +519,11 @@ namespace Modern.WindowKit.X11
                 if (_useRenderWindow)
                     XConfigureResizeWindow(_x11.Display, _renderHandle, ev.ConfigureEvent.width,
                         ev.ConfigureEvent.height);
+                if (_xSyncState == XSyncState.WaitConfigure)
+        {
+                    _xSyncState = XSyncState.WaitPaint;
+                    EnqueuePaint();
+                }
             }
             else if (ev.type == XEventName.DestroyNotify 
                      && ev.DestroyWindowEvent.window == _handle)
@@ -516,11 +539,16 @@ namespace Modern.WindowKit.X11
                         if (Closing?.Invoke() != true)
                             Dispose();
                     }
-
+                    else if (ev.ClientMessageEvent.ptr1 == _x11.Atoms._NET_WM_SYNC_REQUEST)
+                    {
+                        _xSyncValue.Lo = new UIntPtr(ev.ClientMessageEvent.ptr3.ToPointer()).ToUInt32();
+                        _xSyncValue.Hi = ev.ClientMessageEvent.ptr4.ToInt32();
+                        _xSyncState = XSyncState.WaitConfigure;
+        }
                 }
             }
             else if (ev.type == XEventName.KeyPress || ev.type == XEventName.KeyRelease)
-            {
+        {
                 if (ActivateTransientChildIfNeeded())
                     return;
                 HandleKeyEvent(ref ev);
@@ -528,7 +556,7 @@ namespace Modern.WindowKit.X11
         }
 
         private bool UpdateScaling(bool skipResize = false)
-        {
+                {
             double newScaling;
             if (_scalingOverride.HasValue)
                 newScaling = _scalingOverride.Value;
@@ -537,7 +565,7 @@ namespace Modern.WindowKit.X11
                 var monitor = _platform.X11Screens.Screens.OrderBy(x => x.Scaling)
                     .FirstOrDefault(m => m.Bounds.Contains(Position));
                 newScaling = monitor?.Scaling ?? RenderScaling;
-            }
+                }
 
             if (RenderScaling != newScaling)
             {
@@ -552,7 +580,7 @@ namespace Modern.WindowKit.X11
             }
             
             return false;
-        }
+            }
 
         private WindowState _lastWindowState;
         public WindowState WindowState
@@ -587,18 +615,18 @@ namespace Modern.WindowKit.X11
                     ChangeWMAtoms(false, _x11.Atoms._NET_WM_STATE_FULLSCREEN);
                     ChangeWMAtoms(false, _x11.Atoms._NET_WM_STATE_MAXIMIZED_VERT,
                         _x11.Atoms._NET_WM_STATE_MAXIMIZED_HORZ);
-                }
+                        }
             }
         }
 
         private void OnPropertyChange(IntPtr atom, bool hasValue)
         {
             if (atom == _x11.Atoms._NET_FRAME_EXTENTS)
-            {
+                            {
                 // Occurs once the window has been mapped, which is the earliest the extents
                 // can be retrieved, so invoke event to force update of TopLevel.FrameSize.
                 Resized.Invoke(ClientSize, PlatformResizeReason.Unspecified);
-            }
+                        }
 
             if (atom == _x11.Atoms._NET_WM_STATE)
             {
@@ -612,7 +640,7 @@ namespace Modern.WindowKit.X11
                     int maximized = 0;
                     var pitems = (IntPtr*)prop.ToPointer();
                     for (var c = 0; c < nitems.ToInt32(); c++)
-                    {
+        {
                         if (pitems[c] == _x11.Atoms._NET_WM_STATE_HIDDEN)
                         {
                             state = WindowState.Minimized;
@@ -633,7 +661,7 @@ namespace Modern.WindowKit.X11
                             {
                                 state = WindowState.Maximized;
                                 break;
-                            }
+        }
                         }
                     }
                     XFree(prop);
@@ -644,7 +672,7 @@ namespace Modern.WindowKit.X11
                     WindowStateChanged?.Invoke(state);
                 }
             }
-
+        
         }
 
         RawInputModifiers TranslateModifiers(XModifierMask state)
@@ -669,8 +697,8 @@ namespace Modern.WindowKit.X11
             if (state.HasAllFlags(XModifierMask.Mod4Mask))
                 rv |= RawInputModifiers.Meta;
             return rv;
-        }
-        
+            }
+
         private SystemDecorations _systemDecorations = SystemDecorations.Full;
         private bool _canResize = true;
         private const int MaxWindowDimension = 100000;
@@ -680,7 +708,7 @@ namespace Modern.WindowKit.X11
 
         private (PixelSize minSize, PixelSize maxSize) _minMaxSize = (new PixelSize(1, 1),
             new PixelSize(MaxWindowDimension, MaxWindowDimension));
-        
+            
         private double _scaling = 1;
 
         void ScheduleInput(RawInputEventArgs args, ref XEvent xev)
@@ -688,7 +716,13 @@ namespace Modern.WindowKit.X11
             _x11.LastActivityTimestamp = xev.ButtonEvent.time;
             ScheduleInput(args);
         }
-        
+
+        //void DispatchInput(RawInputEventArgs args)
+        //{
+        //    Input?.Invoke(args);
+        //    if (!args.Handled && args is RawKeyEventArgsWithText text && !string.IsNullOrWhiteSpace(text.Text))
+        //        Input?.Invoke(new RawTextInputEventArgs(_keyboard, args.Timestamp, _inputRoot, text.Text));
+        //}
 
         public void ScheduleXI2Input(RawInputEventArgs args)
         {
@@ -711,7 +745,7 @@ namespace Modern.WindowKit.X11
         }
         
         private void ScheduleInput(RawInputEventArgs args)
-        {
+            {
             if (args is RawPointerEventArgs mouse)
                 mouse.Position = mouse.Position / RenderScaling;
             //if (args is RawDragEvent drag)
@@ -728,15 +762,33 @@ namespace Modern.WindowKit.X11
             ScheduleInput(mev, ref ev);
         }
 
-        //void DoPaint()
-        //{
-        //    Paint?.Invoke(new Rect());
-        //}
+        void EnqueuePaint()
+        {
+            if (!_triggeredExpose)
+            {
+                _triggeredExpose = true;
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _triggeredExpose = false;
+                    DoPaint();
+                }, DispatcherPriority.Render);
+            }
+        }
         
-        //public void Invalidate(Rect rect)
-        //{
+        void DoPaint()
+        {
+            Paint?.Invoke(new Rect());
+            if (_xSyncCounter != IntPtr.Zero && _xSyncState == XSyncState.WaitPaint)
+            {
+                _xSyncState = XSyncState.None;
+                XSyncSetCounter(_x11.Display, _xSyncCounter, _xSyncValue);
+            }
+        }
+        
+        public void Invalidate(Rect rect)
+        {
 
-        //}
+        }
 
         public IInputRoot InputRoot => _inputRoot;
         
@@ -775,6 +827,12 @@ namespace Modern.WindowKit.X11
             {
                 XDestroyIC(_xic);
                 _xic = IntPtr.Zero;
+            }
+
+            if (_xSyncCounter != IntPtr.Zero)
+            {
+                XSyncDestroyCounter(_x11.Display, _xSyncCounter);
+                _xSyncCounter = IntPtr.Zero;
             }
             
             if (_handle != IntPtr.Zero)
@@ -878,7 +936,7 @@ namespace Modern.WindowKit.X11
         }
 
         public void SetCursor(ICursorImpl cursor)
-        {
+                {
             if (cursor == null)
                 XDefineCursor(_x11.Display, _handle, _x11.DefaultCursor);
             else if (cursor is CursorImpl impl)
@@ -960,7 +1018,7 @@ namespace Modern.WindowKit.X11
             XSendEvent(_x11.Display, _x11.RootWindow, false,
                 new IntPtr((int)(EventMask.SubstructureRedirectMask | EventMask.SubstructureNotifyMask)), ref xev);
 
-        }
+            }
 
         void BeginMoveResize(NetWmMoveResize side, PointerPressedEventArgs e)
         {
@@ -969,7 +1027,7 @@ namespace Modern.WindowKit.X11
             SendNetWMMessage (_x11.Atoms._NET_WM_MOVERESIZE, (IntPtr) pos.x, (IntPtr) pos.y,
                 (IntPtr) side,
                 (IntPtr) 1, (IntPtr)1); // left button
-                
+
             //e.Pointer.Capture(null);
         }
 
@@ -1021,12 +1079,24 @@ namespace Modern.WindowKit.X11
 
         public void SetWmClass(string wmClass)
         {
-            var data = Encoding.ASCII.GetBytes(wmClass);
-            fixed (void* pdata = data)
+            // See https://tronche.com/gui/x/icccm/sec-4.html#WM_CLASS
+            // We don't actually parse the application's command line, so we only use RESOURCE_NAME and argv[0]
+            var appId = Environment.GetEnvironmentVariable("RESOURCE_NAME") 
+                        ?? Process.GetCurrentProcess().ProcessName;
+            
+            var encodedAppId = Encoding.ASCII.GetBytes(appId);
+            var encodedWmClass = Encoding.ASCII.GetBytes(wmClass ?? appId);
+
+            var hint = XAllocClassHint();
+            fixed(byte* pAppId = encodedAppId)
+            fixed (byte* pWmClass = encodedWmClass)
             {
-                XChangeProperty(_x11.Display, _handle, _x11.Atoms.XA_WM_CLASS, _x11.Atoms.XA_STRING, 8,
-                    PropertyMode.Replace, pdata, data.Length);
+                hint->res_name = pAppId;
+                hint->res_class = pWmClass;
+                XSetClassHint(_x11.Display, _handle, hint);
             }
+
+            XFree(hint);
         }
 
         public void SetMinMaxSize(Size minSize, Size maxSize)
@@ -1049,7 +1119,7 @@ namespace Modern.WindowKit.X11
         {
             ChangeWMAtoms(value, _x11.Atoms._NET_WM_STATE_ABOVE);
         }
-
+        
         public void SetEnabled(bool enable)
         {
             _disabled = !enable;
@@ -1065,7 +1135,7 @@ namespace Modern.WindowKit.X11
 
         public void SetExtendClientAreaTitleBarHeightHint(double titleBarHeight)
         {
-        }
+}
 
         public Action GotInputWhenDisabled { get; set; }
 
@@ -1125,9 +1195,6 @@ namespace Modern.WindowKit.X11
         }
 
         public IPopupPositioner PopupPositioner { get; }
-        //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
-        //public INativeControlHostImpl NativeControlHost { get; }
-        //public ITextInputMethodImpl TextInputMethod => _ime;
 
         public void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel) =>
             _transparencyHelper?.SetTransparencyRequest(transparencyLevel);
@@ -1142,5 +1209,22 @@ namespace Modern.WindowKit.X11
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0.8, 0.8);
 
         public bool NeedsManagedDecorations => false;
-}
+
+        public class SurfacePlatformHandle : IPlatformNativeSurfaceHandle
+        {
+            private readonly X11Window _owner;
+
+            public PixelSize Size => _owner.ToPixelSize(_owner.ClientSize);
+
+            public double Scaling => _owner.RenderScaling;
+
+            public SurfacePlatformHandle(X11Window owner)
+            {
+                _owner = owner;
+            }
+
+            public IntPtr Handle => _owner._renderHandle;
+            public string HandleDescriptor => "XID";
+        }
+    }
 }

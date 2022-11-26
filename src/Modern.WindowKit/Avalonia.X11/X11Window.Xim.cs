@@ -10,17 +10,21 @@ namespace Modern.WindowKit.X11
 {
     partial class X11Window
     {
-
         class XimInputMethod //: ITextInputMethodImpl, IX11InputMethodControl
         {
             private readonly X11Window _parent;
             private bool _controlActive, _windowActive, _imeActive;
             private Rect? _queuedCursorRect;
+            //private ITextInputMethodClient? _client;
 
             public XimInputMethod(X11Window parent)
             {
                 _parent = parent;
             }
+            
+            //public ITextInputMethodClient? Client => _client;
+
+            //public bool IsActive => _client != null;
             
             public void SetCursorRect(Rect rect)
             {
@@ -58,11 +62,11 @@ namespace Modern.WindowKit.X11
                 UpdateActive();
             }
 
-            public void SetActive(bool active)
-            {
-                _controlActive = active;
-                UpdateActive();
-            }
+            //public void SetClient(ITextInputMethodClient client)
+            //{
+            //    _client = client;
+            //    UpdateActive();
+            //}
 
             private void UpdateActive()
             {
@@ -76,7 +80,7 @@ namespace Modern.WindowKit.X11
                     {
                         Reset();
                         XSetICFocus(_parent._xic);
-                    }
+            }
                     else
                         XUnsetICFocus(_parent._xic);
                 }
@@ -87,7 +91,7 @@ namespace Modern.WindowKit.X11
                 // No-op
             }
             
-            //public void SetOptions(TextInputOptionsQueryEventArgs options)
+            //public void SetOptions(TextInputOptions options)
             //{
             //    // No-op
             //}
