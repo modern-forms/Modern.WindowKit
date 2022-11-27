@@ -79,7 +79,7 @@ namespace Modern.WindowKit
             AddService<IWindowingPlatform>(Win32Platform.Instance);
             AddService<IPlatformThreadingInterface>(Win32Platform.Instance);
             AddService<ICursorFactory>(CursorFactory.Instance);
-            AddService<ISystemDialogImpl>(new SystemDialogImpl());
+            //AddService<ISystemDialogImpl>(new SystemDialogImpl());
             AddService<IClipboard>(new ClipboardImpl());
         }
     }

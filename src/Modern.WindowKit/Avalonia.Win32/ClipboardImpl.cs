@@ -7,6 +7,7 @@ using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Threading;
 using Modern.WindowKit.Win32.Interop;
+using Avalonia.MicroCom;
 
 namespace Modern.WindowKit.Win32
 {
@@ -48,7 +49,7 @@ namespace Modern.WindowKit.Win32
                 var rv = Marshal.PtrToStringUni(pText);
                 UnmanagedMethods.GlobalUnlock(hText);
                 return rv;
-            }
+        }
         }
 
         public async Task SetTextAsync(string text)
@@ -64,7 +65,7 @@ namespace Modern.WindowKit.Win32
 
                 var hGlobal = Marshal.StringToHGlobalUni(text);
                 UnmanagedMethods.SetClipboardData(UnmanagedMethods.ClipboardFormat.CF_UNICODETEXT, hGlobal);
-            }
+        }
         }
 
         public async Task ClearAsync()
@@ -72,18 +73,19 @@ namespace Modern.WindowKit.Win32
             using(await OpenClipboard())
             {
                 UnmanagedMethods.EmptyClipboard();
-            }
+        }
         }
 
         public async Task SetDataObjectAsync(IDataObject data)
         {
             Dispatcher.UIThread.VerifyAccess();
-            var wrapper = new DataObject(data);
+            using var wrapper = new DataObject(data);
             var i = OleRetryCount;
 
             while (true)
             {
-                var hr = UnmanagedMethods.OleSetClipboard(wrapper);
+                var ptr = wrapper.GetNativeIntPtr<Win32Com.IDataObject>();
+                var hr = UnmanagedMethods.OleSetClipboard(ptr);
 
                 if (hr == 0)
                     break;
@@ -106,9 +108,9 @@ namespace Modern.WindowKit.Win32
 
                 if (hr == 0)
                 {
-                    var wrapper = new OleDataObject(dataObject);
+                    using var proxy = MicroComRuntime.CreateProxyFor<Win32Com.IDataObject>(dataObject, true);
+                    using var wrapper = new OleDataObject(proxy);
                     var formats = wrapper.GetDataFormats().ToArray();
-                    Marshal.ReleaseComObject(dataObject);
                     return formats;
                 }
 
@@ -130,9 +132,9 @@ namespace Modern.WindowKit.Win32
 
                 if (hr == 0)
                 {
-                    var wrapper = new OleDataObject(dataObject);
+                    using var proxy = MicroComRuntime.CreateProxyFor<Win32Com.IDataObject>(dataObject, true);
+                    using var wrapper = new OleDataObject(proxy);
                     var rv = wrapper.Get(format);
-                    Marshal.ReleaseComObject(dataObject);
                     return rv;
                 }
 
@@ -140,7 +142,7 @@ namespace Modern.WindowKit.Win32
                     Marshal.ThrowExceptionForHR(hr);
 
                 await Task.Delay(OleRetryDelay);
-            }
-        }
+    }
+}
     }
 }

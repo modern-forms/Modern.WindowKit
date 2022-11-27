@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
-    <PackageReference Include="Modern.WindowKit.Backend.Mac" Version="0.1.4-alpha01" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Modern.WindowKit.Backend.Mac" Version="0.1.4-alpha02" />
     <PackageReference Include="SkiaSharp" Version="2.88.2" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.2" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />

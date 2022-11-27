@@ -26,7 +26,7 @@ namespace Modern.WindowKit.Win32
                     int index = 0;
                     Screen[] screens = new Screen[ScreenCount];
                     EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero,
-                        (IntPtr monitor, IntPtr hdcMonitor, ref Rect lprcMonitor, IntPtr data) =>
+                        (IntPtr monitor, IntPtr hdcMonitor, ref Modern.WindowKit.Win32.Interop.Rect lprcMonitor, IntPtr data) =>
                             {
                             MONITORINFO monitorInfo = MONITORINFO.Create();
                             if (GetMonitorInfo(monitor, ref monitorInfo))

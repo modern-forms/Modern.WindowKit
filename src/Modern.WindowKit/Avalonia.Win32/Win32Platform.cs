@@ -60,13 +60,10 @@ namespace Modern.WindowKit
         /// </remarks>
         public bool? AllowEglInitialization { get; set; }
 
-        /// <summary>
-        /// Enables multitouch support. The default value is true.
-        /// </summary>
-        /// <remarks>
-        /// Multitouch allows a surface (a touchpad or touchscreen) to recognize the presence of more than one point of contact with the surface at the same time.
-        /// </remarks>
-        public bool? EnableMultitouch { get; set; } = true;
+        public IList<string> EglRendererBlacklist { get; set; } = new List<string>
+        {
+            "Microsoft Basic Render"
+        };
 
         /// <summary>
         /// Embeds popups to the window when set to true. The default value is false.
@@ -130,18 +127,9 @@ namespace Modern.WindowKit.Win32
         public static bool UseDeferredRendering => Options.UseDeferredRendering;
         internal static bool UseOverlayPopups => Options.OverlayPopups;
         public static Win32PlatformOptions Options { get; private set; }
+        
+        //internal static Compositor Compositor { get; private set; }
 
-        public Size DoubleClickSize => new Size(
-            UnmanagedMethods.GetSystemMetrics(UnmanagedMethods.SystemMetric.SM_CXDOUBLECLK),
-            UnmanagedMethods.GetSystemMetrics(UnmanagedMethods.SystemMetric.SM_CYDOUBLECLK));
-
-        public TimeSpan DoubleClickTime => TimeSpan.FromMilliseconds(UnmanagedMethods.GetDoubleClickTime());
-
-        /// <inheritdoc cref="IPlatformSettings.TouchDoubleClickSize"/>
-        public Size TouchDoubleClickSize => new Size(16,16);
-
-        /// <inheritdoc cref="IPlatformSettings.TouchDoubleClickTime"/>
-        public TimeSpan TouchDoubleClickTime => DoubleClickTime;
         public static void Initialize()
         {
             Initialize(new Win32PlatformOptions());
@@ -158,7 +146,6 @@ namespace Modern.WindowKit.Win32
             //    .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
             //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
             //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
-            //    .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
             //    .Bind<IWindowingPlatform>().ToConstant(s_instance)
             //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control)
             //    {
@@ -173,12 +160,15 @@ namespace Modern.WindowKit.Win32
             //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new WindowsMountedVolumeInfoProvider())
             //    .Bind<IPlatformLifetimeEventsImpl>().ToConstant(s_instance);
 
-            //Win32GlManager.Initialize();
+            //var gl = Win32GlManager.Initialize();
 
             _uiThread = Thread.CurrentThread;
 
             //if (OleContext.Current != null)
             //    AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToSingleton<DragSource>();
+
+            //if (Options.UseCompositor)
+            //    Compositor = new Compositor(AvaloniaLocator.Current.GetRequiredService<IRenderLoop>(), gl);
         }
 
         public bool HasMessages()
@@ -211,7 +201,7 @@ namespace Modern.WindowKit.Win32
             {
                 UnmanagedMethods.TranslateMessage(ref msg);
                 UnmanagedMethods.DispatchMessage(ref msg);
-            }
+        }
             if (result < 0)
             {
                 //Logging.Logger.TryGet(Logging.LogEventLevel.Error, Logging.LogArea.Win32Platform)
@@ -240,11 +230,11 @@ namespace Modern.WindowKit.Win32
             });
         }
 
-        private static readonly int SignalW = unchecked((int) 0xdeadbeaf);
-        private static readonly int SignalL = unchecked((int)0x12345678);
+        private const int SignalW = unchecked((int)0xdeadbeaf);
+        private const int SignalL = unchecked((int)0x12345678);
 
         public void Signal(DispatcherPriority prio)
-        {
+            {
             UnmanagedMethods.PostMessage(
                 _hwnd,
                 (int) UnmanagedMethods.WindowsMessage.WM_DISPATCH_WORK_ITEM,
@@ -290,7 +280,7 @@ namespace Modern.WindowKit.Win32
         {
             // Ensure that the delegate doesn't get garbage collected by storing it as a field.
             _wndProcDelegate = new UnmanagedMethods.WndProc(WndProc);
-
+            
             UnmanagedMethods.WNDCLASSEX wndClassEx = new UnmanagedMethods.WNDCLASSEX
             {
                 cbSize = Marshal.SizeOf<UnmanagedMethods.WNDCLASSEX>(),
@@ -349,7 +339,7 @@ namespace Modern.WindowKit.Win32
         //    using (var memoryStream = new MemoryStream())
         //    {
         //        bitmap.Save(memoryStream);
-        //        return new IconImpl(new System.Drawing.Bitmap(memoryStream));
+        //        return CreateIconImpl(memoryStream);
         //    }
         //}
 
@@ -357,11 +347,15 @@ namespace Modern.WindowKit.Win32
         //{
         //    try
         //    {
+        //        // new Icon() will work only if stream is an "ico" file.
         //        return new IconImpl(new System.Drawing.Icon(stream));
         //    }
         //    catch (ArgumentException)
         //    {
-        //        return new IconImpl(new System.Drawing.Bitmap(stream));
+        //        // Fallback to Bitmap creation and converting into a windows icon. 
+        //        using var icon = new System.Drawing.Bitmap(stream);
+        //        var hIcon = icon.GetHicon();
+        //        return new IconImpl(System.Drawing.Icon.FromHandle(hIcon));
         //    }
         //}
 
