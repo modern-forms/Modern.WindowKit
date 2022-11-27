@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Modern.WindowKit</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.4.0-alpha01</Version>
     <Description>Cross-platform library for creating and interacting with OS windows.</Description>
     <PackageTags>Modern;WindowKit;GUI;UI;Cross;Platform</PackageTags>
     <PackageOutputPath>../../nupkg</PackageOutputPath>
@@ -18,10 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="Modern.WindowKit.Backend" Version="0.4.0-alpha01" />
-    <PackageReference Include="SkiaSharp" Version="2.88.2" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.2" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="Modern.WindowKit.Backend" Version="[0.4.0-alpha01]" />
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
