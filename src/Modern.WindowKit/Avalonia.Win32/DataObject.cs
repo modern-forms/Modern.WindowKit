@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization.Formatters.Binary;
 using Modern.WindowKit.Input;
-using Avalonia.MicroCom;
+using Modern.WindowKit.MicroCom;
 using Modern.WindowKit.Win32.Interop;
 
 using FORMATETC = Modern.WindowKit.Win32.Interop.FORMATETC;

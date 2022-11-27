@@ -7,7 +7,7 @@ using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Threading;
 using Modern.WindowKit.Win32.Interop;
-using Avalonia.MicroCom;
+using Modern.WindowKit.MicroCom;
 
 namespace Modern.WindowKit.Win32
 {

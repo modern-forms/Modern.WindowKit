@@ -59,7 +59,6 @@ CopyFile ("Avalonia.Base/Platform/Storage/IStorageFile.cs", "IStorageFile.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/IStorageFolder.cs", "IStorageFolder.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/IStorageItem.cs", "IStorageItem.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/IStorageProvider.cs", "IStorageProvider.cs");
-CopyFile ("Avalonia.Controls/Platform/Dialogs/ISystemDialogImpl.cs", "ISystemDialogImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/ITopLevelImpl.cs", "ITopLevelImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/ITopLevelImplWithStorageProvider.cs", "ITopLevelImplWithStorageProvider.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowBaseImpl.cs", "IWindowBaseImpl.cs");
@@ -102,7 +101,6 @@ CopyFile ("Avalonia.Base/Platform/Storage/StorageItemProperties.cs", "StorageIte
 CopyFile ("Avalonia.Base/Platform/Storage/FileIO/StorageProviderHelpers.cs", "StorageProviderHelpers.cs");
 CopyFile ("Avalonia.Base/Utilities/StringBuilderCache.cs", "StringBuilderCache.cs");
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
-CopyFile ("Avalonia.Controls/SystemDialog.cs", "SystemDialog.cs");
 CopyFile ("Avalonia.Base/Thickness.cs", "Thickness.cs");
 CopyFile ("Avalonia.Base/Input/TouchDevice.cs", "TouchDevice.cs");
 CopyFile ("Avalonia.Base/Platform/Internal/UnmanagedBlob.cs", "UnmanagedBlob.cs");
@@ -230,9 +228,9 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "using System.ComponentModel.DataAnnotation");
     text = Comment (text, "using System.Reactive.Linq");
 
-    // We still use Avalonia.Native.Interop for now
-    text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Avalonia.Native.Interop");
-    text = text.Replace ("using Modern.WindowKit.MicroCom", "using Avalonia.MicroCom");
+    // MicroCom namespaces
+    text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Modern.WindowKit.Mac.Interop");
+    text = text.Replace ("using MicroCom.Runtime", "using Modern.WindowKit.MicroCom");
 
     // We don't use Avalonia's DI
     text = text.Replace ("AvaloniaLocator.Current.GetService<ICursorFactory>()", "AvaloniaGlobals.GetService<ICursorFactory>()");
@@ -335,9 +333,6 @@ private void CopyFile (string src, string dst)
             break;
         case "StandardRuntimePlatform.cs":
             text = text.Replace ("public class", "internal class");
-            break;
-        case "ClipboardImpl.cs":
-            text = text.Replace ("using MicroCom.Runtime", "using Avalonia.MicroCom");
             break;
         case "DataObject.cs":
             text = text.Replace ("Avalonia.Win32.Interop.FORMATETC", "Modern.WindowKit.Win32.Interop.FORMATETC");

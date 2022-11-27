@@ -8,7 +8,7 @@ using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Platform.Storage;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform.Interop;
 
 namespace Modern.WindowKit.Native

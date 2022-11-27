@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform.Storage;
 using Modern.WindowKit.Platform.Storage.FileIO;
 

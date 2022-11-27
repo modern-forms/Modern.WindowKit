@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.ExceptionServices;
 using System.Threading;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Threading;
 

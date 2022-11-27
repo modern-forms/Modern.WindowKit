@@ -7,12 +7,12 @@ using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Avalonia.MicroCom;
+using Modern.WindowKit.MicroCom;
 using Modern.WindowKit.Platform.Storage;
 using Modern.WindowKit.Platform.Storage.FileIO;
 using Modern.WindowKit.Win32.Interop;
 using Modern.WindowKit.Win32.Win32Com;
-//using MicroCom.Runtime;
+using Modern.WindowKit.MicroCom;
 
 namespace Modern.WindowKit.Win32
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native

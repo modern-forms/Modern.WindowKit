@@ -3,14 +3,14 @@ using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
-using Avalonia.MicroCom;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.MicroCom;
+using Modern.WindowKit.Mac.Interop;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
 //using Modern.WindowKit.Rendering.Composition;
 //using JetBrains.Annotations;
-//using MicroCom.Runtime;
+using Modern.WindowKit.MicroCom;
 
 namespace Modern.WindowKit.Native
 {

@@ -2,7 +2,7 @@
 using System.IO;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 
 namespace Modern.WindowKit.Native
 {

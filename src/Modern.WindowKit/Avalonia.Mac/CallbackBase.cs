@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.ExceptionServices;
-using Avalonia.MicroCom;
+using Modern.WindowKit.MicroCom;
 using Modern.WindowKit.Platform;
-//using MicroCom.Runtime;
+using Modern.WindowKit.MicroCom;
 
 namespace Modern.WindowKit.Native
 {

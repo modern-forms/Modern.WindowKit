@@ -1,4 +1,4 @@
-﻿using Avalonia.Native.Interop;
+﻿using Modern.WindowKit.Mac.Interop;
 //using JetBrains.Annotations;
 
 namespace Modern.WindowKit.Native
