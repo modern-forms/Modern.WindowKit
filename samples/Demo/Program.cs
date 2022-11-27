@@ -1,5 +1,7 @@
 ﻿using Modern.WindowKit;
+using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Controls.Platform.Surfaces;
+using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Skia;
@@ -15,8 +17,13 @@ public class Program
     private static SKColor? draw_color;
     private static Point? cursor_position;
     private static bool show_diagnostics = true;
+    private static SKRect? anchor_rect;
 
     private static SKColor[] touch_colors = new SKColor[] { SKColors.Yellow, SKColors.Blue, SKColors.Brown, SKColors.Purple, SKColors.Pink, SKColors.White, SKColors.Orange, SKColors.Black, SKColors.Coral, SKColors.Gray };
+
+    private static string? open_file;
+    private static string? open_folder;
+    private static string? save_file;
 
     private static void Main()
     {
@@ -81,6 +88,9 @@ public class Program
 
         if (show_diagnostics)
             OutputDiagnostics(surface.Canvas);
+
+        if (anchor_rect.HasValue)
+            surface.Canvas.DrawRect (anchor_rect.Value, new SKPaint { Color = SKColors.White, IsStroke = true });
     }
 
     private static void HandleInput(RawInputEventArgs obj)
@@ -120,13 +130,62 @@ public class Program
         Invalidate();
     }
 
-    private static void HandleKeyboardInput(RawKeyEventArgs e)
+    private static async void HandleKeyboardInput(RawKeyEventArgs e)
     {
         // Use F1 key to toggle diagnostics
         if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F1)
         {
             show_diagnostics = !show_diagnostics;
             e.Handled = true;
+        }
+
+        // Use P to trigger a popup
+        if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.P)
+        {
+            anchor_rect = new SKRect(300, 300, 301, 301);
+
+            var popup = window.CreatePopup();
+            var ppp = new PopupPositionerParameters
+            {
+                AnchorRectangle = anchor_rect.Value.ToAvaloniaRect(),
+                Anchor = PopupAnchor.TopLeft,
+                Gravity = PopupGravity.BottomRight,
+                Size = new Size(200, 200),
+                ConstraintAdjustment = PopupPositionerConstraintAdjustment.None,
+                
+            };
+            popup.PopupPositioner.Update(ppp);
+            popup.Show(true, true);
+            //show_diagnostics = !show_diagnostics;
+            e.Handled = true;
+        }
+
+        if (window is ITopLevelImplWithStorageProvider storageProvider)
+        {
+            // Use F9 key to open a File Open dialog
+            if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F9)
+            {
+                var result = await storageProvider.StorageProvider.OpenFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerOpenOptions { });
+                open_file = result?.FirstOrDefault()?.Name;
+                e.Handled = true;
+            }
+
+            // Use F10 key to open a Folder Open dialog
+            if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F10)
+            {
+                var result = await storageProvider.StorageProvider.OpenFolderPickerAsync(new Modern.WindowKit.Platform.Storage.FolderPickerOpenOptions { });
+                open_folder = result?.FirstOrDefault()?.Name;
+                e.Handled = true;
+            }
+
+            // Use F11 key to open a File Save dialog
+            if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F11)
+            {
+                var result = await storageProvider.StorageProvider.SaveFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerSaveOptions { });
+                save_file = result?.Name;
+                e.Handled = true;
+            }
+
         }
 
         Invalidate();
@@ -174,6 +233,12 @@ public class Program
 
         if (cursor_position.HasValue)
             canvas.DrawText($"Cursor Position - {cursor_position}", x, y += line_height, paint);
+        if (open_file is not null)
+            canvas.DrawText($"Open File - {open_file}", x, y += line_height, paint);
+        if (open_folder is not null)
+            canvas.DrawText($"Open Folder - {open_folder}", x, y += line_height, paint);
+        if (save_file is not null)
+            canvas.DrawText($"Save File - {save_file}", x, y += line_height, paint);
     }
 
     private static int Scale(int value) => (int)(value * window.RenderScaling);
