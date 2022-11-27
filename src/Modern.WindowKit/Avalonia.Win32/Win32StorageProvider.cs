@@ -254,4 +254,3 @@ namespace Modern.WindowKit.Win32
         }
     }
 }
-
