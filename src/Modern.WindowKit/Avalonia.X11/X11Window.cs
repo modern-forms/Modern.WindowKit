@@ -190,7 +190,7 @@ namespace Modern.WindowKit.X11
             UpdateMotifHints();
             UpdateSizeHints(null);
             
-            //_rawEventGrouper = new RawEventGrouper(DispatchInput);
+            _rawEventGrouper = new RawEventGrouper(DispatchInput);
             
             _transparencyHelper = new TransparencyHelper(_x11, _handle, platform.Globals);
             _transparencyHelper.SetTransparencyRequest(WindowTransparencyLevel.None);
@@ -725,12 +725,12 @@ namespace Modern.WindowKit.X11
             ScheduleInput(args);
         }
 
-        //void DispatchInput(RawInputEventArgs args)
-        //{
-        //    Input?.Invoke(args);
-        //    if (!args.Handled && args is RawKeyEventArgsWithText text && !string.IsNullOrWhiteSpace(text.Text))
-        //        Input?.Invoke(new RawTextInputEventArgs(_keyboard, args.Timestamp, _inputRoot, text.Text));
-        //}
+        void DispatchInput(RawInputEventArgs args)
+        {
+            Input?.Invoke(args);
+            //if (!args.Handled && args is RawKeyEventArgsWithText text && !string.IsNullOrWhiteSpace(text.Text))
+            //    Input?.Invoke(new RawTextInputEventArgs(_keyboard, args.Timestamp, _inputRoot, text.Text));
+        }
 
         public void ScheduleXI2Input(RawInputEventArgs args)
         {
@@ -783,20 +783,20 @@ namespace Modern.WindowKit.X11
             }
         }
         
-        void DoPaint()
-        {
-            Paint?.Invoke(new Rect());
-            if (_xSyncCounter != IntPtr.Zero && _xSyncState == XSyncState.WaitPaint)
-            {
-                _xSyncState = XSyncState.None;
-                XSyncSetCounter(_x11.Display, _xSyncCounter, _xSyncValue);
-            }
-        }
+        //void DoPaint()
+        //{
+        //    Paint?.Invoke(new Rect());
+        //    if (_xSyncCounter != IntPtr.Zero && _xSyncState == XSyncState.WaitPaint)
+        //    {
+        //        _xSyncState = XSyncState.None;
+        //        XSyncSetCounter(_x11.Display, _xSyncCounter, _xSyncValue);
+        //    }
+        //}
         
-        public void Invalidate(Rect rect)
-        {
+        //public void Invalidate(Rect rect)
+        //{
 
-        }
+        //}
 
         public IInputRoot InputRoot => _inputRoot;
         
