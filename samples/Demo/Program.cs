@@ -178,8 +178,8 @@ public class Program
                 e.Handled = true;
             }
 
-            // Use F11 key to open a File Save dialog
-            if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F11)
+            // Use F12 key to open a File Save dialog (F11 is a system key on Mac?)
+            if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F12)
             {
                 var result = await storageProvider.StorageProvider.SaveFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerSaveOptions { });
                 save_file = result?.Name;
