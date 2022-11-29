@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Modern.WindowKit.Controls.ApplicationLifetimes;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native

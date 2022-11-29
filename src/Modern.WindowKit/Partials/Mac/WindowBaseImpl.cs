@@ -1,5 +1,5 @@
 ﻿using System;
-using Avalonia.Native.Interop;
+using Modern.WindowKit.Mac.Interop;
 
 namespace Modern.WindowKit.Native
 {

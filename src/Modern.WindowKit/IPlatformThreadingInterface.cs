@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Modern.WindowKit.Metadata;
 using Modern.WindowKit.Threading;
 
 namespace Modern.WindowKit.Platform
@@ -7,6 +8,7 @@ namespace Modern.WindowKit.Platform
     /// <summary>
     /// Provides platform-specific services relating to threading.
     /// </summary>
+    [Unstable]
     public interface IPlatformThreadingInterface
     {
         void RunLoop(CancellationToken cancellationToken);

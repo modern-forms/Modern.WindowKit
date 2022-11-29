@@ -19,7 +19,7 @@ namespace Modern.WindowKit.Native
 
         public void SetSystemDecorations(SystemDecorations enabled)
         {
-            _native.SetDecorations((Avalonia.Native.Interop.SystemDecorations)enabled);
+            _native.SetDecorations((Modern.WindowKit.Mac.Interop.SystemDecorations)enabled);
         }
     }
 }

@@ -24,30 +24,7 @@ namespace Modern.WindowKit.Input
         // the source of truth about the input focus is in KeyboardDevice
         //private readonly TextInputMethodManager _textInputManager = new TextInputMethodManager();
 
-        //public IInputElement? FocusedElement
-        //{
-        //    get
-        //    {
-        //        return _focusedElement;
-        //    }
-
-        //    private set
-        //    {
-        //        _focusedElement = value;
-
-        //        if (_focusedElement != null && _focusedElement.IsAttachedToVisualTree)
-        //        {
-        //            _focusedRoot = _focusedElement.VisualRoot as IInputRoot;
-        //        }
-        //        else
-        //        {
-        //            _focusedRoot = null;
-        //        }
-                
-        //        RaisePropertyChanged();
-        //        _textInputManager.SetFocusedElement(value);
-        //    }
-        //}
+        //public IInputElement? FocusedElement => _focusedElement;
 
         //private void ClearFocusWithinAncestors(IInputElement? element)
         //{
@@ -61,7 +38,7 @@ namespace Modern.WindowKit.Input
         //        }
 
         //        el = (IInputElement?)el.VisualParent;
-        //    }
+        //        }
         //}
         
         //private void ClearFocusWithin(IInputElement element, bool clearRoot)
@@ -126,7 +103,7 @@ namespace Modern.WindowKit.Input
         //        el = el.VisualParent as IInputElement;
         //    }
         //}
-        
+
         //private void ClearChildrenFocusWithin(IInputElement element, bool clearRoot)
         //{
         //    foreach (var visual in element.VisualChildren)
@@ -159,11 +136,11 @@ namespace Modern.WindowKit.Input
         //            _focusedRoot != null)
         //        {
         //            ClearChildrenFocusWithin(_focusedRoot, true);
-        //        }
-                
+        //    }
+            
         //        SetIsFocusWithin(FocusedElement, element);
-                
-        //        FocusedElement = element;
+        //        _focusedElement = element;
+        //        _focusedRoot = _focusedElement?.VisualRoot as IInputRoot;
 
         //        interactive?.RaiseEvent(new RoutedEventArgs
         //        {
@@ -178,9 +155,12 @@ namespace Modern.WindowKit.Input
         //            NavigationMethod = method,
         //            KeyModifiers = keyModifiers,
         //        });
+
+        //        _textInputManager.SetFocusedElement(element);
+        //        RaisePropertyChanged(nameof(FocusedElement));
         //    }
         //}
-
+                
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -208,7 +188,7 @@ namespace Modern.WindowKit.Input
             //                RoutedEvent = routedEvent,
             //                Device = this,
             //                Key = keyInput.Key,
-            //                KeyModifiers = KeyModifiersUtils.ConvertToKey(keyInput.Modifiers),
+            //                KeyModifiers = keyInput.Modifiers.ToKeyModifiers(),
             //                Source = element,
             //            };
 
@@ -217,38 +197,38 @@ namespace Modern.WindowKit.Input
             //            {
             //                var bindings = (currentHandler as IInputElement)?.KeyBindings;
             //                if (bindings != null)
-                            //{
-                            //    KeyBinding[]? bindingsCopy = null;
+            //                {
+            //                    KeyBinding[]? bindingsCopy = null;
 
-                                // Create a copy of the KeyBindings list if there's a binding which matches the event.
-                                // If we don't do this the foreach loop will throw an InvalidOperationException when the KeyBindings list is changed.
-                                // This can happen when a new view is loaded which adds its own KeyBindings to the handler.
-                                //foreach (var binding in bindings)
-                                //{
-                                //    if (binding.Gesture?.Matches(ev) == true)
-                                //    {
-                                //        bindingsCopy = bindings.ToArray();
+            //                    // Create a copy of the KeyBindings list if there's a binding which matches the event.
+            //                    // If we don't do this the foreach loop will throw an InvalidOperationException when the KeyBindings list is changed.
+            //                    // This can happen when a new view is loaded which adds its own KeyBindings to the handler.
+            //                    foreach (var binding in bindings)
+            //                    {
+            //                        if (binding.Gesture?.Matches(ev) == true)
+            //                        {
+            //                            bindingsCopy = bindings.ToArray();
+            //                            break;
+            //                        }
+            //                    }
+
+            //                    if (bindingsCopy is object)
+            //                    {
+            //                        foreach (var binding in bindingsCopy)
+            //                        {
+            //                            if (ev.Handled)
+            //                                break;
+            //                            binding.TryHandle(ev);
+            //                        }
+            //                    }
+            //                }
+            //                currentHandler = currentHandler.VisualParent;
+            //            }
+
+            //            element.RaiseEvent(ev);
+            //            e.Handled = ev.Handled;
             //            break;
             //    }
-            //}
-
-                                //if (bindingsCopy is object)
-            //{
-                                    //foreach (var binding in bindingsCopy)
-            //    {
-                //                        if (ev.Handled)
-                //                            break;
-                //                        binding.TryHandle(ev);
-                //                    }
-                //                }
-                //            }
-                //            currentHandler = currentHandler.VisualParent;
-                //        }
-
-                //        element.RaiseEvent(ev);
-                //        e.Handled = ev.Handled;
-                //        break;
-                //}
             //}
 
             //if (e is RawTextInputEventArgs text)

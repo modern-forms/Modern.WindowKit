@@ -35,7 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 The above is the version of the MIT "Expat" License used by X.org:
 
-    http://cgit.freedesktop.org/xorg/xserver/tree/COPYING
+    https://cgit.freedesktop.org/xorg/xserver/tree/COPYING
     
     
 Adjustments for Avalonia needs:
@@ -45,7 +45,10 @@ Copyright © 2019 Nikita Tsukanov
 */
 
 using System;
+using Modern.WindowKit.Input;
+using Modern.WindowKit.Metadata;
 //using Modern.WindowKit.VisualTree;
+//using Modern.WindowKit.Media;
 
 namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
 {
@@ -60,6 +63,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
     /// requirement that a popup must intersect with or be at least partially adjacent to its parent
     /// surface.
     /// </remarks>
+    [Unstable]
     public struct PopupPositionerParameters
     {
         private PopupGravity _gravity;
@@ -428,6 +432,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
     /// managed implementation is provided in <see cref="ManagedPopupPositioner"/> for platforms
     /// on which popups can be arbitrarily positioned.
     /// </remarks>
+    [NotClientImplementable]
     public interface IPopupPositioner
     {
         /// <summary>
@@ -438,72 +443,98 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
         void Update(PopupPositionerParameters parameters);
     }
 
+//    [Unstable]
 //    static class PopupPositionerExtensions
 //    {
 //        public static void ConfigurePosition(ref this PopupPositionerParameters positionerParameters,
 //            TopLevel topLevel,
 //            IVisual target, PlacementMode placement, Point offset,
 //            PopupAnchor anchor, PopupGravity gravity,
-//            PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect)
-//        {
-//            // We need a better way for tracking the last pointer position
-//#pragma warning disable CS0618 // Type or member is obsolete
-//            var pointer = topLevel.PointToClient(topLevel.PlatformImpl?.MouseDevice.Position ?? default);
-//#pragma warning restore CS0618 // Type or member is obsolete
+        //    PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
+        //    FlowDirection flowDirection)
+        //{
+        //    positionerParameters.Offset = offset;
+        //    positionerParameters.ConstraintAdjustment = constraintAdjustment;
+        //    if (placement == PlacementMode.Pointer)
+        //    {
+        //        // We need a better way for tracking the last pointer position
+        //        var position = topLevel.PointToClient(topLevel.LastPointerPosition ?? default);
 
-//            positionerParameters.Offset = offset;
-//            positionerParameters.ConstraintAdjustment = constraintAdjustment;
-//            if (placement == PlacementMode.Pointer)
-//            {
-//                positionerParameters.AnchorRectangle = new Rect(pointer, new Size(1, 1));
-//                positionerParameters.Anchor = PopupAnchor.TopLeft;
-//                positionerParameters.Gravity = PopupGravity.BottomRight;
-//            }
-//            else
-//            {
-//                if (target == null)
-//                    throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
-//                var matrix = target.TransformToVisual(topLevel);
-//                if (matrix == null)
-//                {
-//                    if (target.GetVisualRoot() == null)
-//                        throw new InvalidOperationException("Target control is not attached to the visual tree");
-//                    throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
-//                }
+        //        positionerParameters.AnchorRectangle = new Rect(position, new Size(1, 1));
+        //        positionerParameters.Anchor = PopupAnchor.TopLeft;
+        //        positionerParameters.Gravity = PopupGravity.BottomRight;
+        //    }
+        //    else
+        //    {
+        //        if (target == null)
+        //            throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
+        //        var matrix = target.TransformToVisual(topLevel);
+        //        if (matrix == null)
+        //        {
+        //            if (target.GetVisualRoot() == null)
+        //                throw new InvalidOperationException("Target control is not attached to the visual tree");
+        //            throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
+        //        }
 
-//                var bounds = new Rect(default, target.Bounds.Size);
-//                var anchorRect = rect ?? bounds;
-//                positionerParameters.AnchorRectangle = anchorRect.Intersect(bounds).TransformToAABB(matrix.Value);
+        //        var bounds = new Rect(default, target.Bounds.Size);
+        //        var anchorRect = rect ?? bounds;
+        //        positionerParameters.AnchorRectangle = anchorRect.Intersect(bounds).TransformToAABB(matrix.Value);
 
-//                if (placement == PlacementMode.Right)
-//                {
-//                    positionerParameters.Anchor = PopupAnchor.TopRight;
-//                    positionerParameters.Gravity = PopupGravity.BottomRight;
-//                }
-//                else if (placement == PlacementMode.Bottom)
-//                {
-//                    positionerParameters.Anchor = PopupAnchor.BottomLeft;
-//                    positionerParameters.Gravity = PopupGravity.BottomRight;
-//                }
-//                else if (placement == PlacementMode.Left)
-//                {
-//                    positionerParameters.Anchor = PopupAnchor.TopLeft;
-//                    positionerParameters.Gravity = PopupGravity.BottomLeft;
-//                }
-//                else if (placement == PlacementMode.Top)
-//                {
-//                    positionerParameters.Anchor = PopupAnchor.TopLeft;
-//                    positionerParameters.Gravity = PopupGravity.TopRight;
-//                }
-//                else if (placement == PlacementMode.AnchorAndGravity)
-//                {
-//                    positionerParameters.Anchor = anchor;
-//                    positionerParameters.Gravity = gravity;
-//                }
-//                else
-//                    throw new InvalidOperationException("Invalid value for Popup.PlacementMode");
-//            }
-//        }
-//    }
+        //        if (placement == PlacementMode.Right)
+        //        {
+        //            positionerParameters.Anchor = PopupAnchor.TopRight;
+        //            positionerParameters.Gravity = PopupGravity.BottomRight;
+        //        }
+        //        else if (placement == PlacementMode.Bottom)
+        //        {
+        //            positionerParameters.Anchor = PopupAnchor.BottomLeft;
+        //            positionerParameters.Gravity = PopupGravity.BottomRight;
+        //        }
+        //        else if (placement == PlacementMode.Left)
+        //        {
+        //            positionerParameters.Anchor = PopupAnchor.TopLeft;
+        //            positionerParameters.Gravity = PopupGravity.BottomLeft;
+        //        }
+        //        else if (placement == PlacementMode.Top)
+        //        {
+        //            positionerParameters.Anchor = PopupAnchor.TopLeft;
+        //            positionerParameters.Gravity = PopupGravity.TopRight;
+        //        }
+        //        else if (placement == PlacementMode.AnchorAndGravity)
+        //        {
+        //            positionerParameters.Anchor = anchor;
+        //            positionerParameters.Gravity = gravity;
+        //        }
+        //        else
+        //            throw new InvalidOperationException("Invalid value for Popup.PlacementMode");
+        //    }
+
+        //    // Invert coordinate system if FlowDirection is RTL
+        //    if (flowDirection == FlowDirection.RightToLeft)
+        //    {
+        //        if ((positionerParameters.Anchor & PopupAnchor.Right) == PopupAnchor.Right)
+        //        {
+        //            positionerParameters.Anchor ^= PopupAnchor.Right;
+        //            positionerParameters.Anchor |= PopupAnchor.Left;
+        //        }
+        //        else if ((positionerParameters.Anchor & PopupAnchor.Left) == PopupAnchor.Left)
+        //        {
+        //            positionerParameters.Anchor ^= PopupAnchor.Left;
+        //            positionerParameters.Anchor |= PopupAnchor.Right;
+        //        }
+
+        //        if ((positionerParameters.Gravity & PopupGravity.Right) == PopupGravity.Right)
+        //        {
+        //            positionerParameters.Gravity ^= PopupGravity.Right;
+        //            positionerParameters.Gravity |= PopupGravity.Left;
+        //        }
+        //        else if ((positionerParameters.Gravity & PopupGravity.Left) == PopupGravity.Left)
+        //        {
+        //            positionerParameters.Gravity ^= PopupGravity.Left;
+        //            positionerParameters.Gravity |= PopupGravity.Right;
+        //        }
+        //    }
+        //}
+    //}
 
 }

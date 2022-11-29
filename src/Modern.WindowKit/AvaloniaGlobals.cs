@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
-using Modern.WindowKit.PlatformSupport;
 using Modern.WindowKit.Win32;
 using Modern.WindowKit.X11;
 
@@ -58,18 +57,16 @@ namespace Modern.WindowKit
             AddService<IWindowingPlatform>(x11);
             AddService<IPlatformThreadingInterface>(new X11PlatformThreading(x11));
             AddService<ICursorFactory>(new X11CursorFactory(x11.Display));
-            AddService<ISystemDialogImpl>(new X11.NativeDialogs.GtkSystemDialog());
             AddService<IClipboard>(new X11Clipboard(x11));
         }
 
         private static void InitializeOSX()
         {
             var platform = Native.AvaloniaNativePlatform.Initialize();
-
+            
             AddService<IWindowingPlatform>(platform);
             AddService<IPlatformThreadingInterface>(new Native.PlatformThreadingInterface(platform.Factory.CreatePlatformThreadingInterface()));
             AddService<ICursorFactory>(new Native.CursorFactory(platform.Factory.CreateCursorFactory()));
-            AddService<ISystemDialogImpl>(new Native.SystemDialogs(platform.Factory.CreateSystemDialogs()));
             AddService<IClipboard>(new Native.ClipboardImpl(platform.Factory.CreateClipboard()));
         }
 
@@ -80,7 +77,6 @@ namespace Modern.WindowKit
             AddService<IWindowingPlatform>(Win32Platform.Instance);
             AddService<IPlatformThreadingInterface>(Win32Platform.Instance);
             AddService<ICursorFactory>(CursorFactory.Instance);
-            AddService<ISystemDialogImpl>(new SystemDialogImpl());
             AddService<IClipboard>(new ClipboardImpl());
         }
     }

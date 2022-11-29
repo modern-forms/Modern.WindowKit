@@ -1,5 +1,8 @@
-﻿namespace Modern.WindowKit.Platform
-{
+﻿using Modern.WindowKit.Metadata;
+
+namespace Modern.WindowKit.Platform
+    {
+    [Unstable]
     public interface IWindowingPlatform
     {
         IWindowImpl CreateWindow();

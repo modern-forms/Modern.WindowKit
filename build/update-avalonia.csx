@@ -16,79 +16,100 @@ string modern_windowkit_repo_path = "..";
 string avalonia_path = Path.Combine (avalonia_repo_path, "src");
 string modern_windowkit_path = Path.Combine (modern_windowkit_repo_path, "src", "Modern.WindowKit");
 
-CopyFile ("Avalonia.Visuals/Platform/AlphaFormat.cs", "AlphaFormat.cs");
-CopyFile ("Avalonia.Visuals/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInterpolationMode.cs");
+CopyFile ("Avalonia.Base/Platform/AlphaFormat.cs", "AlphaFormat.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FileIO/BclStorageFile.cs", "BclStorageFile.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FileIO/BclStorageFolder.cs", "BclStorageFolder.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FileIO/BclStorageProvider.cs", "BclStorageProvider.cs");
+CopyFile ("Avalonia.Base/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInterpolationMode.cs");
 //CopyFile ("Avalonia.Input/Cursors.cs", "Cursors.cs");
 CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
-CopyFile ("Avalonia.Input/DataFormats.cs", "DataFormats.cs");
-CopyFile ("Avalonia.Input/DataObject.cs", "DataObject.cs");
+CopyFile ("Avalonia.Base/Input/DataFormats.cs", "DataFormats.cs");
+CopyFile ("Avalonia.Base/Input/DataObject.cs", "DataObject.cs");
 CopyFile ("Avalonia.Base/Threading/Dispatcher.cs", "Dispatcher.cs");
 CopyFile ("Avalonia.Base/Threading/DispatcherPriority.cs", "DispatcherPriority.cs");
 CopyFile ("Avalonia.Controls/Platform/ExtendClientAreaChromeHints.cs", "ExtendClientAreaChromeHints.cs");
-CopyFile ("Avalonia.Visuals/Platform/IBitmapImpl.cs", "IBitmapImpl.cs");
-CopyFile ("Avalonia.Input/Platform/IClipboard.cs", "IClipboard.cs");
-CopyFile ("Avalonia.Input/ICloseable.cs", "ICloseable.cs");
-CopyFile ("Avalonia.Input/IDataObject.cs", "IDataObject.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FilePickerFileType.cs", "FilePickerFileType.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FilePickerFileTypes.cs", "FilePickerFileTypes.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FilePickerOpenOptions.cs", "FilePickerOpenOptions.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FilePickerSaveOptions.cs", "FilePickerSaveOptions.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FolderPickerOpenOptions.cs", "FolderPickerOpenOptions.cs");
+CopyFile ("Avalonia.Base/Platform/IBitmapImpl.cs", "IBitmapImpl.cs");
+CopyFile ("Avalonia.Base/Input/Platform/IClipboard.cs", "IClipboard.cs");
+CopyFile ("Avalonia.Base/Input/ICloseable.cs", "ICloseable.cs");
+CopyFile ("Avalonia.Base/Input/IDataObject.cs", "IDataObject.cs");
 CopyFile ("Avalonia.Base/Threading/IDispatcher.cs", "IDispatcher.cs");
 CopyFile ("Avalonia.Controls/Platform/Surfaces/IFramebufferPlatformSurface.cs", "IFramebufferPlatformSurface.cs");
-CopyFile ("Avalonia.Input/IInputDevice.cs", "IInputDevice.cs");
-CopyFile ("Avalonia.Input/IKeyboardDevice.cs", "IKeyboardDevice.cs");
-CopyFile ("Avalonia.Visuals/Platform/ILockedFramebuffer.cs", "ILockedFramebuffer.cs");
-CopyFile ("Avalonia.Input/IMouseDevice.cs", "IMouseDevice.cs");
+CopyFile ("Avalonia.Base/Input/IInputDevice.cs", "IInputDevice.cs");
+CopyFile ("Avalonia.Base/Input/IKeyboardDevice.cs", "IKeyboardDevice.cs");
+CopyFile ("Avalonia.Base/Platform/ILockedFramebuffer.cs", "ILockedFramebuffer.cs");
+CopyFile ("Avalonia.Base/Input/IMouseDevice.cs", "IMouseDevice.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformHandle.cs", "IPlatformHandle.cs");
-CopyFile ("Avalonia.Visuals/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
+CopyFile ("Avalonia.Controls/Platform/IPlatformNativeSurfaceHandle.cs", "IPlatformNativeSurfaceHandle.cs");
+CopyFile ("Avalonia.Base/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformThreadingInterface.cs", "IPlatformThreadingInterface.cs");
-CopyFile ("Avalonia.Input/IPointer.cs", "IPointer.cs");
-CopyFile ("Avalonia.Input/IPointerDevice.cs", "IPointerDevice.cs");
+CopyFile ("Avalonia.Base/Input/IPointer.cs", "IPointer.cs");
+CopyFile ("Avalonia.Base/Input/IPointerDevice.cs", "IPointerDevice.cs");
 CopyFile ("Avalonia.Controls/Platform/IPopupImpl.cs", "IPopupImpl.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/IPopupPositioner.cs", "IPopupPositioner.cs");
 CopyFile ("Avalonia.Base/Platform/IRuntimePlatform.cs", "IRuntimePlatform.cs");
 CopyFile ("Avalonia.Controls/Platform/IScreenImpl.cs", "IScreenImpl.cs");
 //CopyFile ("Avalonia.Input/Platform/IStandardCursorFactory.cs", "IStandardCursorFactory.cs");
-CopyFile ("Avalonia.Controls/Platform/ISystemDialogImpl.cs", "ISystemDialogImpl.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/IStorageBookmarkItem.cs", "IStorageBookmarkItem.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/IStorageFile.cs", "IStorageFile.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/IStorageFolder.cs", "IStorageFolder.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/IStorageItem.cs", "IStorageItem.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/IStorageProvider.cs", "IStorageProvider.cs");
 CopyFile ("Avalonia.Controls/Platform/ITopLevelImpl.cs", "ITopLevelImpl.cs");
+CopyFile ("Avalonia.Controls/Platform/ITopLevelImplWithStorageProvider.cs", "ITopLevelImplWithStorageProvider.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowBaseImpl.cs", "IWindowBaseImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowImpl.cs", "IWindowImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowingPlatform.cs", "IWindowingPlatform.cs");
-CopyFile ("Avalonia.Visuals/Platform/IWriteableBitmapImpl.cs", "IWriteableBitmapImpl.cs");
+CopyFile ("Avalonia.Base/Platform/IWriteableBitmapImpl.cs", "IWriteableBitmapImpl.cs");
 CopyFile ("Avalonia.Base/Threading/JobRunner.cs", "JobRunner.cs");
-CopyFile ("Avalonia.Input/Key.cs", "Key.cs");
-CopyFile ("Avalonia.Input/KeyboardDevice.cs", "KeyboardDevice.cs");
-CopyFile ("Avalonia.Visuals/Platform/LockedFramebuffer.cs", "LockedFramebuffer.cs");
+CopyFile ("Avalonia.Base/Input/Key.cs", "Key.cs");
+CopyFile ("Avalonia.Base/Input/KeyboardDevice.cs", "KeyboardDevice.cs");
+CopyFile ("Avalonia.Base/Platform/LockedFramebuffer.cs", "LockedFramebuffer.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositioner.cs", "ManagedPopupPositioner.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositionerPopupImplHelper.cs", "ManagedPopupPositionerPopupImplHelper.cs");
 CopyFile ("Avalonia.Base/Utilities/MathUtilities.cs", "MathUtilities.cs");
-CopyFile ("Avalonia.Input/MouseDevice.cs", "MouseDevice.cs");
-CopyFile ("Avalonia.Visuals/Platform/PixelFormat.cs", "PixelFormat.cs");
-CopyFile ("Avalonia.Visuals/Media/PixelPoint.cs", "PixelPoint.cs");
-CopyFile ("Avalonia.Visuals/Media/PixelRect.cs", "PixelRect.cs");
-CopyFile ("Avalonia.Visuals/Media/PixelSize.cs", "PixelSize.cs");
+CopyFile ("Avalonia.Base/Input/MouseDevice.cs", "MouseDevice.cs");
+CopyFile ("Avalonia.Base/Metadata/NotClientImplementableAttribute.cs", "NotClientImplementableAttribute.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/PickerOptions.cs", "PickerOptions.cs");
+CopyFile ("Avalonia.Base/Platform/PixelFormat.cs", "PixelFormat.cs");
+CopyFile ("Avalonia.Base/PixelPoint.cs", "PixelPoint.cs");
+CopyFile ("Avalonia.Base/PixelRect.cs", "PixelRect.cs");
+CopyFile ("Avalonia.Base/PixelSize.cs", "PixelSize.cs");
 CopyFile ("Avalonia.Base/Platform/PlatformHandle.cs", "PlatformHandle.cs");
-CopyFile ("Avalonia.Visuals/Point.cs", "Point.cs");
-CopyFile ("Avalonia.Input/Pointer.cs", "Pointer.cs");
+CopyFile ("Avalonia.Base/Point.cs", "Point.cs");
+CopyFile ("Avalonia.Base/Input/Pointer.cs", "Pointer.cs");
 CopyFile ("Shared/RawEventGrouping.cs", "RawEventGrouper.cs");
-CopyFile ("Avalonia.Input/Raw/RawInputEventArgs.cs", "RawInputEventArgs.cs");
-CopyFile ("Avalonia.Input/Raw/RawKeyEventArgs.cs", "RawKeyEventArgs.cs");
-CopyFile ("Avalonia.Input/Raw/RawPointerEventArgs.cs", "RawPointerEventArgs.cs");
-CopyFile ("Avalonia.Input/Raw/RawMouseWheelEventArgs.cs", "RawMouseWheelEventArgs.cs");
-CopyFile ("Avalonia.Input/Raw/RawTextInputEventArgs.cs", "RawTextInputEventArgs.cs");
-CopyFile ("Avalonia.Input/Raw/RawTouchEventArgs.cs", "RawTouchEventArgs.cs");
-CopyFile ("Avalonia.Visuals/Rect.cs", "Rect.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawInputEventArgs.cs", "RawInputEventArgs.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawKeyEventArgs.cs", "RawKeyEventArgs.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawPointerEventArgs.cs", "RawPointerEventArgs.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawMouseWheelEventArgs.cs", "RawMouseWheelEventArgs.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawTextInputEventArgs.cs", "RawTextInputEventArgs.cs");
+CopyFile ("Avalonia.Base/Input/Raw/RawTouchEventArgs.cs", "RawTouchEventArgs.cs");
+CopyFile ("Avalonia.Base/Rect.cs", "Rect.cs");
 //CopyFile ("Avalonia.Input/RuntimeInfo.cs", "RuntimeInfo.cs");
 CopyFile ("Avalonia.Controls/Platform/Screen.cs", "Screen.cs");
+CopyFile ("Avalonia.Controls/Platform/ScreenHelper.cs", "ScreenHelper.cs");
 CopyFile ("Avalonia.Controls/Screens.cs", "Screens.cs");
 CopyFile ("Avalonia.Controls/ApplicationLifetimes/ShutdownRequestedEventArgs.cs", "ShutdownRequestedEventArgs.cs");
-CopyFile ("Avalonia.Visuals/Size.cs", "Size.cs");
-CopyFile ("Avalonia.PlatformSupport/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
+CopyFile ("Avalonia.Base/Size.cs", "Size.cs");
+CopyFile ("Avalonia.Base/Platform/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/StorageItemProperties.cs", "StorageItemProperties.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/FileIO/StorageProviderHelpers.cs", "StorageProviderHelpers.cs");
+CopyFile ("Avalonia.Base/Utilities/StringBuilderCache.cs", "StringBuilderCache.cs");
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
-CopyFile ("Avalonia.Controls/SystemDialog.cs", "SystemDialog.cs");
-CopyFile ("Avalonia.Visuals/Thickness.cs", "Thickness.cs");
-CopyFile ("Avalonia.Input/TouchDevice.cs", "TouchDevice.cs");
-CopyFile ("Avalonia.Visuals/Vector.cs", "Vector.cs");
+CopyFile ("Avalonia.Base/Thickness.cs", "Thickness.cs");
+CopyFile ("Avalonia.Base/Input/TouchDevice.cs", "TouchDevice.cs");
+CopyFile ("Avalonia.Base/Platform/Internal/UnmanagedBlob.cs", "UnmanagedBlob.cs");
+CopyFile ("Avalonia.Base/Metadata/UnstableAttribute.cs", "UnstableAttribute.cs");
+CopyFile ("Avalonia.Base/Vector.cs", "Vector.cs");
 CopyFile ("Avalonia.Controls/WindowEdge.cs", "WindowEdge.cs");
 CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");
-CopyFile ("Avalonia.Input/Platform/ICursorFactory.cs", "ICursorFactory.cs");
-CopyFile ("Avalonia.Input/Platform/ICursorImpl.cs", "ICursorImpl.cs");
+CopyFile ("Avalonia.Base/Platform/ICursorFactory.cs", "ICursorFactory.cs");
+CopyFile ("Avalonia.Base/Platform/ICursorImpl.cs", "ICursorImpl.cs");
 CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLevel.cs");
 CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
@@ -130,10 +151,12 @@ CopyFile ("Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "Avalonia.Win32/Win
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win32/WindowsKeyboardDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");
+CopyFile ("Windows/Avalonia.Win32/Win32StorageProvider.cs", "Avalonia.Win32/Win32StorageProvider.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32TypeExtensions.cs", "Avalonia.Win32/Win32TypeExtensions.cs");
 //CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/Interop/UnmanagedMethods.cs");
 
 // X11 Backend
+CopyFile ("Avalonia.X11/NativeDialogs/CompositeStorageProvider.cs", "Avalonia.X11/CompositeStorageProvider.cs");
 CopyFile ("Avalonia.X11/NativeDialogs/Gtk.cs", "Avalonia.X11/Gtk.cs");
 CopyFile ("Avalonia.X11/NativeDialogs/GtkNativeFileDialogs.cs", "Avalonia.X11/GtkNativeFileDialogs.cs");
 CopyFile ("Avalonia.X11/Keysyms.cs", "Avalonia.X11/Keysyms.cs");
@@ -205,9 +228,9 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "using System.ComponentModel.DataAnnotation");
     text = Comment (text, "using System.Reactive.Linq");
 
-    // We still use Avalonia.Native.Interop for now
-    text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Avalonia.Native.Interop");
-    text = text.Replace ("using Modern.WindowKit.MicroCom", "using Avalonia.MicroCom");
+    // MicroCom namespaces
+    text = text.Replace ("using Modern.WindowKit.Native.Interop", "using Modern.WindowKit.Mac.Interop");
+    text = text.Replace ("using MicroCom.Runtime", "using Modern.WindowKit.MicroCom");
 
     // We don't use Avalonia's DI
     text = text.Replace ("AvaloniaLocator.Current.GetService<ICursorFactory>()", "AvaloniaGlobals.GetService<ICursorFactory>()");
@@ -242,17 +265,22 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("public interface", "public partial interface");
             text = text.Replace ("readonly struct", "readonly partial struct");
             text = text.Replace ("public class", "public partial class");
-            text = text.Replace ("class X11CursorFactory", "partial class X11CursorFactory");
+            //text = text.Replace ("class X11CursorFactory", "partial class X11CursorFactory");
             text = text.Replace ("class AvaloniaNativePlatform", "partial class AvaloniaNativePlatform");
+            text = text.Replace ("private static partial CursorFontShape[] GetAllCursorShapes();", "private static CursorFontShape[] GetAllCursorShapes() => Enum.GetValues(typeof(CursorFontShape)).Cast<CursorFontShape>().ToArray();");
             break;
         case "ISystemDialogImpl.cs":
         case "SystemDialog.cs":
         case "SystemDialogs.cs":
-        case "GtkNativeFileDialogs.cs":
             text = text.Replace ("Window parent", "WindowKit.Platform.IWindowBaseImpl parent");
             text = text.Replace ("?.PlatformImpl", "");
             text = text.Replace ("IWindowImpl parentWindow", "IWindowBaseImpl parentWindow");
             text = text.Replace ("Window window", "WindowKit.Platform.IWindowBaseImpl window");
+            text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
+            break;
+        case "GtkNativeFileDialogs.cs":
+            text = text.Replace ("?.PlatformImpl", "");
+            text = text.Replace ("IWindowImpl parentWindow", "IWindowBaseImpl parentWindow");
             text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
             break;
         case "KeyInterop.cs":
@@ -262,7 +290,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap");
             break;
         case "PopupImpl.cs":        // Mac
-            text = text.Replace ("base(opts, glFeature)", "base(opts)");
+            text = text.Replace ("base(factory, opts, glFeature)", "base(factory, opts)");
             text = text.Replace ("context?.Context", "null");
             text = text.Replace ("_factory, _opts, _glFeature, this", "_factory, _opts, this");
             text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
@@ -273,7 +301,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
             // Mac
             text = text.Replace (", AvaloniaNativePlatformOptions opts,", ", AvaloniaNativePlatformOptions opts");
-            text = text.Replace ("AvaloniaNativePlatformOpenGlInterface glFeature) : base(opts, glFeature)", ") : base(opts)");
+            text = text.Replace ("AvaloniaNativePlatformOpenGlInterface glFeature) : base(factory, opts, glFeature)", ") : base(factory, opts)");
             text = text.Replace ("context?.Context", "null");
             text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
             text = text.Replace ("internal class WindowImpl", "internal partial class WindowImpl");
@@ -281,8 +309,10 @@ private void CopyFile (string src, string dst)
             break;
         case "WindowImplBase.cs":   // Mac
             text = text.Replace ("unsafe class", "unsafe partial class");
+            text = text.Replace ("get => AvnAutomationPeer.Wrap(_parent.GetAutomationPeer());", "get => null;");
+            text = text.Replace ("IFramebufferPlatformSurface, ITopLevelImplWithNativeControlHost, ITopLevelImplWithStorageProvider", "IFramebufferPlatformSurface, ITopLevelImplWithStorageProvider //, ITopLevelImplWithNativeControlHost");
             text = text.Replace ("abstract class WindowBaseImpl", "abstract partial class WindowBaseImpl");
-            text = text.Replace ("AvaloniaNativePlatformOptions opts, AvaloniaNativePlatformOpenGlInterface glFeature", "AvaloniaNativePlatformOptions opts");
+            text = text.Replace ("AvaloniaNativePlatformOptions opts,", "AvaloniaNativePlatformOptions opts)");
             text = text.Replace ("IAvnScreens screens, IGlContext glContext", "IAvnScreens screens");
             text = text.Replace ("_inputRoot, text)", "_inputRoot, text, RawInputModifiers.None)");
             text = text.Replace ("AvaloniaLocator.Current.GetService<IKeyboardDevice>()", "AvaloniaNativePlatform.KeyboardDevice");
@@ -296,12 +326,19 @@ private void CopyFile (string src, string dst)
         case "X11Window.Ime.cs":
             text = text.Replace ("UpdateImePosition() => _imeControl?", "UpdateImePosition() { } // => _imeControl?");
             text = text.Replace ("_inputRoot, text),", "_inputRoot, text, (RawInputModifiers)ev.KeyEvent.state),");
+            text = text.Replace ("[NotNull] ", "");
             break;
         case "RawEventGrouper.cs":
             text = text.Replace ("PooledList", "List");
             break;
         case "StandardRuntimePlatform.cs":
             text = text.Replace ("public class", "internal class");
+            break;
+        case "DataObject.cs":
+            text = text.Replace ("Avalonia.Win32.Interop.FORMATETC", "Modern.WindowKit.Win32.Interop.FORMATETC");
+            break;
+        case "ScreenImpl.cs":
+            text = text.Replace ("ref Rect", "ref Modern.WindowKit.Win32.Interop.Rect");
             break;
     }
 

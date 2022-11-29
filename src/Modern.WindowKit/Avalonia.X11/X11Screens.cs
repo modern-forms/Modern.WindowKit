@@ -200,10 +200,25 @@ namespace Modern.WindowKit.X11
 
         }
 
+        public Screen ScreenFromPoint(PixelPoint point)
+        {
+            return ScreenHelper.ScreenFromPoint(point, AllScreens);
+        }
+
+        public Screen ScreenFromRect(PixelRect rect)
+        {
+            return ScreenHelper.ScreenFromRect(rect, AllScreens);
+        }
+
+        public Screen ScreenFromWindow(IWindowBaseImpl window)
+        {
+            return ScreenHelper.ScreenFromWindow(window, AllScreens);
+        }
+
         public int ScreenCount => _impl.Screens.Length;
 
         public IReadOnlyList<Screen> AllScreens =>
-            _impl.Screens.Select(s => new Screen(s.PixelDensity, s.Bounds, s.WorkingArea, s.Primary)).ToArray();
+            _impl.Screens.Select(s => new Screen(s.Scaling, s.Bounds, s.WorkingArea, s.IsPrimary)).ToArray();
     }
 
     interface IX11Screens
@@ -212,7 +227,7 @@ namespace Modern.WindowKit.X11
     }
 
     class X11ScreensUserSettings
-    {
+            {
         public double GlobalScaleFactor { get; set; } = 1;
         public Dictionary<string, double> NamedScaleFactors { get; set; }
 
@@ -245,10 +260,10 @@ namespace Modern.WindowKit.X11
                         rv.NamedScaleFactors = screenFactors.Split(';').Where(x => !string.IsNullOrWhiteSpace(x))
                             .Select(x => x.Split('=')).ToDictionary(x => x[0],
                                 x => double.Parse(x[1], CultureInfo.InvariantCulture));
-                    }
+    }
                 }
                 catch
-                {
+    {
                     //Ignore
                 }
 
@@ -266,33 +281,37 @@ namespace Modern.WindowKit.X11
     {
         private const int FullHDWidth = 1920;
         private const int FullHDHeight = 1080;
-        public bool Primary { get; }
+        public bool IsPrimary { get; }
         public string Name { get; set; }
         public PixelRect Bounds { get; set; }
         public Size? PhysicalSize { get; set; }
-        public double PixelDensity { get; set; }
+        public double Scaling { get; set; }
         public PixelRect WorkingArea { get; set; }
 
-        public X11Screen(PixelRect bounds, bool primary,
-            string name, Size? physicalSize, double? pixelDensity)
+        public X11Screen(
+            PixelRect bounds,
+            bool isPrimary,
+            string name,
+            Size? physicalSize,
+            double? scaling)
         {
-            Primary = primary;
+            IsPrimary = isPrimary;
             Name = name;
             Bounds = bounds;
-            if (physicalSize == null && pixelDensity == null)
+            if (physicalSize == null && scaling == null)
             {
-                PixelDensity = 1;
+                Scaling = 1;
             }
-            else if (pixelDensity == null)
+            else if (scaling == null)
             {
-                PixelDensity = GuessPixelDensity(bounds, physicalSize.Value);
+                Scaling = GuessPixelDensity(bounds, physicalSize.Value);
             }
             else
             {
-                PixelDensity = pixelDensity.Value;
+                Scaling = scaling.Value;
                 PhysicalSize = physicalSize;
             }
-        }
+                }
 
         public static double GuessPixelDensity(PixelRect pixel, Size physical)
         {

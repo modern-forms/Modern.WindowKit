@@ -1,4 +1,4 @@
-﻿namespace Modern.WindowKit.Visuals.Media.Imaging
+﻿namespace Modern.WindowKit.Media.Imaging
 {
     /// <summary>
     /// Controls the performance and quality of bitmap scaling.

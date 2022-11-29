@@ -17,5 +17,8 @@ This sample shows how to perform various operations such as:
 - Handle mouse input (Click and drag to paint)
 - Handle touch input (Touch to paint, Windows/Linux only)
 - Handle keyboard input (F1 to toggle diagnostic information)
+- Show native file open dialog (F9)
+- Show native folder open dialog (F10)
+- Show native file save dialog (F12)
 
 ![demo-screenshot](https://user-images.githubusercontent.com/179295/147585748-0a37d7f9-973d-407f-9120-95df44864c04.png)

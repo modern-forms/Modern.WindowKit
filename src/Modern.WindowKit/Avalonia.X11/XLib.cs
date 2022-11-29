@@ -111,6 +111,9 @@ namespace Modern.WindowKit.X11
         public static extern int XFree(IntPtr data);
 
         [DllImport(libX11)]
+        public static extern int XFree(void* data);
+
+        [DllImport(libX11)]
         public static extern int XRaiseWindow(IntPtr display, IntPtr window);
 
         [DllImport(libX11)]
@@ -119,7 +122,7 @@ namespace Modern.WindowKit.X11
         [DllImport(libX11)]
         public static extern uint XConfigureWindow(IntPtr display, IntPtr window, ChangeWindowFlags value_mask,
             ref XWindowChanges values);
-
+        
         public static uint XConfigureResizeWindow(IntPtr display, IntPtr window, PixelSize size)
             => XConfigureResizeWindow(display, window, size.Width, size.Height);
         
@@ -141,7 +144,7 @@ namespace Modern.WindowKit.X11
         [DllImport(libX11)]
         public static extern int XInternAtoms(IntPtr display, string[] atom_names, int atom_count, bool only_if_exists,
             IntPtr[] atoms);
-        
+
         [DllImport(libX11)]
         public static extern IntPtr XGetAtomName(IntPtr display, IntPtr atom);
 
@@ -409,16 +412,16 @@ namespace Modern.WindowKit.X11
         [DllImport(libX11)]
         public static extern int XChangeActivePointerGrab(IntPtr display, EventMask event_mask, IntPtr cursor,
             IntPtr time);
-
+        
         [DllImport(libX11)]
         public static extern bool XFilterEvent(ref XEvent xevent, IntPtr window);
-        
+
         [DllImport(libX11)]
         public static extern bool XFilterEvent(XEvent* xevent, IntPtr window);
 
         [DllImport(libX11)]
         public static extern void XkbSetDetectableAutoRepeat(IntPtr display, bool detectable, IntPtr supported);
-
+        
         [DllImport(libX11)]
         public static extern void XPeekEvent(IntPtr display, out XEvent xevent);
         
@@ -436,7 +439,7 @@ namespace Modern.WindowKit.X11
         
         [DllImport(libX11)]
         public static extern int XInitImage(ref XImage image);
-        
+
         [DllImport(libX11)]
         public static extern int XDestroyImage(ref XImage image);
 
@@ -469,17 +472,17 @@ namespace Modern.WindowKit.X11
         
         [DllImport (libX11)]
         public static extern unsafe IntPtr XKeycodeToKeysym(IntPtr display, int keycode, int index);
-        
+
         [DllImport (libX11)]
         public static extern unsafe IntPtr XSetLocaleModifiers(string modifiers);
-
+        
         [DllImport (libX11)]
         public static extern IntPtr XOpenIM (IntPtr display, IntPtr rdb, IntPtr res_name, IntPtr res_class);
         
         [DllImport (libX11)]
         public static extern IntPtr XGetIMValues (IntPtr xim, string name, out XIMStyles* value, IntPtr terminator);
-        
-        [DllImport (libX11)]
+
+        [DllImport(libX11)]
         public static extern IntPtr XCreateIC (IntPtr xim, string name, IntPtr value, string name2, IntPtr value2, string name3, IntPtr value3, IntPtr terminator);
 
         [DllImport(libX11)]
@@ -495,16 +498,16 @@ namespace Modern.WindowKit.X11
         public static extern IntPtr XCreateIC(IntPtr xim, string xnClientWindow, IntPtr handle, string xnFocusWindow,
             IntPtr value2, string xnInputStyle, IntPtr value3, string xnResourceName, string optionsWmClass,
             string xnResourceClass, string wmClass, string xnPreeditAttributes, IntPtr list, IntPtr zero);
-
+        
         [DllImport(libX11)]
         public static extern void XSetICFocus(IntPtr xic);
         
         [DllImport(libX11)]
         public static extern void XUnsetICFocus(IntPtr xic);
-        
+
         [DllImport(libX11)]
         public static extern IntPtr XmbResetIC(IntPtr xic);
-
+        
         [DllImport(libX11)]
         public static extern IntPtr XVaCreateNestedList(int unused, Utf8Buffer name, ref XPoint point, IntPtr terminator);
         
@@ -516,16 +519,16 @@ namespace Modern.WindowKit.X11
         public static extern IntPtr XVaCreateNestedList(int unused,
             Utf8Buffer xnSpotLocation, XPoint* value2, Utf8Buffer xnFontSet, IntPtr fs, IntPtr zero);
         
-        [DllImport (libX11)]
+        [DllImport(libX11)]
         public static extern IntPtr XCreateFontSet (IntPtr display, string name, out IntPtr list, out int count, IntPtr unused);
         
-        [DllImport(libX11)]
+        [DllImport (libX11)]
         public static extern IntPtr XSetICValues(IntPtr ic, string name, IntPtr data, IntPtr terminator);
-        
+
         [DllImport (libX11)]
         public static extern void XCloseIM (IntPtr xim);
 
-        [DllImport (libX11)]
+        [DllImport(libX11)]
         public static extern void XDestroyIC (IntPtr xic);
 
         [DllImport(libX11)]
@@ -534,7 +537,7 @@ namespace Modern.WindowKit.X11
 
         [DllImport(libX11)]
         public static extern bool XGetEventData(IntPtr display, void* cookie);
-
+        
         [DllImport(libX11)]
         public static extern void XFreeEventData(IntPtr display, void* cookie);
         
@@ -542,7 +545,19 @@ namespace Modern.WindowKit.X11
         public static extern int XRRQueryExtension (IntPtr dpy,
             out int event_base_return,
             out int error_base_return);
+        
+        [DllImport(libX11Ext)]
+        public static extern Status XSyncInitialize(IntPtr dpy, out int event_base_return, out int error_base_return);
 
+        [DllImport(libX11Ext)]
+        public static extern IntPtr XSyncCreateCounter(IntPtr dpy, XSyncValue initialValue);
+
+        [DllImport(libX11Ext)]
+        public static extern int XSyncDestroyCounter(IntPtr dpy, IntPtr counter);
+
+        [DllImport(libX11Ext)]
+        public static extern int XSyncSetCounter(IntPtr dpy, IntPtr counter, XSyncValue value);
+            
         [DllImport(libX11Randr)]
         public static extern int XRRQueryVersion(IntPtr dpy,
             out int major_version_return,
@@ -557,7 +572,7 @@ namespace Modern.WindowKit.X11
 
         [DllImport(libX11Randr)]
         public static extern int XRRGetOutputProperty(IntPtr dpy, IntPtr output, IntPtr atom, int offset, int length, bool _delete, bool pending, IntPtr req_type, out IntPtr actual_type, out int actual_format, out int nitems, out long bytes_after, out IntPtr prop);
-            
+
         [DllImport(libX11Randr)]
         public static extern void XRRSelectInput(IntPtr dpy, IntPtr window, RandrEventMask mask);
 
@@ -616,6 +631,12 @@ namespace Modern.WindowKit.X11
             return XISelectEvents(display, window, emasks, devices.Count);
 
         }
+        
+        [DllImport(libX11)]
+        public static extern XClassHint* XAllocClassHint();
+        
+        [DllImport(libX11)]
+        public static extern int XSetClassHint(IntPtr display, IntPtr window, XClassHint* class_hints);
 
         public struct XGeometry
         {
@@ -627,6 +648,16 @@ namespace Modern.WindowKit.X11
             public int bw;
             public int d;
         }
+        public struct XClassHint
+        {
+            public byte* res_name;
+            public byte* res_class;
+        }
+        
+        public struct XSyncValue {
+            public int Hi;
+            public uint Lo;
+            }
 
         public static bool XGetGeometry(IntPtr display, IntPtr window, out XGeometry geo)
         {
@@ -657,7 +688,7 @@ namespace Modern.WindowKit.X11
                 XQueryPointer(display, c, out root, out c,
                     out root_x, out root_y, out child_x, out child_y,
                     out mask);
-            }
+        }
             XUngrabServer (display);
             XFlush (display);
 

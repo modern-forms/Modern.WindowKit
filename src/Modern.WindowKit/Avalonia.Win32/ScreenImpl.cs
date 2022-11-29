@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Modern.WindowKit.Metadata;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Interop;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit.Win32
-{
+    {
+    [Unstable]
     public class ScreenImpl : IScreenImpl
     {
         public int ScreenCount
@@ -23,8 +26,8 @@ namespace Modern.WindowKit.Win32
                     int index = 0;
                     Screen[] screens = new Screen[ScreenCount];
                     EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero,
-                        (IntPtr monitor, IntPtr hdcMonitor, ref Rect lprcMonitor, IntPtr data) =>
-                        {
+                        (IntPtr monitor, IntPtr hdcMonitor, ref Modern.WindowKit.Win32.Interop.Rect lprcMonitor, IntPtr data) =>
+                            {
                             MONITORINFO monitorInfo = MONITORINFO.Create();
                             if (GetMonitorInfo(monitor, ref monitorInfo))
                             {
@@ -61,7 +64,7 @@ namespace Modern.WindowKit.Win32
                             return true;
                         }, IntPtr.Zero);
                     _allScreens = screens;
-                }
+        }
                 return _allScreens;
             }
         }
@@ -69,6 +72,44 @@ namespace Modern.WindowKit.Win32
         public void InvalidateScreensCache()
         {
             _allScreens = null;
+        }
+
+        public Screen ScreenFromWindow(IWindowBaseImpl window)
+        {
+            var handle = window.Handle.Handle;
+
+            var monitor = MonitorFromWindow(handle, MONITOR.MONITOR_DEFAULTTONULL);
+
+            return FindScreenByHandle(monitor);
+        }
+
+        public Screen ScreenFromPoint(PixelPoint point)
+        {
+            var monitor = MonitorFromPoint(new POINT
+            {
+                X = point.X,
+                Y = point.Y
+            }, MONITOR.MONITOR_DEFAULTTONULL);
+
+            return FindScreenByHandle(monitor);
+        }
+
+        public Screen ScreenFromRect(PixelRect rect)
+        {
+            var monitor = MonitorFromRect(new RECT
+            {
+                left = rect.TopLeft.X,
+                top = rect.TopLeft.Y,
+                right = rect.TopRight.X,
+                bottom = rect.BottomRight.Y
+            }, MONITOR.MONITOR_DEFAULTTONULL);
+
+            return FindScreenByHandle(monitor);
+        }
+
+        private Screen FindScreenByHandle(IntPtr handle)
+        {
+            return AllScreens.Cast<WinScreen>().FirstOrDefault(m => m.Handle == handle);
         }
     }
 }

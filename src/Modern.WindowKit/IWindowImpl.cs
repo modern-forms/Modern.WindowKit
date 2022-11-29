@@ -1,12 +1,14 @@
 ﻿using System;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Platform
 {
     /// <summary>
     /// Defines a platform-specific window implementation.
     /// </summary>
+    [Unstable]
     public interface IWindowImpl : IWindowBaseImpl
     {
         /// <summary>
