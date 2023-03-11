@@ -9,6 +9,7 @@ using System;
 using System.Text;
 
 namespace Modern.WindowKit.Utilities;
+#nullable enable
 
 // <summary>Provide a cached reusable instance of stringbuilder per thread.</summary>
 internal static class StringBuilderCache
@@ -42,8 +43,8 @@ internal static class StringBuilderCache
                     t_cachedInstance = null;
                     sb.Clear();
                     return sb;
-                }
             }
+        }
         }
 
         return new StringBuilder(capacity);
@@ -55,7 +56,7 @@ internal static class StringBuilderCache
         if (sb.Capacity <= MaxBuilderSize)
         {
             t_cachedInstance = sb;
-        }
+    }
     }
 
     /// <summary>ToString() the stringbuilder, Release it to the cache, and return the resulting string.</summary>
@@ -64,5 +65,5 @@ internal static class StringBuilderCache
         string result = sb.ToString();
         Release(sb);
         return result;
-    }
+}
 }

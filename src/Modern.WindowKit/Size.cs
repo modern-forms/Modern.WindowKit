@@ -28,8 +28,9 @@ namespace Modern.WindowKit
         public static readonly Size Infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
         /// <summary>
-        /// A size representing zero
+        /// A size representing zero.
         /// </summary>
+        [Obsolete("Use the default keyword instead.")]
         public static readonly Size Empty = new Size(0, 0);
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Modern.WindowKit
             _width = width;
             _height = height;
         }
-
+        
 #if !BUILDTASK
         /// <summary>
         /// Initializes a new instance of the <see cref="Size"/> structure.
@@ -178,7 +179,7 @@ namespace Modern.WindowKit
                 return new Size(
                     tokenizer.ReadDouble(),
                     tokenizer.ReadDouble());
-            }
+        }
         }
 
         /// <summary>
@@ -251,7 +252,7 @@ namespace Modern.WindowKit
                 hash = (hash * 23) + Width.GetHashCode();
                 hash = (hash * 23) + Height.GetHashCode();
                 return hash;
-            }
+        }
         }
 
         /// <summary>
@@ -309,9 +310,6 @@ namespace Modern.WindowKit
         /// <summary>
         /// Gets a value indicating whether the Width and Height values are zero.
         /// </summary>
-        public bool IsDefault
-        {
-            get { return (_width == 0) && (_height == 0); }
-        }
+        public bool IsDefault => (_width == 0) && (_height == 0);
     }
-}
+        }

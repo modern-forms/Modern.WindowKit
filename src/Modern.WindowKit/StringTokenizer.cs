@@ -8,7 +8,7 @@ namespace Modern.WindowKit.Utilities
 #if !BUILDTASK
     public
 #endif
-    struct StringTokenizer : IDisposable
+    record struct StringTokenizer : IDisposable
     {
         private const char DefaultSeparatorChar = ',';
 

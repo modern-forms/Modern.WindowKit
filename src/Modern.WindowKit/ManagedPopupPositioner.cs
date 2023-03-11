@@ -112,7 +112,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
                                    ?? screens.FirstOrDefault(s => s.Bounds.Intersects(parentGeometry))
                                    ?? screens.FirstOrDefault();
 
-                if (targetScreen != null && targetScreen.WorkingArea.IsEmpty)
+                if (targetScreen != null && targetScreen.WorkingArea.IsDefault)
                 {
                     return targetScreen.Bounds;
                 }
