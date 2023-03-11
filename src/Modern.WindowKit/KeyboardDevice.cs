@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Input.TextInput;
 //using Modern.WindowKit.Interactivity;
-//using Modern.WindowKit.VisualTree;
 
 namespace Modern.WindowKit.Input
 {
@@ -26,7 +25,7 @@ namespace Modern.WindowKit.Input
 
         //public IInputElement? FocusedElement => _focusedElement;
 
-        //private void ClearFocusWithinAncestors(IInputElement? element)
+       // private static void ClearFocusWithinAncestors(IInputElement? element)
         //{
         //    var el = element;
             
@@ -37,18 +36,21 @@ namespace Modern.WindowKit.Input
         //            ie.IsKeyboardFocusWithin = false;
         //        }
 
-        //        el = (IInputElement?)el.VisualParent;
+        //        el = (IInputElement?)(el as Visual)?.VisualParent;
         //        }
         //}
         
         //private void ClearFocusWithin(IInputElement element, bool clearRoot)
         //{
-        //    foreach (var visual in element.VisualChildren)
+        //    if (element is Visual v)
         //    {
-        //        if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+        //        foreach (var visual in v.VisualChildren)
         //        {
-        //            ClearFocusWithin(el, true);
-        //            break;
+        //            if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+        //            {
+        //                ClearFocusWithin(el, true);
+        //                break;
+        //            }
         //        }
         //    }
             
@@ -81,7 +83,7 @@ namespace Modern.WindowKit.Input
         //            break;
         //        }
 
-        //        el = el.VisualParent as IInputElement;
+        //        el = (el as Visual)?.VisualParent as IInputElement;
         //    }
 
         //    el = oldElement;
@@ -100,21 +102,24 @@ namespace Modern.WindowKit.Input
         //            ie.IsKeyboardFocusWithin = true;
         //        }
 
-        //        el = el.VisualParent as IInputElement;
+        //        el = (el as Visual)?.VisualParent as IInputElement;
         //    }
         //}
-
+        
         //private void ClearChildrenFocusWithin(IInputElement element, bool clearRoot)
         //{
-        //    foreach (var visual in element.VisualChildren)
+        //    if (element is Visual v)
         //    {
-        //        if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+        //        foreach (var visual in v.VisualChildren)
         //        {
-        //            ClearChildrenFocusWithin(el, true);
-        //            break;
+        //            if (visual is IInputElement el && el.IsKeyboardFocusWithin)
+        //            {
+        //                ClearChildrenFocusWithin(el, true);
+        //                break;
+        //            }
         //        }
         //    }
-            
+
         //    if (clearRoot && element is InputElement ie)
         //    {
         //        ie.IsKeyboardFocusWithin = false;
@@ -128,26 +133,26 @@ namespace Modern.WindowKit.Input
         //{
         //    if (element != FocusedElement)
         //    {
-        //        var interactive = FocusedElement as IInteractive;
+        //        var interactive = FocusedElement as Interactive;
 
         //        if (FocusedElement != null && 
-        //            (!FocusedElement.IsAttachedToVisualTree ||
-        //             _focusedRoot != element?.VisualRoot as IInputRoot) &&
+        //            (!((Visual)FocusedElement).IsAttachedToVisualTree ||
+        //             _focusedRoot != ((Visual?)element)?.VisualRoot as IInputRoot) &&
         //            _focusedRoot != null)
         //        {
         //            ClearChildrenFocusWithin(_focusedRoot, true);
-        //    }
-            
+        //        }
+                
         //        SetIsFocusWithin(FocusedElement, element);
         //        _focusedElement = element;
-        //        _focusedRoot = _focusedElement?.VisualRoot as IInputRoot;
+        //        _focusedRoot = ((Visual?)_focusedElement)?.VisualRoot as IInputRoot;
 
         //        interactive?.RaiseEvent(new RoutedEventArgs
         //        {
         //            RoutedEvent = InputElement.LostFocusEvent,
         //        });
 
-        //        interactive = element as IInteractive;
+        //        interactive = element as Interactive;
 
         //        interactive?.RaiseEvent(new GotFocusEventArgs
         //        {
@@ -158,9 +163,9 @@ namespace Modern.WindowKit.Input
 
         //        _textInputManager.SetFocusedElement(element);
         //        RaisePropertyChanged(nameof(FocusedElement));
-        //    }
         //}
-                
+        //}
+
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -191,8 +196,8 @@ namespace Modern.WindowKit.Input
             //                KeyModifiers = keyInput.Modifiers.ToKeyModifiers(),
             //                Source = element,
             //            };
-
-            //            IVisual? currentHandler = element;
+                        
+            //            var currentHandler = element as Visual;
             //            while (currentHandler != null && !ev.Handled && keyInput.Type == RawKeyEventType.KeyDown)
             //            {
             //                var bindings = (currentHandler as IInputElement)?.KeyBindings;
@@ -223,7 +228,7 @@ namespace Modern.WindowKit.Input
             //                    }
             //                }
             //                currentHandler = currentHandler.VisualParent;
-            //            }
+            //}
 
             //            element.RaiseEvent(ev);
             //            e.Handled = ev.Handled;

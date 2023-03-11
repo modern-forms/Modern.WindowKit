@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable MemberCanBePrivate.Global
@@ -654,7 +655,8 @@ namespace Modern.WindowKit.X11 {
 					return type.ToString ();
 		}
 		}
-		
+
+        //[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.IgnoreNativeAotSupressWarningMessage)]
 		public static string ToString (object ev)
 		{
 			string result = string.Empty;
@@ -666,9 +668,9 @@ namespace Modern.WindowKit.X11 {
 				}
 				object value = fields [i].GetValue (ev);
 				result += fields [i].Name + "=" + (value == null ? "<null>" : value.ToString ());
-			}
-			return type.Name + " (" + result + ")";
 	}
+			return type.Name + " (" + result + ")";
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -719,7 +721,7 @@ namespace Modern.WindowKit.X11 {
 		public override string ToString ()
 		{
 			return XEvent.ToString (this);
-	}
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -1108,7 +1110,7 @@ namespace Modern.WindowKit.X11 {
 		public override string ToString ()
 		{
 			return string.Format("MotifWmHints <flags={0}, functions={1}, decorations={2}, input_mode={3}, status={4}", (MotifFlags) flags.ToInt32 (), (MotifFunctions) functions.ToInt32 (), (MotifDecorations) decorations.ToInt32 (), (MotifInputMode) input_mode.ToInt32 (), status.ToInt32 ());
-	}
+		}
 	}
 
 	[Flags]
@@ -1138,7 +1140,7 @@ namespace Modern.WindowKit.X11 {
 		Menu			= 0x10,
 		Minimize		= 0x20,
 		Maximize		= 0x40,
-		
+
 	}
 
 	[Flags]
@@ -1200,7 +1202,7 @@ namespace Modern.WindowKit.X11 {
 				
 			[FieldOffset (31)]
 			public byte last;
-	}
+		}
 	}
 
 	[Flags]
@@ -1762,11 +1764,13 @@ namespace Modern.WindowKit.X11 {
 		~XIMCallback ()
 		{
 			gch.Free ();
-	}
+		}
 	}
     
     [StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public unsafe struct XImage
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         public int width, height; /* size of image */
         public int xoffset; /* number of pixels offset in X direction */
@@ -1797,7 +1801,7 @@ namespace Modern.WindowKit.X11 {
         internal IntPtr green_mask;
         internal IntPtr blue_mask;
         internal int colormap_size;
-        internal int bits_per_rgb;		
+        internal int bits_per_rgb;
     }
 	
 	internal enum XIMFeedback
@@ -1905,5 +1909,5 @@ namespace Modern.WindowKit.X11 {
         public int MWidth;
         public int MHeight;
         public IntPtr* Outputs;
-}
+    } 
 }

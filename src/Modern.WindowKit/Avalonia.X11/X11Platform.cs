@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
-//using Modern.WindowKit.Dialogs;
 //using Modern.WindowKit.FreeDesktop;
 //using Modern.WindowKit.FreeDesktop.DBusIme;
 using Modern.WindowKit.Input;
@@ -31,6 +30,7 @@ namespace Modern.WindowKit.X11
         public X11Info Info { get; private set; }
         public IX11Screens X11Screens { get; private set; }
         //public Compositor Compositor { get; private set; }
+        //public PlatformRenderInterfaceContextManager RenderInterface { get; private set; }
         public IScreenImpl Screens { get; private set; }
         public X11PlatformOptions Options { get; private set; }
         public IntPtr OrphanedWindow { get; private set; }
@@ -97,17 +97,17 @@ namespace Modern.WindowKit.X11
             //if (options.UseGpu)
             //{
             //    if (options.UseEGL)
-            //        EglPlatformOpenGlInterface.TryInitialize();
+            //        EglPlatformGraphics.TryInitialize();
             //    else
-            //        GlxPlatformOpenGlInterface.TryInitialize(Info, Options.GlProfiles);
+            //        GlxPlatformGraphics.TryInitialize(Info, Options.GlProfiles);
             //}
             
-            //var gl = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
-            //if (gl != null)
-            //    AvaloniaLocator.CurrentMutable.Bind<IPlatformGpu>().ToConstant(gl);
-
+            //var gl = AvaloniaLocator.Current.GetService<IPlatformGraphics>();
+            
             //if (options.UseCompositor)
             //    Compositor = new Compositor(AvaloniaLocator.Current.GetService<IRenderLoop>()!, gl);
+            //else
+            //    RenderInterface = new(gl);
 
         }
 
@@ -143,7 +143,7 @@ namespace Modern.WindowKit.X11
             throw new NotSupportedException();
         }
             
-        bool EnableIme(X11PlatformOptions options)
+        static bool EnableIme(X11PlatformOptions options)
         {
             // Disable if explicitly asked by user
             var avaloniaImModule = Environment.GetEnvironmentVariable("AVALONIA_IM_MODULE");
@@ -165,7 +165,7 @@ namespace Modern.WindowKit.X11
             return isCjkLocale;
         }
         
-        bool ShouldUseXim()
+        static bool ShouldUseXim()
         {
             // Check if we are forbidden from using IME
             if (Environment.GetEnvironmentVariable("AVALONIA_IM_MODULE") == "none"

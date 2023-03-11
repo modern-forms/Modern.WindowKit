@@ -18,8 +18,6 @@ namespace Modern.WindowKit.X11
         private TaskCompletionSource<object> _requestedDataTcs;
         private readonly IntPtr[] _textAtoms;
         private readonly IntPtr _avaloniaSaveTargetsAtom;
-        private readonly Dictionary<string, IntPtr> _formatAtoms = new Dictionary<string, IntPtr>();
-        private readonly Dictionary<IntPtr, string> _atomFormats = new Dictionary<IntPtr, string>();
 
         public X11Clipboard(AvaloniaX11Platform platform)
         {
@@ -55,12 +53,12 @@ namespace Modern.WindowKit.X11
         private unsafe void OnEvent(ref XEvent ev)
         {
             if (ev.type == XEventName.SelectionRequest)
-            {       
+        {
                 var sel = ev.SelectionRequestEvent;
                 var resp = new XEvent
                 {
                     SelectionEvent =
-                    {
+                {
                         type = XEventName.SelectionNotify,
                         send_event = 1,
                         display = _x11.Display,
@@ -180,7 +178,7 @@ namespace Modern.WindowKit.X11
                 else
                 {
                     if (sel.property == _x11.Atoms.TARGETS)
-                    {
+                {
                         if (actualFormat != 32)
                             _requestedFormatsTcs?.TrySetResult(null);
                         else
@@ -198,7 +196,7 @@ namespace Modern.WindowKit.X11
                     else
                     {
                         if (actualTypeAtom == _x11.Atoms.INCR)
-                        {
+                    {
                             // TODO: Actually implement that monstrosity
                             _requestedDataTcs.TrySetResult(null);
                         }
@@ -209,7 +207,7 @@ namespace Modern.WindowKit.X11
                             _requestedDataTcs?.TrySetResult(data);
                         }
                     }
-                }
+                        }
 
                 XFree(prop);
             }
@@ -233,7 +231,7 @@ namespace Modern.WindowKit.X11
         }
 
         bool HasOwner => XGetSelectionOwner(_x11.Display, _x11.Atoms.CLIPBOARD) != IntPtr.Zero;
-        
+
         public async Task<string> GetTextAsync()
         {
             if (!HasOwner)
@@ -257,7 +255,7 @@ namespace Modern.WindowKit.X11
         void StoreAtomsInClipboardManager(IntPtr[] atoms)
         {
             if (_x11.Atoms.CLIPBOARD_MANAGER != IntPtr.Zero && _x11.Atoms.SAVE_TARGETS != IntPtr.Zero)
-            {
+        {
                 var clipboardManager = XGetSelectionOwner(_x11.Display, _x11.Atoms.CLIPBOARD_MANAGER);
                 if (clipboardManager != IntPtr.Zero)
                 {
@@ -268,7 +266,7 @@ namespace Modern.WindowKit.X11
                         _avaloniaSaveTargetsAtom, _handle, IntPtr.Zero);
                 }
             }
-        }
+                }
 
         public Task SetTextAsync(string text)
         {
@@ -320,4 +318,4 @@ namespace Modern.WindowKit.X11
             return await SendDataRequest(formatAtom);
         }
     }
-}
+        }

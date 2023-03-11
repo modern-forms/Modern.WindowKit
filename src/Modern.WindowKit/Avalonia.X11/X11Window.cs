@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
@@ -76,7 +74,7 @@ namespace Modern.WindowKit.X11
             _touch = new TouchDevice();
             _keyboard = platform.KeyboardDevice;
 
-            //var glfeature = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
+            //var glfeature = AvaloniaLocator.Current.GetService<IPlatformGraphics>();
             XSetWindowAttributes attr = new XSetWindowAttributes();
             var valueMask = default(SetWindowValuemask);
 
@@ -98,13 +96,13 @@ namespace Modern.WindowKit.X11
             // OpenGL seems to be do weird things to it's current window which breaks resize sometimes
             _useRenderWindow = glfeature != null;
             
-            //var glx = glfeature as GlxPlatformOpenGlInterface;
+            //var glx = glfeature as GlxPlatformGraphics;
             //if (glx != null)
             //    visualInfo = *glx.Display.VisualInfo;
             //else if (glfeature == null)
             //    visualInfo = _x11.TransparentVisualInfo;
             
-            //var egl = glfeature as EglPlatformOpenGlInterface;
+            //var egl = glfeature as EglPlatformGraphics;
             
             var visual = IntPtr.Zero;
             var depth = 24;
@@ -178,18 +176,16 @@ namespace Modern.WindowKit.X11
             
             //if (egl != null)
             //    surfaces.Insert(0,
-            //        new EglGlPlatformSurface(egl,
-            //            new SurfaceInfo(this, _x11.DeferredDisplay, _handle, _renderHandle)));
+            //        new EglGlPlatformSurface(new SurfaceInfo(this, _x11.DeferredDisplay, _handle, _renderHandle)));
             //if (glx != null)
-            //    surfaces.Insert(0, new GlxGlPlatformSurface(glx.Display, glx.DeferredContext,
-            //        new SurfaceInfo(this, _x11.Display, _handle, _renderHandle)));
+            //    surfaces.Insert(0, new GlxGlPlatformSurface(new SurfaceInfo(this, _x11.Display, _handle, _renderHandle)));
 
             surfaces.Add(Handle);
 
             Surfaces = surfaces.ToArray();
             UpdateMotifHints();
             UpdateSizeHints(null);
-            
+
             _rawEventGrouper = new RawEventGrouper(DispatchInput);
             
             _transparencyHelper = new TransparencyHelper(_x11, _handle, platform.Globals);
@@ -280,9 +276,9 @@ namespace Modern.WindowKit.X11
                 _x11.Atoms._MOTIF_WM_HINTS, _x11.Atoms._MOTIF_WM_HINTS, 32,
                 PropertyMode.Replace, ref hints, 5);
         }
-            
+
         void UpdateSizeHints(PixelSize? preResize)
-            {
+        {
             var min = _minMaxSize.minSize;
             var max = _minMaxSize.maxSize;
 
@@ -319,9 +315,9 @@ namespace Modern.WindowKit.X11
         public Size ClientSize => new Size(_realSize.Width / RenderScaling, _realSize.Height / RenderScaling);
 
         public Size? FrameSize
-                {
+        {
             get
-            {
+                {
                 XGetWindowProperty(_x11.Display, _handle, _x11.Atoms._NET_FRAME_EXTENTS, IntPtr.Zero,
                     new IntPtr(4), false, (IntPtr)Atom.AnyPropertyType, out var _,
                     out var _, out var nitems, out var _, out var prop);
@@ -349,7 +345,7 @@ namespace Modern.WindowKit.X11
         }
         
         public double DesktopScaling => RenderScaling;
-
+        
         public IEnumerable<object> Surfaces { get; }
         public Action<RawInputEventArgs> Input { get; set; }
         public Action<Rect> Paint { get; set; }
@@ -358,7 +354,7 @@ namespace Modern.WindowKit.X11
         public Action<double> ScalingChanged { get; set; }
         public Action Deactivated { get; set; }
         public Action Activated { get; set; }
-        public Func<bool> Closing { get; set; }
+        public Func<WindowCloseReason, bool> Closing { get; set; }
         public Action<WindowState> WindowStateChanged { get; set; }
 
         public Action<WindowTransparencyLevel> TransparencyLevelChanged
@@ -393,12 +389,14 @@ namespace Modern.WindowKit.X11
 
         //    return _platform.Options.UseDeferredRendering
         //        ? _platform.Options.UseCompositor
-        //            ? new CompositingRenderer(root, this._platform.Compositor)
-        //            : new DeferredRenderer(root, loop)
+        //            ? new CompositingRenderer(root, this._platform.Compositor, () => Surfaces)
+        //            : new DeferredRenderer(root, loop, () => _platform.RenderInterface.CreateRenderTarget(Surfaces), _platform.RenderInterface)
         //            {
         //                RenderOnlyOnRenderThread = true
         //            }
-        //        : (IRenderer)new X11ImmediateRendererProxy(root, loop);
+        //        : new X11ImmediateRendererProxy((Visual)root, loop,
+        //            () => _platform.RenderInterface.CreateRenderTarget(Surfaces),
+        //            _platform.RenderInterface);
         //}
 
         void OnEvent(ref XEvent ev)
@@ -544,7 +542,7 @@ namespace Modern.WindowKit.X11
                 {
                     if (ev.ClientMessageEvent.ptr1 == _x11.Atoms.WM_DELETE_WINDOW)
                     {
-                        if (Closing?.Invoke() != true)
+                        if (Closing?.Invoke(WindowCloseReason.WindowClosing) != true)
                             Dispose();
             }
                     else if (ev.ClientMessageEvent.ptr1 == _x11.Atoms._NET_WM_SYNC_REQUEST)
@@ -683,7 +681,7 @@ namespace Modern.WindowKit.X11
 
         }
 
-        RawInputModifiers TranslateModifiers(XModifierMask state)
+        static RawInputModifiers TranslateModifiers(XModifierMask state)
         {
             var rv = default(RawInputModifiers);
             if (state.HasAllFlags(XModifierMask.Button1Mask))

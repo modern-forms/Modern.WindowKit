@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 //using Modern.WindowKit.FreeDesktop;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
@@ -56,7 +55,7 @@ namespace Modern.WindowKit.X11
                         XFree(list);
 
                         break;
-                }
+                    }
                 }
                 
                 XFree(new IntPtr(supported_styles));
@@ -67,28 +66,28 @@ namespace Modern.WindowKit.X11
                     new IntPtr((int)(XIMProperties.XIMPreeditNothing | XIMProperties.XIMStatusNothing)),
                     XNames.XNClientWindow, _handle, XNames.XNFocusWindow, _handle, IntPtr.Zero);
         }
-        
+
         void InitializeIme()
         {
-            //var ime =  AvaloniaLocator.Current.GetService<IX11InputMethodFactory>()?.CreateClient(_handle);
-            //if (ime == null && _x11.HasXim)
-            //{
-            //    var xim = new XimInputMethod(this);
-            //    ime = (xim, xim);
-            //}
-            //if (ime != null)
-            //{
-            //    (_ime, _imeControl) = ime.Value;
-            //    _imeControl.Commit += s =>
-            //        ScheduleInput(new RawTextInputEventArgs(_keyboard, (ulong)_x11.LastActivityTimestamp.ToInt64(),
-            //            _inputRoot, s));
-            //    _imeControl.ForwardKey += ev =>
+            //    var ime =  AvaloniaLocator.Current.GetService<IX11InputMethodFactory>()?.CreateClient(_handle);
+            //    if (ime == null && _x11.HasXim)
             //    {
-            //        ScheduleInput(new RawKeyEventArgs(_keyboard, (ulong)_x11.LastActivityTimestamp.ToInt64(),
-            //            _inputRoot, ev.Type, X11KeyTransform.ConvertKey((X11Key)ev.KeyVal),
-            //            (RawInputModifiers)ev.Modifiers));
-            //    };
-            //}
+            //        var xim = new XimInputMethod(this);
+            //        ime = (xim, xim);
+            //    }
+            //    if (ime != null)
+            //    {
+            //        (_ime, _imeControl) = ime.Value;
+            //        _imeControl.Commit += s =>
+            //            ScheduleInput(new RawTextInputEventArgs(_keyboard, (ulong)_x11.LastActivityTimestamp.ToInt64(),
+            //                _inputRoot, s));
+            //        _imeControl.ForwardKey += ev =>
+            //        {
+            //            ScheduleInput(new RawKeyEventArgs(_keyboard, (ulong)_x11.LastActivityTimestamp.ToInt64(),
+            //                _inputRoot, ev.Type, X11KeyTransform.ConvertKey((X11Key)ev.KeyVal),
+            //                (RawInputModifiers)ev.Modifiers));
+            //        };
+            //    }
         }
 
         void UpdateImePosition() { } // => _imeControl?.UpdateWindowInfo(Position, RenderScaling);
@@ -151,7 +150,7 @@ namespace Modern.WindowKit.X11
 
             if (text == null)
                 return null;
-
+            
             if (text.Length == 1)
             {
                 if (text[0] < ' ' || text[0] == 0x7f) //Control codes or DEL
@@ -176,7 +175,7 @@ namespace Modern.WindowKit.X11
         bool FilterIme(RawKeyEventArgs args, XEvent xev, int keyval, int keycode)
         {
             //if (_ime == null)
-                return false;
+            //    return false;
             _imeQueue.Enqueue((args, xev, keyval, keycode));
             if (!_processingIme)
                 ProcessNextImeEvent();
@@ -185,7 +184,7 @@ namespace Modern.WindowKit.X11
         }
 
         async void ProcessNextImeEvent()
-            {
+        {
             if(_processingIme)
                 return;
             _processingIme = true;
@@ -196,13 +195,13 @@ namespace Modern.WindowKit.X11
                     var ev = _imeQueue.Dequeue();
                     //if (_imeControl == null || !await _imeControl.HandleEventAsync(ev.args, ev.keyval, ev.keycode))
                     //    ScheduleInput(ev.args);
-            }
+                }
             }
             finally
             {
                 _processingIme = false;
+            }
         }
-    }
 
         // This class is used to attach the text value of the key to an asynchronously dispatched KeyDown event
         class RawKeyEventArgsWithText : RawKeyEventArgs
@@ -216,5 +215,5 @@ namespace Modern.WindowKit.X11
             
             public string Text { get; }
         }
+        }
     }
-}

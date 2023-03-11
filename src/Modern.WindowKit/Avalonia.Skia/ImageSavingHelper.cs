@@ -34,6 +34,7 @@ namespace Modern.WindowKit.Skia.Helpers
         /// Save Skia image to a stream.
         /// </summary>
         /// <param name="image">Image to save</param>
+        /// <param name="stream">The output stream to save the image.</param>
         /// <param name="quality">
         /// The optional quality for PNG compression. 
         /// The quality value is interpreted from 0 - 100. If quality is null 
@@ -49,15 +50,15 @@ namespace Modern.WindowKit.Skia.Helpers
                 using (var data = image.Encode())
                 {
                     data.SaveTo(stream);
-                }
+            }
             }
             else
             {
                 using (var data = image.Encode(SKEncodedImageFormat.Png, (int)quality))
                 {
                     data.SaveTo(stream);
-                }
             }
         }
     }
+}
 }

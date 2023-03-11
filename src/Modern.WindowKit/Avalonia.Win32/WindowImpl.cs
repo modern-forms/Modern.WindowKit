@@ -26,6 +26,8 @@ using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 //using Modern.WindowKit.Collections.Pooled;
 using Modern.WindowKit.Metadata;
 using Modern.WindowKit.Platform.Storage;
+//using Modern.WindowKit.Win32.DirectX;
+//using Modern.WindowKit.Win32.OpenGl.Angle;
 
 namespace Modern.WindowKit.Win32
     {
@@ -77,7 +79,7 @@ namespace Modern.WindowKit.Win32
         //private readonly PenDevice _penDevice;
         //private readonly ManagedDeferredRendererLock _rendererLock;
         private readonly FramebufferManager _framebuffer;
-        //private readonly IGlPlatformSurface _gl;
+        //private readonly object _gl;
         private readonly bool _wmPointerEnabled;
 
         //private Win32NativeControlHost _nativeControlHost;
@@ -134,14 +136,21 @@ namespace Modern.WindowKit.Win32
             };
             //_rendererLock = new ManagedDeferredRendererLock();
 
-            //var glPlatform = AvaloniaLocator.Current.GetService<IPlatformOpenGlInterface>();
+            //var glPlatform = AvaloniaLocator.Current.GetService<IPlatformGraphics>();
 
-            //var compositionConnector = AvaloniaLocator.Current.GetService<WinUICompositorConnection>();
+            //var compositionConnector = AvaloniaLocator.Current.GetService<WinUiCompositorConnection>();
 
-            //_isUsingComposition = compositionConnector is { } &&
-            //    glPlatform is EglPlatformOpenGlInterface egl &&
-            //        egl.Display is AngleWin32EglDisplay angleDisplay &&
-            //        angleDisplay.PlatformApi == AngleOptions.PlatformApi.DirectX11;
+            //var isUsingAngleDX11 = glPlatform is AngleWin32PlatformGraphics angle &&
+            //              angle.PlatformApi == AngleOptions.PlatformApi.DirectX11;
+            //_isUsingComposition = compositionConnector is { } && isUsingAngleDX11;
+
+            //DxgiConnection dxgiConnection = null;
+            //var isUsingDxgiSwapchain = false;
+            //if (!_isUsingComposition)
+            //{
+            //    dxgiConnection = AvaloniaLocator.Current.GetService<DxgiConnection>();
+            //    isUsingDxgiSwapchain = dxgiConnection is { } && isUsingAngleDX11;
+            //}
 
             _wmPointerEnabled = Win32Platform.WindowsVersion >= PlatformConstants.Windows8;
 
@@ -152,19 +161,24 @@ namespace Modern.WindowKit.Win32
             //{
             //    if (_isUsingComposition)
             //    {
-            //        var cgl = new WinUiCompositedWindowSurface(compositionConnector, this);
+            //        var cgl = compositionConnector.CreateSurface(this);
             //        _blurHost = cgl;
 
             //        _gl = cgl;
 
             //        _isUsingComposition = true;
             //    }
+            //    else if (isUsingDxgiSwapchain)
+            //    {
+            //        var dxgigl = new DxgiSwapchainWindow(dxgiConnection, this);
+            //        _gl = dxgigl;
+            //    }
             //    else
             //    {
-            //        if (glPlatform is EglPlatformOpenGlInterface egl2)
-            //            _gl = new EglGlPlatformSurface(egl2, this);
+            //        if (glPlatform is AngleWin32PlatformGraphics egl2)
+            //            _gl = new EglGlPlatformSurface(this);
             //        else if (glPlatform is WglPlatformOpenGlInterface wgl)
-            //            _gl = new WglGlPlatformSurface(wgl.PrimaryContext, this);
+            //            _gl = new WglGlPlatformSurface(this);
             //    }
             //}
 
@@ -177,7 +191,7 @@ namespace Modern.WindowKit.Win32
 
         public Action Activated { get; set; }
 
-        public Func<bool> Closing { get; set; }
+        public Func<WindowCloseReason, bool> Closing { get; set; }
 
         public Action Closed { get; set; }
 
@@ -233,9 +247,9 @@ namespace Modern.WindowKit.Win32
         public double DesktopScaling => RenderScaling;
 
         public Size ClientSize
-        {
-            get
             {
+            get
+                {
                 GetClientRect(_hwnd, out var rect);
 
                 return new Size(rect.right, rect.bottom) / RenderScaling;
@@ -299,8 +313,8 @@ namespace Modern.WindowKit.Win32
 
                 _lastWindowState = value;
                 _showWindowState = value;
-            }
-                }
+        }
+        }
 
         public WindowTransparencyLevel TransparencyLevel { get; private set; }
 
@@ -314,13 +328,13 @@ namespace Modern.WindowKit.Win32
         }
 
         private WindowTransparencyLevel EnableBlur(WindowTransparencyLevel transparencyLevel)
-        {
+                {
             if (Win32Platform.WindowsVersion.Major >= 6)
             {
                 if (DwmIsCompositionEnabled(out var compositionEnabled) != 0 || !compositionEnabled)
-            {
+                {
                     return WindowTransparencyLevel.None;
-            }
+        }
                 else if (Win32Platform.WindowsVersion.Major >= 10)
                 {
                     return Win10EnableBlur(transparencyLevel);
@@ -332,10 +346,10 @@ namespace Modern.WindowKit.Win32
                 else
                 {
                     return Win7EnableBlur(transparencyLevel);
-        }
+                }
             }
             else
-        {
+            {
                 return WindowTransparencyLevel.None;
             }
         }
@@ -352,7 +366,7 @@ namespace Modern.WindowKit.Win32
             if (transparencyLevel == WindowTransparencyLevel.Blur)
             {
                 blurInfo = new DWM_BLURBEHIND(true);
-            }
+        }
 
             DwmEnableBlurBehindWindow(_hwnd, ref blurInfo);
 
@@ -398,7 +412,7 @@ namespace Modern.WindowKit.Win32
             Marshal.FreeHGlobal(accentPtr);
 
             if (transparencyLevel >= WindowTransparencyLevel.Blur)
-            {
+                {
                 Win7EnableBlur(transparencyLevel);
             }
 
@@ -406,9 +420,9 @@ namespace Modern.WindowKit.Win32
         }
 
         private WindowTransparencyLevel Win10EnableBlur(WindowTransparencyLevel transparencyLevel)
-        {
+                {
             //if (_isUsingComposition)
-            //{
+            //        {
             //    var effect = transparencyLevel switch
             //    {
             //        WindowTransparencyLevel.Mica => BlurEffect.Mica,
@@ -417,7 +431,7 @@ namespace Modern.WindowKit.Win32
             //        _ => BlurEffect.None
             //    };
 
-            //    if (Win32Platform.WindowsVersion >= WinUICompositorConnection.MinHostBackdropVersion)
+            //    if (Win32Platform.WindowsVersion >= WinUiCompositionShared.MinHostBackdropVersion)
             //    {
             //        unsafe
             //        {
@@ -426,7 +440,7 @@ namespace Modern.WindowKit.Win32
             //        }
             //    }
 
-            //    if (Win32Platform.WindowsVersion < WinUICompositorConnection.MinHostBackdropVersion && effect == BlurEffect.Mica)
+            //    if (Win32Platform.WindowsVersion < WinUiCompositionShared.MinHostBackdropVersion && effect == BlurEffect.Mica)
             //    {
             //        effect = BlurEffect.Acrylic;
             //    }
@@ -436,57 +450,57 @@ namespace Modern.WindowKit.Win32
             //    return transparencyLevel;
             //}
             //else
-            //{
-                bool canUseAcrylic = Win32Platform.WindowsVersion.Major > 10 || Win32Platform.WindowsVersion.Build >= 19628;
+            //    {
+            bool canUseAcrylic = Win32Platform.WindowsVersion.Major > 10 || Win32Platform.WindowsVersion.Build >= 19628;
 
-                var accent = new AccentPolicy();
-                var accentStructSize = Marshal.SizeOf<AccentPolicy>();
+            var accent = new AccentPolicy();
+            var accentStructSize = Marshal.SizeOf<AccentPolicy>();
 
-                if (transparencyLevel == WindowTransparencyLevel.AcrylicBlur && !canUseAcrylic)
-                {
-                    transparencyLevel = WindowTransparencyLevel.Blur;
-                }
+            if (transparencyLevel == WindowTransparencyLevel.AcrylicBlur && !canUseAcrylic)
+            {
+                transparencyLevel = WindowTransparencyLevel.Blur;
+            }
 
-                switch (transparencyLevel)
-                {
-                    default:
-                    case WindowTransparencyLevel.None:
-                        accent.AccentState = AccentState.ACCENT_DISABLED;
-                        break;
+            switch (transparencyLevel)
+            {
+                default:
+                case WindowTransparencyLevel.None:
+                    accent.AccentState = AccentState.ACCENT_DISABLED;
+                    break;
 
-                    case WindowTransparencyLevel.Transparent:
-                        accent.AccentState = AccentState.ACCENT_ENABLE_TRANSPARENTGRADIENT;
-                        break;
+                case WindowTransparencyLevel.Transparent:
+                    accent.AccentState = AccentState.ACCENT_ENABLE_TRANSPARENTGRADIENT;
+                    break;
 
-                    case WindowTransparencyLevel.Blur:
-                        accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
-                        break;
+                case WindowTransparencyLevel.Blur:
+                    accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
+                    break;
 
-                    case WindowTransparencyLevel.AcrylicBlur:
-                    case WindowTransparencyLevel.ForceAcrylicBlur: // hack-force acrylic.
-                    case WindowTransparencyLevel.Mica:
-                        accent.AccentState = AccentState.ACCENT_ENABLE_ACRYLIC;
-                        transparencyLevel = WindowTransparencyLevel.AcrylicBlur;
-                        break;
-                }
+                case WindowTransparencyLevel.AcrylicBlur:
+                case WindowTransparencyLevel.ForceAcrylicBlur: // hack-force acrylic.
+                case WindowTransparencyLevel.Mica:
+                    accent.AccentState = AccentState.ACCENT_ENABLE_ACRYLIC;
+                    transparencyLevel = WindowTransparencyLevel.AcrylicBlur;
+                    break;
+            }
 
-                accent.AccentFlags = 2;
-                accent.GradientColor = 0x01000000;
+            accent.AccentFlags = 2;
+            accent.GradientColor = 0x01000000;
 
-                var accentPtr = Marshal.AllocHGlobal(accentStructSize);
-                Marshal.StructureToPtr(accent, accentPtr, false);
+            var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+            Marshal.StructureToPtr(accent, accentPtr, false);
 
-                var data = new WindowCompositionAttributeData();
-                data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
-                data.SizeOfData = accentStructSize;
-                data.Data = accentPtr;
+            var data = new WindowCompositionAttributeData();
+            data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
+            data.SizeOfData = accentStructSize;
+            data.Data = accentPtr;
 
-                SetWindowCompositionAttribute(_hwnd, ref data);
+            SetWindowCompositionAttribute(_hwnd, ref data);
 
-                Marshal.FreeHGlobal(accentPtr);
+            Marshal.FreeHGlobal(accentPtr);
 
-                return transparencyLevel;
-            //} 
+            return transparencyLevel;
+            //}
         }
 
         //public IEnumerable<object> Surfaces => new object[] { (IPlatformNativeSurfaceHandle)Handle, _gl, _framebuffer };
@@ -513,8 +527,8 @@ namespace Modern.WindowKit.Win32
                     0,
                     0,
                     SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER);
-        }
-        }
+            }
+                }
 
         private bool HasFullDecorations => _windowProperties.Decorations == SystemDecorations.Full;
 
@@ -553,16 +567,22 @@ namespace Modern.WindowKit.Win32
         //        return customRendererFactory.Create(root, loop);
 
         //    if (Win32Platform.Compositor != null)
-        //        return new CompositingRenderer(root, Win32Platform.Compositor);
+        //        return new CompositingRenderer(root, Win32Platform.Compositor, () => Surfaces);
 
         //    return Win32Platform.UseDeferredRendering
         //        ? _isUsingComposition
-        //            ? new DeferredRenderer(root, loop)
+        //            ? new DeferredRenderer(root, loop, 
+        //                () => Win32Platform.RenderInterface.CreateRenderTarget(Surfaces),
+        //                Win32Platform.RenderInterface)
         //            {
         //                RenderOnlyOnRenderThread = true
         //            }
-        //            : (IRenderer)new DeferredRenderer(root, loop, rendererLock: _rendererLock)
-        //        : new ImmediateRenderer(root);
+        //            : (IRenderer)new DeferredRenderer(root, loop, rendererLock: _rendererLock,
+        //                renderTargetFactory: () => Win32Platform.RenderInterface.CreateRenderTarget(Surfaces),
+        //                renderInterface: Win32Platform.RenderInterface)
+        //        : new ImmediateRenderer((Visual)root, 
+        //            () => Win32Platform.RenderInterface.CreateRenderTarget(Surfaces),
+        //            Win32Platform.RenderInterface);
         //}
 
         public void Resize(Size value, PlatformResizeReason reason)
@@ -577,7 +597,7 @@ namespace Modern.WindowKit.Win32
 
             // do comparison after scaling to avoid rounding issues
             if (requestedClientWidth != clientRect.Width || requestedClientHeight != clientRect.Height)
-        {
+            {
                 GetWindowRect(_hwnd, out var windowRect);
 
                 using var scope = SetResizeReason(reason);
@@ -590,10 +610,10 @@ namespace Modern.WindowKit.Win32
                     requestedClientHeight + (_isClientAreaExtended ? 0 : windowRect.Height - clientRect.Height),
                     SetWindowPosFlags.SWP_RESIZE);
             }
-        }
+            }
 
         public void Activate()
-        {
+            {
             SetForegroundWindow(_hwnd);
         }
 
@@ -615,19 +635,13 @@ namespace Modern.WindowKit.Win32
                 // Detect if we are being closed programmatically - this would mean that WM_CLOSE was not called
                 // and we didn't prepare this window for destruction.
                 if (!_isCloseRequested)
-                {
+        {
                     BeforeCloseCleanup(true);
-        }
+                }
 
                 DestroyWindow(_hwnd);
                 _hwnd = IntPtr.Zero;
             }
-
-            if (_className != null)
-            {
-                UnregisterClass(_className, GetModuleHandle(null));
-                _className = null;
-        }
 
             //_framebuffer.Dispose();
         }
@@ -649,7 +663,7 @@ namespace Modern.WindowKit.Win32
         public Point PointToClient(PixelPoint point)
         {
             var p = new POINT { X = point.X, Y = point.Y };
-            UnmanagedMethods.ScreenToClient(_hwnd, ref p);
+            ScreenToClient(_hwnd, ref p);
             return new Point(p.X, p.Y) / RenderScaling;
         }
 
@@ -688,10 +702,10 @@ namespace Modern.WindowKit.Win32
             var parentHwnd = _parent?._hwnd ?? IntPtr.Zero;
 
             if (parentHwnd == IntPtr.Zero && !_windowProperties.ShowInTaskbar)
-        {
+            {
                 parentHwnd = OffscreenParentWindow.Handle;
                 _hiddenWindowIsParent = true;
-            }
+        }
 
             SetWindowLongPtr(_hwnd, (int)WindowLongParam.GWL_HWNDPARENT, parentHwnd);
         }
@@ -700,15 +714,15 @@ namespace Modern.WindowKit.Win32
 
         public void BeginMoveDrag(PointerPressedEventArgs e)
         {
-            //e.Pointer.Capture(null);
-            DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
+                //e.Pointer.Capture(null);
+                DefWindowProc(_hwnd, (int)WindowsMessage.WM_NCLBUTTONDOWN,
                 new IntPtr((int)HitTestValues.HTCAPTION), IntPtr.Zero);
         }
 
         public void BeginResizeDrag(WindowEdge edge, PointerPressedEventArgs e)
         {
             if (_windowProperties.IsResizable)
-            {
+        {
 #if USE_MANAGED_DRAG
                 _managedDrag.BeginResizeDrag(edge, ScreenToClient(MouseDevice.Position.ToPoint(_scaling)));
 #else
@@ -729,7 +743,7 @@ namespace Modern.WindowKit.Win32
             var impl = cursor as CursorImpl;
 
             if (cursor is null || impl is object)
-            {
+        {
                 var hCursor = impl?.Handle ?? DefaultCursor;
                 SetClassLong(_hwnd, ClassLongIndex.GCLP_HCURSOR, hCursor);
 
@@ -755,7 +769,7 @@ namespace Modern.WindowKit.Win32
             newWindowProperties.ShowInTaskbar = value;
 
             UpdateWindowProperties(newWindowProperties);
-            }
+        }
 
         public void CanResize(bool value)
         {
@@ -860,7 +874,7 @@ namespace Modern.WindowKit.Win32
                     out var dpiy) == 0)
                 {
                     _scaling = dpix / 96.0;
-                }
+        }
             }
         }
 
@@ -890,7 +904,7 @@ namespace Modern.WindowKit.Win32
                 clientRect.right += windowRect.left;
                 clientRect.top += windowRect.top;
                 clientRect.bottom += windowRect.top;
-                
+
                 _savedWindowInfo.WindowRect = clientRect;
 
                 var current = GetStyle();
@@ -928,7 +942,7 @@ namespace Modern.WindowKit.Win32
 
                 // On restore, resize to the previous saved rect size.
                 var newClientRect = _savedWindowInfo.WindowRect.ToPixelRect();
-
+                
                 SetWindowPos(_hwnd, IntPtr.Zero, newClientRect.X, newClientRect.Y, newClientRect.Width,
                              newClientRect.Height,
                             SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_FRAMECHANGED);
@@ -940,7 +954,7 @@ namespace Modern.WindowKit.Win32
 
             ExtendClientArea();
         }
-                
+
         private MARGINS UpdateExtendMargins()
         {
             RECT borderThickness = new RECT();
@@ -1029,16 +1043,16 @@ namespace Modern.WindowKit.Win32
 
             if (!_isClientAreaExtended || (_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) &&
                 !_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome)))
-            {
+        {
                 EnableCloseButton(_hwnd);
-                }
+            }
             else
             {
                 DisableCloseButton(_hwnd);
             }
 
             ExtendClientAreaToDecorationsChanged?.Invoke(_isClientAreaExtended);
-            }
+        }
 
         private void ShowWindow(WindowState state, bool activate)
         {
@@ -1084,10 +1098,10 @@ namespace Modern.WindowKit.Win32
             if (command.HasValue)
             {
                 UnmanagedMethods.ShowWindow(_hwnd, command.Value);
-            }
+        }
 
             if (state == WindowState.Maximized)
-            {
+        {
                 MaximizeWithoutCoveringTaskbar();
             }
 
@@ -1099,7 +1113,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private void BeforeCloseCleanup(bool isDisposing)
-        {
+            {
             // Based on https://github.com/dotnet/wpf/blob/master/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Window.cs#L4270-L4337
             // We need to enable parent window before destroying child window to prevent OS from activating a random window behind us (or last active window).
             // This is described here: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow#remarks
@@ -1111,10 +1125,10 @@ namespace Modern.WindowKit.Win32
                 // We can only set enabled state if we are not disposing - generally Dispose happens after enabled state has been set.
                 // Ignoring this would cause us to enable a window that might be disabled.
                 if (!isDisposing)
-            {
+                {
                     // Our window closed callback will set enabled state to a correct value after child window gets destroyed.
                     _parent.SetEnabled(true);
-        }
+                }
 
                 // We also need to activate our parent window since again OS might try to activate a window behind if it is not set.
                 if (wasActive)
@@ -1124,16 +1138,25 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        private void MaximizeWithoutCoveringTaskbar()
+        private void AfterCloseCleanup()
+        {
+            if (_className != null)
             {
+                UnregisterClass(_className, GetModuleHandle(null));
+                _className = null;
+        }
+        }
+
+        private void MaximizeWithoutCoveringTaskbar()
+        {
             IntPtr monitor = MonitorFromWindow(_hwnd, MONITOR.MONITOR_DEFAULTTONEAREST);
 
             if (monitor != IntPtr.Zero)
-                {
+        {
                 var monitorInfo = MONITORINFO.Create();
 
                 if (GetMonitorInfo(monitor, ref monitorInfo))
-                    {
+                {
                     var x = monitorInfo.rcWork.left;
                     var y = monitorInfo.rcWork.top;
                     var cx = Math.Abs(monitorInfo.rcWork.right - x);
@@ -1176,7 +1199,7 @@ namespace Modern.WindowKit.Win32
         private void SetStyle(WindowStyles style, bool save = true)
         {
             if (save)
-                {
+            {
                 _savedWindowInfo.Style = style;
             }
 
@@ -1187,7 +1210,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private void SetExtendedStyle(WindowStyles style, bool save = true)
-        {
+            {
             if (save)
             {
                 _savedWindowInfo.ExStyle = style;
@@ -1200,7 +1223,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private void UpdateWindowProperties(WindowProperties newProperties, bool forceChanges = false)
-                {
+        {
             var oldProperties = _windowProperties;
 
             // Calling SetWindowPos will cause events to be sent and we need to respond
@@ -1273,7 +1296,7 @@ namespace Modern.WindowKit.Win32
             }
 
             if ((oldProperties.Decorations != newProperties.Decorations) || forceChanges)
-            {
+                    {
                 style = GetStyle();
 
                 const WindowStyles fullDecorationFlags = WindowStyles.WS_CAPTION | WindowStyles.WS_SYSMENU;
@@ -1286,11 +1309,11 @@ namespace Modern.WindowKit.Win32
                 {
                     style &= ~fullDecorationFlags;
                 }
-            
+
                 SetStyle(style);
 
                 if (!_isFullScreenActive)
-                {
+                    {
                     var margin = newProperties.Decorations == SystemDecorations.BorderOnly ? 1 : 0;
 
                     var margins = new MARGINS
@@ -1313,29 +1336,28 @@ namespace Modern.WindowKit.Win32
                     if (newProperties.Decorations == SystemDecorations.Full)
                     {
                         AdjustWindowRectEx(ref newRect, (uint)style, false, (uint)GetExtendedStyle());
-                    }
+        }
 
                     SetWindowPos(_hwnd, IntPtr.Zero, newRect.left, newRect.top, newRect.Width, newRect.Height,
                         SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOACTIVATE |
                         SetWindowPosFlags.SWP_FRAMECHANGED);
-                }
+        }
             }
         }
 
         private const int MF_BYCOMMAND = 0x0;
-        private const int MF_BYPOSITION = 0x400;
-        private const int MF_REMOVE = 0x1000;
         private const int MF_ENABLED = 0x0;
         private const int MF_GRAYED = 0x1;
         private const int MF_DISABLED = 0x2;
         private const int SC_CLOSE = 0xF060;
 
-        void DisableCloseButton(IntPtr hwnd)
+        static void DisableCloseButton(IntPtr hwnd)
         {
             EnableMenuItem(GetSystemMenu(hwnd, false), SC_CLOSE,
                            MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
         }
-        void EnableCloseButton(IntPtr hwnd)
+
+        static void EnableCloseButton(IntPtr hwnd)
         {
             EnableMenuItem(GetSystemMenu(hwnd, false), SC_CLOSE,
                            MF_BYCOMMAND | MF_ENABLED);
@@ -1349,22 +1371,22 @@ namespace Modern.WindowKit.Win32
             return new Point(p.X, p.Y);
         }
 #endif
-            
-    //    PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
-    //        {
-    //        get
-    //        {
-    //            GetClientRect(_hwnd, out var rect);
 
-    //            return new PixelSize(
-    //                Math.Max(1, rect.right - rect.left),
-    //                Math.Max(1, rect.bottom - rect.top));
-    //        }
-    //}
+        //PixelSize EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Size
+        //{
+        //    get
+        //    {
+        //        GetClientRect(_hwnd, out var rect);
 
-    //    double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
+        //        return new PixelSize(
+        //            Math.Max(1, rect.right - rect.left),
+        //            Math.Max(1, rect.bottom - rect.top));
+        //    }
+        //}
 
-    //    IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
+        //double EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Scaling => RenderScaling;
+
+        //IntPtr EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo.Handle => Handle.Handle;
 
         public void SetExtendClientAreaToDecorationsHint(bool hint)
         {
@@ -1414,7 +1436,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private struct SavedWindowInfo
-        {
+            {
             public WindowStyles Style { get; set; }
             public WindowStyles ExStyle { get; set; }
             public RECT WindowRect { get; set; }
@@ -1437,7 +1459,7 @@ namespace Modern.WindowKit.Win32
             {
                 _owner = owner;
                 _restore = restore;
-            }
+    }
 
             public void Dispose() => _owner._resizeReason = _restore;
         }

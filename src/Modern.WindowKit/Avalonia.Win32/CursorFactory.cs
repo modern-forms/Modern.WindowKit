@@ -107,7 +107,7 @@ namespace Modern.WindowKit.Win32
             return new CursorImpl(UnmanagedMethods.CreateIconIndirect(ref info), true);
         }
 
-        private SdBitmap LoadSystemDrawingBitmap(IBitmapImpl bitmap)
+        private static SdBitmap LoadSystemDrawingBitmap(IBitmapImpl bitmap)
         {
             using var memoryStream = new MemoryStream();
             bitmap.Save(memoryStream);

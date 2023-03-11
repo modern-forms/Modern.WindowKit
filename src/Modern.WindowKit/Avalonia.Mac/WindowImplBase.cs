@@ -63,10 +63,9 @@ namespace Modern.WindowKit.Native
         private double _savedScaling;
         //private GlPlatformSurface _glSurface;
         //private NativeControlHostImpl _nativeControlHost;
-        //private IGlContext _glContext;
 
         internal WindowBaseImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts)
-            //AvaloniaNativePlatformOpenGlInterface glFeature)
+            //AvaloniaNativeGlPlatformGraphics glFeature)
         {
             _factory = factory;
             //_gpu = opts.UseGpu && glFeature != null;
@@ -81,11 +80,10 @@ namespace Modern.WindowKit.Native
         protected void Init(IAvnWindowBase window, IAvnScreens screens)
         {
             _native = window;
-            //_glContext = glContext;
 
             Handle = new MacOSTopLevelWindowHandle(window);
             //if (_gpu)
-            //    _glSurface = new GlPlatformSurface(window, _glContext);
+            //    _glSurface = new GlPlatformSurface(window);
             Screen = new ScreenImpl(screens);
 
             _savedLogicalSize = ClientSize;
@@ -103,9 +101,9 @@ namespace Modern.WindowKit.Native
         public Size ClientSize 
         {
             get
-            {
-                if (_native != null)
         {
+                if (_native != null)
+            {
                     var s = _native.ClientSize;
                     return new Size(s.Width, s.Height);
                 }
@@ -117,11 +115,11 @@ namespace Modern.WindowKit.Native
         public Size? FrameSize
         {
             get
-            {
+        {
                 if (_native != null)
-                {
+            {
                     unsafe
-                    {
+                {
                         var s = new AvnSize { Width = -1, Height = -1 };
                         _native.GetFrameSize(&s);
                         return s.Width < 0  && s.Height < 0 ? null : new Size(s.Width, s.Height);
@@ -147,7 +145,7 @@ namespace Modern.WindowKit.Native
             return new DeferredFramebuffer(cb =>
             {
                 lock (_syncRoot)
-                {
+            {
                     if (_native == null)
                         return false;
                     cb(_native);
@@ -155,10 +153,10 @@ namespace Modern.WindowKit.Native
                     return true;
                 }
             }, (int)w, (int)h, new Vector(dpi, dpi));
-        }
+                }
 
         public Action LostFocus { get; set; }
-        
+
         public Action<Rect> Paint { get; set; }
         public Action<Size, PlatformResizeReason> Resized { get; set; }
         public Action Closed { get; set; }
@@ -208,7 +206,7 @@ namespace Modern.WindowKit.Native
             void IAvnWindowBaseEvents.Resized(AvnSize* size, AvnPlatformResizeReason reason)
             {
                 if (_parent?._native != null)
-                {
+            {
                     var s = new Size(size->Width, size->Height);
                     _parent._savedLogicalSize = s;
                     _parent.Resized?.Invoke(s, (PlatformResizeReason)reason);
@@ -229,7 +227,7 @@ namespace Modern.WindowKit.Native
             {
                 return _parent.RawKeyEvent(type, timeStamp, modifiers, key).AsComBool();
             }
-            
+
             int IAvnWindowBaseEvents.RawTextInputEvent(uint timeStamp, string text)
             {
                 return _parent.RawTextInputEvent(timeStamp, text).AsComBool();
@@ -245,7 +243,7 @@ namespace Modern.WindowKit.Native
             {
                 Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
             }
-
+            
             void IAvnWindowBaseEvents.LostFocus()
             {
                 _parent.LostFocus?.Invoke();
@@ -274,13 +272,13 @@ namespace Modern.WindowKit.Native
             //        return (AvnDragDropEffects)args.Effects;
             //    }
             //}
-            
+
             IAvnAutomationPeer IAvnWindowBaseEvents.AutomationPeer
             {
                 get => null;
             }
         }
-
+       
         public void Activate()
         {
             _native?.Activate();
@@ -290,7 +288,7 @@ namespace Modern.WindowKit.Native
         {
             //if (_inputRoot is null) 
             //    return false;
-
+            
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
             var args = new RawTextInputEventArgs(_keyboard, timeStamp, _inputRoot, text, RawInputModifiers.None);
@@ -306,7 +304,7 @@ namespace Modern.WindowKit.Native
             //    return false;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
-
+            
             var args = new RawKeyEventArgs(_keyboard, timeStamp, _inputRoot, (RawKeyEventType)type, (Key)key, (RawInputModifiers)modifiers);
 
             Input?.Invoke(args);
@@ -325,7 +323,7 @@ namespace Modern.WindowKit.Native
             //    return;
             
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
-
+            
             switch (type)
             {
                 case AvnRawMouseEventType.Wheel:
@@ -357,7 +355,7 @@ namespace Modern.WindowKit.Native
                         Input?.Invoke(e);
                     }
                     break;
-            }
+                    }
         }
 
         public void Resize(Size clientSize, PlatformResizeReason reason)
@@ -375,14 +373,17 @@ namespace Modern.WindowKit.Native
         //    if (_deferredRendering)
         //    {
         //        if (AvaloniaNativePlatform.Compositor != null)
-        //            return new CompositingRenderer(root, AvaloniaNativePlatform.Compositor)
+        //            return new CompositingRenderer(root, AvaloniaNativePlatform.Compositor, () => Surfaces)
         //            {
         //                RenderOnlyOnRenderThread = false
         //            };
-        //        return new DeferredRenderer(root, loop);
+        //        return new DeferredRenderer(root, loop,
+        //            () => AvaloniaNativePlatform.RenderInterface!.CreateRenderTarget(Surfaces),
+        //            AvaloniaNativePlatform.RenderInterface);
         //    }
 
-        //    return new ImmediateRenderer(root);
+        //    return new ImmediateRenderer((Visual)root,
+        //        () => AvaloniaNativePlatform.RenderInterface!.CreateRenderTarget(Surfaces), AvaloniaNativePlatform.RenderInterface);
         //}
 
         public virtual void Dispose()
@@ -393,7 +394,7 @@ namespace Modern.WindowKit.Native
 
             //_nativeControlHost?.Dispose();
             //_nativeControlHost = null;
-
+            
             (Screen as ScreenImpl)?.Dispose();
             _mouse.Dispose();
         }
@@ -513,7 +514,7 @@ namespace Modern.WindowKit.Native
                         : AvnWindowTransparencyMode.Blur);
 
                 TransparencyLevelChanged?.Invoke(TransparencyLevel);
-            }
+        }
         }
 
         public WindowTransparencyLevel TransparencyLevel { get; private set; } = WindowTransparencyLevel.Transparent;
@@ -523,5 +524,5 @@ namespace Modern.WindowKit.Native
         public IPlatformHandle Handle { get; private set; }
 
         public IStorageProvider StorageProvider { get; }
-    }
+}
 }

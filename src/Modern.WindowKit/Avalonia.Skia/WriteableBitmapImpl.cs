@@ -217,10 +217,9 @@ namespace Modern.WindowKit.Skia
             public int RowBytes => _bitmap.RowBytes;
 
             /// <inheritdoc />
-            public Vector Dpi { get; } = SkiaPlatform.DefaultDpi;
-
+            public Vector Dpi => _parent.Dpi;
             /// <inheritdoc />
             public PixelFormat Format => _bitmap.ColorType.ToPixelFormat();
+        }
     }
-}
 }
