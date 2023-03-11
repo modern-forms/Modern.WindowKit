@@ -111,6 +111,7 @@ CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");
 CopyFile ("Avalonia.Base/Platform/ICursorFactory.cs", "ICursorFactory.cs");
 CopyFile ("Avalonia.Base/Platform/ICursorImpl.cs", "ICursorImpl.cs");
 CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLevel.cs");
+CopyFile ("Avalonia.Controls/WindowClosingEventArgs.cs", "WindowClosingEventArgs.cs");
 CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
 // Mac Backend
@@ -294,6 +295,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("context?.Context", "null");
             text = text.Replace ("_factory, _opts, _glFeature, this", "_factory, _opts, this");
             text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
+            text = text.Replace ("e, _glFeature.SharedContext.Context", "e, null");
             break;
         case "WindowImpl.cs":
             // Win
@@ -301,11 +303,12 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
             // Mac
             text = text.Replace (", AvaloniaNativePlatformOptions opts,", ", AvaloniaNativePlatformOptions opts");
-            text = text.Replace ("AvaloniaNativePlatformOpenGlInterface glFeature) : base(factory, opts, glFeature)", ") : base(factory, opts)");
+            text = text.Replace ("AvaloniaNativeGlPlatformGraphics glFeature) : base(factory, opts, glFeature)", ") : base(factory, opts)");
             text = text.Replace ("context?.Context", "null");
             text = text.Replace ("factory.CreateScreens(), context);", "factory.CreateScreens());");
             text = text.Replace ("internal class WindowImpl", "internal partial class WindowImpl");
             text = text.Replace ("return true.AsComBool();", "return false.AsComBool();");
+            text = text.Replace ("e, glFeature.SharedContext.Context", "e, null");
             break;
         case "WindowImplBase.cs":   // Mac
             text = text.Replace ("unsafe class", "unsafe partial class");

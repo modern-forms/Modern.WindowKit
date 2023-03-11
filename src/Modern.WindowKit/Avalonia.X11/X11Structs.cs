@@ -656,7 +656,7 @@ namespace Modern.WindowKit.X11 {
 		}
 		}
 
-        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.IgnoreNativeAotSupressWarningMessage)]
+        //[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.IgnoreNativeAotSupressWarningMessage)]
 		public static string ToString (object ev)
 		{
 			string result = string.Empty;
