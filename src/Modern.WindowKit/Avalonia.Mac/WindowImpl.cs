@@ -14,7 +14,7 @@ namespace Modern.WindowKit.Native
     internal partial class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
     {
         private readonly AvaloniaNativePlatformOptions _opts;
-        //private readonly AvaloniaNativePlatformOpenGlInterface _glFeature;
+        //private readonly AvaloniaNativeGlPlatformGraphics _glFeature;
         IAvnWindow _native;
         private double _extendTitleBarHeight = -1;
         //private DoubleClickHelper _doubleClickHelper;
@@ -29,7 +29,6 @@ namespace Modern.WindowKit.Native
             
             using (var e = new WindowEvents(this))
             {
-                //var context = _opts.UseGpu ? glFeature?.MainContext : null;
                 Init(_native = factory.CreateWindow(e, null), factory.CreateScreens());
             }
 
@@ -48,8 +47,8 @@ namespace Modern.WindowKit.Native
             int IAvnWindowEvents.Closing()
             {
                 if (_parent.Closing != null)
-            {
-                    return _parent.Closing().AsComBool();
+                {
+                    return _parent.Closing(WindowCloseReason.WindowClosing).AsComBool();
                 }
 
                 return false.AsComBool();
@@ -66,7 +65,7 @@ namespace Modern.WindowKit.Native
             {
                 _parent.GotInputWhenDisabled?.Invoke();
             }
-        }
+            }
 
         public IAvnWindow Native => _native;
 
@@ -122,7 +121,7 @@ namespace Modern.WindowKit.Native
         //        {
         //            var visual = (_inputRoot as Window).Renderer.HitTestFirst(e.Position, _inputRoot as Window, x =>
         //                    {
-        //                        if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsVisible))
+        //                        if (x is IInputElement ie && (!ie.IsHitTestVisible || !ie.IsEffectivelyVisible))
         //                        {
         //                            return false;
         //                        }
@@ -208,7 +207,7 @@ namespace Modern.WindowKit.Native
         //    // NO OP on OSX
         //}
 
-        public Func<bool> Closing { get; set; }
+        public Func<WindowCloseReason, bool> Closing { get; set; }
 
         //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
 
@@ -228,5 +227,5 @@ namespace Modern.WindowKit.Native
         {
             _native.SetEnabled(enable.AsComBool());
         }
+        }
     }
-}

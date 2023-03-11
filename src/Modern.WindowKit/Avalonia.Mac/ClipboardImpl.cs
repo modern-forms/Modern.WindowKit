@@ -15,8 +15,7 @@ namespace Modern.WindowKit.Native
         private IAvnClipboard _native;
         private const string NSPasteboardTypeString = "public.utf8-plain-text";
         private const string NSFilenamesPboardType = "NSFilenamesPboardType";
-        private const string NSPasteboardTypeFileUrl = "public.file-url";
-        
+
         public ClipboardImpl(IAvnClipboard native)
         {
             _native = native;
@@ -60,8 +59,8 @@ namespace Modern.WindowKit.Native
                          if(fmt.String == NSFilenamesPboardType)
                              rv.Add(DataFormats.FileNames);
                     }
+                    }
                 }
-            }
 
             return rv;
         }
@@ -108,7 +107,7 @@ namespace Modern.WindowKit.Native
             using (var n = _native.GetBytes(format))
                 return n.Bytes;
         }
-    }
+        }
     
     class ClipboardDataObject : IDataObject, IDisposable
     {
@@ -148,5 +147,5 @@ namespace Modern.WindowKit.Native
                 return GetFileNames();
             return null;
         }
+        }
     }
-}

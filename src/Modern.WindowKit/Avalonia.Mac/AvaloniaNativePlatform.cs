@@ -18,13 +18,14 @@ namespace Modern.WindowKit.Native
     {
         private readonly IAvaloniaNativeFactory _factory;
         private AvaloniaNativePlatformOptions _options;
-        //private AvaloniaNativePlatformOpenGlInterface _platformGl;
+        //private AvaloniaNativeGlPlatformGraphics _platformGl;
 
         [DllImport("libAvaloniaNative")]
         static extern IntPtr CreateAvaloniaNative();
 
         internal static readonly KeyboardDevice KeyboardDevice = new KeyboardDevice();
         //[CanBeNull] internal static Compositor Compositor { get; private set; }
+        //[CanBeNull] internal static PlatformRenderInterfaceContextManager RenderInterface { get; private set; }
 
         public static AvaloniaNativePlatform Initialize(IntPtr factory, AvaloniaNativePlatformOptions options)
         {
@@ -78,7 +79,7 @@ namespace Modern.WindowKit.Native
             public void FreeGCHandle(IntPtr handle)
             {
                 GCHandle.FromIntPtr(handle).Free();
-            }
+        }
         }
 
         void DoInitialize(AvaloniaNativePlatformOptions options)
@@ -121,15 +122,14 @@ namespace Modern.WindowKit.Native
             //hotkeys.MoveCursorToTheStartOfLineWithSelection.Add(new KeyGesture(Key.Left, hotkeys.CommandModifiers | hotkeys.SelectionModifiers));
             //hotkeys.MoveCursorToTheEndOfLine.Add(new KeyGesture(Key.Right, hotkeys.CommandModifiers));
             //hotkeys.MoveCursorToTheEndOfLineWithSelection.Add(new KeyGesture(Key.Right, hotkeys.CommandModifiers | hotkeys.SelectionModifiers));
-
+            
             //if (_options.UseGpu)
             //{
             //    try
             //    {
-            //        _platformGl = new AvaloniaNativePlatformOpenGlInterface(_factory.ObtainGlDisplay());
+            //        _platformGl = new AvaloniaNativeGlPlatformGraphics(_factory.ObtainGlDisplay());
             //        AvaloniaLocator.CurrentMutable
-            //            .Bind<IPlatformOpenGlInterface>().ToConstant(_platformGl)
-            //            .Bind<IPlatformGpu>().ToConstant(_platformGl);
+            //            .Bind<IPlatformGraphics>().ToConstant(_platformGl);
 
             //    }
             //    catch (Exception)
@@ -143,6 +143,8 @@ namespace Modern.WindowKit.Native
             //{
             //    Compositor = new Compositor(renderLoop, _platformGl);
             //}
+            //else
+            //    RenderInterface = new PlatformRenderInterfaceContextManager(_platformGl);
         }
 
         //public ITrayIconImpl CreateTrayIcon()
@@ -172,13 +174,13 @@ namespace Modern.WindowKit.Native
         }
 
         public bool ShowInDock
-            {
+        {
             get => _showInDock;
             set
             {
                 _showInDock = value;
                 _opts.SetShowInDock(value ? 1 : 0);
+    }
 }
-        }
     }
 }
