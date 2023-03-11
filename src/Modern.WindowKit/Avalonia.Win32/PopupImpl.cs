@@ -92,7 +92,7 @@ namespace Modern.WindowKit.Win32
                 IntPtr.Zero);
             s_parentHandle = IntPtr.Zero;
 
-            EnableBoxShadow(result, _dropShadowHint);
+            PopupImpl.EnableBoxShadow(result, _dropShadowHint);
 
             return result;
         }
@@ -139,7 +139,7 @@ namespace Modern.WindowKit.Win32
             //TODO: We ignore the scaling override for now
         }
 
-        private void EnableBoxShadow (IntPtr hwnd, bool enabled)
+        private static void EnableBoxShadow (IntPtr hwnd, bool enabled)
         {
             var classes = (int)UnmanagedMethods.GetClassLongPtr(hwnd, (int)UnmanagedMethods.ClassLongIndex.GCL_STYLE);
 
@@ -161,7 +161,7 @@ namespace Modern.WindowKit.Win32
 
             if (Handle != null)
             {
-                EnableBoxShadow(Handle.Handle, enabled);
+                PopupImpl.EnableBoxShadow(Handle.Handle, enabled);
             }
         }
 

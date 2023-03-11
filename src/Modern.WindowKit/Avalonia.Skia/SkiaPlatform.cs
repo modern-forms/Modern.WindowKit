@@ -17,8 +17,7 @@ namespace Modern.WindowKit.Skia
 
         public static void Initialize(SkiaOptions options)
         {
-            //var customGpu = options.CustomGpuFactory?.Invoke();
-            //var renderInterface = new PlatformRenderInterface(customGpu, options.MaxGpuResourceSizeBytes);
+            //var renderInterface = new PlatformRenderInterface(options.MaxGpuResourceSizeBytes);
 
             //AvaloniaLocator.CurrentMutable
             //    .Bind<IPlatformRenderInterface>().ToConstant(renderInterface)
@@ -31,4 +30,4 @@ namespace Modern.WindowKit.Skia
         /// </summary>
         public static Vector DefaultDpi => new Vector(96.0f, 96.0f);
     }
-}
+    }

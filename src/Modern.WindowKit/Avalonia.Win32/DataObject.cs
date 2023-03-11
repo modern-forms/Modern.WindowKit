@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -87,7 +88,7 @@ namespace Modern.WindowKit.Win32
             public Win32Com.IEnumFORMATETC Clone()
             {
                 return new FormatEnumerator(_formats, _current);
-            }
+        }
         }
 
         private const uint DV_E_TYMED = 0x80040069;
@@ -109,9 +110,9 @@ namespace Modern.WindowKit.Win32
                 throw new ArgumentNullException(nameof(wrapped));
             }
             if (_wrapped is DataObject || _wrapped is OleDataObject)
-        {
+            {
                 throw new InvalidOperationException();
-        }
+            }
 
             _wrapped = wrapped;
         }
@@ -177,7 +178,7 @@ namespace Modern.WindowKit.Win32
         }
 
         unsafe FORMATETC Win32Com.IDataObject.GetCanonicalFormatEtc(FORMATETC* formatIn)
-            {
+        {
             if (_wrapped is Win32Com.IDataObject ole)
                 return ole.GetCanonicalFormatEtc(formatIn);
 
@@ -281,7 +282,7 @@ namespace Modern.WindowKit.Win32
                 finally
                 {
                     ArrayPool<byte>.Shared.Return(buffer);
-                }
+            }
             }
             if (data is IEnumerable<byte> bytes)
             {
@@ -291,18 +292,21 @@ namespace Modern.WindowKit.Win32
             return WriteBytesToHGlobal(ref hGlobal, SerializeObject(data));
         }
 
-        private byte[] SerializeObject(object data)
-        {
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "We still use BinaryFormatter for WinForms dragndrop compatability")]
+        private static byte[] SerializeObject(object data)
+            {
             using (var ms = new MemoryStream())
             {
                 ms.Write(SerializedObjectGUID, 0, SerializedObjectGUID.Length);
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
                 binaryFormatter.Serialize(ms, data);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
                 return ms.ToArray();
             }
         }
 
-        private unsafe uint WriteBytesToHGlobal(ref IntPtr hGlobal, ReadOnlySpan<byte> data)
+        private static unsafe uint WriteBytesToHGlobal(ref IntPtr hGlobal, ReadOnlySpan<byte> data)
         {
             int required = data.Length;
             if (hGlobal == IntPtr.Zero)
@@ -326,7 +330,7 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        private uint WriteFileListToHGlobal(ref IntPtr hGlobal, IEnumerable<string> files)
+        private static uint WriteFileListToHGlobal(ref IntPtr hGlobal, IEnumerable<string> files)
         {
             if (!files?.Any() ?? false)
                 return unchecked((int)UnmanagedMethods.HRESULT.S_OK);
@@ -335,7 +339,7 @@ namespace Modern.WindowKit.Win32
             _DROPFILES df = new _DROPFILES();
             df.pFiles = Marshal.SizeOf<_DROPFILES>();
             df.fWide = true;
-            
+
             int required = (filesStr.Length * sizeof(char)) + Marshal.SizeOf<_DROPFILES>();
             if (hGlobal == IntPtr.Zero)
                 hGlobal = UnmanagedMethods.GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, required);
@@ -358,12 +362,12 @@ namespace Modern.WindowKit.Win32
             }
         }
 
-        private uint WriteStringToHGlobal(ref IntPtr hGlobal, string data)
+        private static uint WriteStringToHGlobal(ref IntPtr hGlobal, string data)
         {
             int required = (data.Length + 1) * sizeof(char);
             if (hGlobal == IntPtr.Zero)
                 hGlobal = UnmanagedMethods.GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT, required);
-
+            
             long available = UnmanagedMethods.GlobalSize(hGlobal).ToInt64();
             if (required > available)
                 return STG_E_MEDIUMFULL;

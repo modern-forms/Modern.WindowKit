@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,7 +15,7 @@ using Modern.WindowKit.MicroCom;
 using IDataObject = Modern.WindowKit.Input.IDataObject;
 
 namespace Modern.WindowKit.Win32
-    {
+{
     internal class OleDataObject : IDataObject, IDisposable
     {
         private readonly Win32Com.IDataObject _wrapped;
@@ -49,6 +50,7 @@ namespace Modern.WindowKit.Win32
             return GetDataFromOleHGLOBAL(dataFormat, DVASPECT.DVASPECT_CONTENT);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "We still use BinaryFormatter for WinForms dragndrop compatability")]
         private unsafe object GetDataFromOleHGLOBAL(string format, DVASPECT aspect)
         {
             var formatEtc = new Interop.FORMATETC();
@@ -61,7 +63,7 @@ namespace Modern.WindowKit.Win32
                 Interop.STGMEDIUM medium = default;
                 _ = _wrapped.GetData(&formatEtc, &medium);
                 try
-                {
+                    {
                     if (medium.unionmember != IntPtr.Zero && medium.tymed == TYMED.TYMED_HGLOBAL)
                     {
                         if (format == DataFormats.Text)
@@ -72,21 +74,23 @@ namespace Modern.WindowKit.Win32
                         byte[] data = ReadBytesFromHGlobal(medium.unionmember);
 
                         if (IsSerializedObject(data))
-                        {
+                            {
                             using (var ms = new MemoryStream(data))
                             {
                                 ms.Position = DataObject.SerializedObjectGUID.Length;
                                 BinaryFormatter binaryFormatter = new BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
                                 return binaryFormatter.Deserialize(ms);
-                    }
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
                 }
+                        }
                         return data;
                     }
-                }
+        }
                 finally
                 {
                     UnmanagedMethods.ReleaseStgMedium(ref medium);
-        }
+                }
             }
             return null;
         }
@@ -95,7 +99,7 @@ namespace Modern.WindowKit.Win32
             data.StartsWith(DataObject.SerializedObjectGUID);
 
         private static IEnumerable<string> ReadFileNamesFromHGlobal(IntPtr hGlobal)
-        {
+            {
             List<string> files = new List<string>();
             int fileCount = UnmanagedMethods.DragQueryFile(hGlobal, -1, null, 0);
             if (fileCount > 0)
@@ -108,14 +112,14 @@ namespace Modern.WindowKit.Win32
                     if (UnmanagedMethods.DragQueryFile(hGlobal, i, sb, sb.Capacity) == pathLen)
                     {
                         files.Add(StringBuilderCache.GetStringAndRelease(sb));
-                    }
         }
+                }
             }
             return files;
         }
 
         private static string ReadStringFromHGlobal(IntPtr hGlobal)
-            {
+        {
             IntPtr ptr = UnmanagedMethods.GlobalLock(hGlobal);
             try
             {
@@ -128,7 +132,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private static byte[] ReadBytesFromHGlobal(IntPtr hGlobal)
-            {
+        {
             IntPtr source = UnmanagedMethods.GlobalLock(hGlobal);
             try
             {

@@ -10,6 +10,7 @@ using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Threading;
 //using Modern.WindowKit.Win32.Automation;
 using Modern.WindowKit.Win32.Input;
 //using Modern.WindowKit.Win32.Interop.Automation;
@@ -21,6 +22,8 @@ namespace Modern.WindowKit.Win32
     {
         [SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation",
             Justification = "Using Win32 naming for consistency.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "We do .NET COM interop availability checks")]
+        [UnconditionalSuppressMessage("Trimming", "IL2050", Justification = "We do .NET COM interop availability checks")]
         protected virtual unsafe IntPtr AppWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             const double wheelDelta = 120.0;
@@ -30,13 +33,13 @@ namespace Modern.WindowKit.Win32
             var shouldTakeFocus = false;
             var message = (WindowsMessage)msg;
             switch (message)
-                        {
+            {
                 case WindowsMessage.WM_ACTIVATE:
                     {
                         var wa = (WindowActivate)(ToInt32(wParam) & 0xffff);
 
                         switch (wa)
-                        {
+                                {
                             case WindowActivate.WA_ACTIVE:
                             case WindowActivate.WA_CLICKACTIVE:
                                 {
@@ -50,7 +53,7 @@ namespace Modern.WindowKit.Win32
                                     Deactivated?.Invoke();
                                     break;
                                 }
-                        }
+                    }
 
                         return IntPtr.Zero;
                     }
@@ -60,14 +63,14 @@ namespace Modern.WindowKit.Win32
                         if (ToInt32(wParam) == 1 && !HasFullDecorations || _isClientAreaExtended)
                         {
                             return IntPtr.Zero;
-                        }
+                    }
 
                         break;
                     }
 
                 case WindowsMessage.WM_CLOSE:
-                    {
-                        bool? preventClosing = Closing?.Invoke();
+                        {
+                        bool? preventClosing = Closing?.Invoke(WindowCloseReason.WindowClosing);
                         if (preventClosing == true)
                         {
                             return IntPtr.Zero;
@@ -83,24 +86,30 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_DESTROY:
                     {
-                        //UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, IntPtr.Zero, IntPtr.Zero, null);
+                        //if (UiaCoreTypesApi.IsNetComInteropAvailable)
+                        //{
+                        //    UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, IntPtr.Zero, IntPtr.Zero, null);
+                        //}
 
                         //// We need to release IMM context and state to avoid leaks.
                         //if (Imm32InputMethod.Current.HWND == _hwnd)
                         //{
                         //    Imm32InputMethod.Current.ClearLanguageAndWindow();
                         //}
-
+                        
                         //Window doesn't exist anymore
                         _hwnd = IntPtr.Zero;
                         //Remove root reference to this class, so unmanaged delegate can be collected
                         s_instances.Remove(this);
                         Closed?.Invoke();
-                        
+
                         _mouseDevice.Dispose();
                         _touchDevice?.Dispose();
                         //Free other resources
                         Dispose();
+
+                        // Schedule cleanup of anything that requires window to be destroyed
+                        Dispatcher.UIThread.Post(AfterCloseCleanup);
                         return IntPtr.Zero;
                     }
 
@@ -129,13 +138,18 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_KEYDOWN:
                 case WindowsMessage.WM_SYSKEYDOWN:
                     {
-                        e = new RawKeyEventArgs(
-                            WindowsKeyboardDevice.Instance,
-                            timestamp,
-                            _owner,
-                            RawKeyEventType.KeyDown,
-                            KeyInterop.KeyFromVirtualKey(ToInt32(wParam), ToInt32(lParam)),
-                            WindowsKeyboardDevice.Instance.Modifiers);
+                        var key = KeyInterop.KeyFromVirtualKey(ToInt32(wParam), ToInt32(lParam));
+
+                        if (key != Key.None)
+                        {
+                            e = new RawKeyEventArgs(
+                                WindowsKeyboardDevice.Instance,
+                                timestamp,
+                                _owner,
+                                RawKeyEventType.KeyDown,
+                                key,
+                                WindowsKeyboardDevice.Instance.Modifiers);
+                    }
                         break;
                     }
 
@@ -154,13 +168,18 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_KEYUP:
                 case WindowsMessage.WM_SYSKEYUP:
                         {
-                        e = new RawKeyEventArgs(
+                        var key = KeyInterop.KeyFromVirtualKey(ToInt32(wParam), ToInt32(lParam));
+
+                        if (key != Key.None)
+                        {
+                            e = new RawKeyEventArgs(
                             WindowsKeyboardDevice.Instance,
                             timestamp,
                             _owner,
                             RawKeyEventType.KeyUp,
-                            KeyInterop.KeyFromVirtualKey(ToInt32(wParam), ToInt32(lParam)),
+                            key,
                             WindowsKeyboardDevice.Instance.Modifiers);
+                        }
                         break;
                     }
                 case WindowsMessage.WM_CHAR:
@@ -187,15 +206,15 @@ namespace Modern.WindowKit.Win32
                         shouldTakeFocus = ShouldTakeFocusOnClick;
                         if (ShouldIgnoreTouchEmulatedMessage())
                         {
-                        break;
-                    }
+                            break;
+                        }
 
                         e = new RawPointerEventArgs(
                             _mouseDevice,
                             timestamp,
                             _owner,
                             message switch
-                            {
+                        {
                                 WindowsMessage.WM_LBUTTONDOWN => RawPointerEventType.LeftButtonDown,
                                 WindowsMessage.WM_RBUTTONDOWN => RawPointerEventType.RightButtonDown,
                                 WindowsMessage.WM_MBUTTONDOWN => RawPointerEventType.MiddleButtonDown,
@@ -215,8 +234,8 @@ namespace Modern.WindowKit.Win32
                     {
                         if (IsMouseInPointerEnabled)
                         {
-                        break;
-                    }
+                            break;
+                        }
                         if (ShouldIgnoreTouchEmulatedMessage())
                         {
                             break;
@@ -237,8 +256,8 @@ namespace Modern.WindowKit.Win32
                                     RawPointerEventType.XButton2Up,
                             },
                             DipFromLParam(lParam), GetMouseModifiers(wParam));
-                        break;
-                    }
+                            break;
+                        }
                 // Mouse capture is lost
                 case WindowsMessage.WM_CANCELMODE:
                     if (!IsMouseInPointerEnabled)
@@ -267,7 +286,7 @@ namespace Modern.WindowKit.Win32
                                 dwFlags = 2,
                                 hwndTrack = _hwnd,
                                 dwHoverTime = 0,
-                            };
+                        };
 
                             TrackMouseEvent(ref tm);
                         }
@@ -334,12 +353,12 @@ namespace Modern.WindowKit.Win32
                             new Vector(-(ToInt32(wParam) >> 16) / wheelDelta, 0),
                             GetMouseModifiers(wParam));
                         break;
-                        }
+                    }
 
                 case WindowsMessage.WM_MOUSELEAVE:
                     {
                         if (IsMouseInPointerEnabled)
-                    {
+                        {
                             break;
                         }
                         _trackingMouse = false;
@@ -359,7 +378,7 @@ namespace Modern.WindowKit.Win32
                 case WindowsMessage.WM_NCXBUTTONDOWN:
                     {
                         if (IsMouseInPointerEnabled)
-                {
+                        {
                             break;
                         }
                         e = new RawPointerEventArgs(
@@ -377,7 +396,7 @@ namespace Modern.WindowKit.Win32
                                     RawPointerEventType.XButton1Down :
                                     RawPointerEventType.XButton2Down,
                             },
-                            PointToClient(PointFromLParam(lParam)), GetMouseModifiers(wParam));
+                            PointToClient(WindowImpl.PointFromLParam(lParam)), GetMouseModifiers(wParam));
                         break;
                     }
                 case WindowsMessage.WM_TOUCH:
@@ -394,7 +413,7 @@ namespace Modern.WindowKit.Win32
                         if (GetTouchInputInfo(lParam, (uint)touchInputCount, pTouchInputs, Marshal.SizeOf<TOUCHINPUT>()))
                         {
                             foreach (var touchInput in touchInputs)
-                        {
+                            {
                                 Input?.Invoke(new RawTouchEventArgs(_touchDevice, touchInput.Time,
                                     _owner,
                                     touchInput.Flags.HasAllFlags(TouchInputFlags.TOUCHEVENTF_UP) ?
@@ -521,18 +540,18 @@ namespace Modern.WindowKit.Win32
                         break;
                     }
                 case WindowsMessage.WM_PARENTNOTIFY:
-                    {
+                        {
                         //This message is sent in a dialog scenarios. Contains mouse position.
                         //Old message, but listed in the wm_pointer reference
                         //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/inputmsg/wm-parentnotify
                         break;
-                }
+                    }
                 case WindowsMessage.WM_NCPAINT:
                     {
                         if (!HasFullDecorations)
                         {
                             return IntPtr.Zero;
-            }
+                        }
 
                         break;
                     }
@@ -549,9 +568,9 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_PAINT:
                     {
-                    //using(NonPumpingSyncContext.Use())
-                    //using (_rendererLock.Lock())
-                    //{
+                        //using (NonPumpingSyncContext.Use())
+                        //using (_rendererLock.Lock())
+                        //{
                             if (BeginPaint(_hwnd, out PAINTSTRUCT ps) != IntPtr.Zero)
                             {
                                 var f = RenderScaling;
@@ -560,7 +579,7 @@ namespace Modern.WindowKit.Win32
                                     (r.bottom - r.top) / f));
                                 EndPaint(_hwnd, ref ps);
                             }
-                    //}
+                        //}
 
                         return IntPtr.Zero;
                     }
@@ -572,7 +591,7 @@ namespace Modern.WindowKit.Win32
 
                 case WindowsMessage.WM_SIZE:
                     {
-                        //using(NonPumpingSyncContext.Use())
+                        //using (NonPumpingSyncContext.Use())
                         //using (_rendererLock.Lock())
                         //{
                         //    // Do nothing here, just block until the pending frame render is completed on the render thread
@@ -607,7 +626,7 @@ namespace Modern.WindowKit.Win32
                                 UpdateExtendMargins();
 
                                 ExtendClientAreaToDecorationsChanged?.Invoke(true);
-            }
+                            }
                         }
 
                         return IntPtr.Zero;
@@ -618,11 +637,11 @@ namespace Modern.WindowKit.Win32
                     break;
 
                 case WindowsMessage.WM_MOVE:
-                    {
+                        {
                         PositionChanged?.Invoke(new PixelPoint((short)(ToInt32(lParam) & 0xffff),
                             (short)(ToInt32(lParam) >> 16)));
                         return IntPtr.Zero;
-}
+                    }
 
                 case WindowsMessage.WM_GETMINMAXINFO:
                     {
@@ -706,14 +725,14 @@ namespace Modern.WindowKit.Win32
                 //    Imm32InputMethod.Current.IsComposing = false;
                 //    break;
 
-                //case WindowsMessage.WM_GETOBJECT:
-                //    if ((long)lParam == UiaRootObjectId)
-                //    {
-                //        var peer = ControlAutomationPeer.CreatePeerForElement((Control)_owner);
-                //        var node = AutomationNode.GetOrCreate(peer);
-                //        return UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, wParam, lParam, node);
-                //    }
-                //    break;
+            //    case WindowsMessage.WM_GETOBJECT:
+            //        if ((long)lParam == UiaRootObjectId && UiaCoreTypesApi.IsNetComInteropAvailable)
+            //{
+            //            var peer = ControlAutomationPeer.CreatePeerForElement((Control)_owner);
+            //            var node = AutomationNode.GetOrCreate(peer);
+            //            return UiaCoreProviderApi.UiaReturnRawElementProvider(_hwnd, wParam, lParam, node);
+            //        }
+            //        break;
             }
 
 #if USE_MANAGED_DRAG
@@ -751,7 +770,7 @@ namespace Modern.WindowKit.Win32
             }
 
             //using (_rendererLock.Lock())
-            //{
+            //        {
                 return DefWindowProc(hWnd, msg, wParam, lParam);
             //}
         }
@@ -762,7 +781,7 @@ namespace Modern.WindowKit.Win32
         //    if (historyCount > 1)
         //    {
         //        return new Lazy<IReadOnlyList<RawPointerPoint>>(() =>
-        //        {
+        //            {
         //            s_intermediatePointsPooledList.Clear();
         //            s_intermediatePointsPooledList.Capacity = historyCount;
 
@@ -789,15 +808,15 @@ namespace Modern.WindowKit.Win32
         //                        var historyPenInfo = s_historyPenInfos[i];
         //                        s_intermediatePointsPooledList.Add(CreateRawPointerPoint(historyPenInfo));
         //                    }
-        //                }
+        //}
         //            }
         //            else
-        //            {
+        //{
         //                // Currently Windows does not return history info for mouse input, but we handle it just for case.
         //                if (GetPointerInfoHistory(info.pointerId, ref historyCount, s_historyInfos))
         //                {
         //                    for (int i = historyCount - 1; i >= 1; i--)
-        //                    {
+        //    {
         //                        var historyInfo = s_historyInfos[i];
         //                        s_intermediatePointsPooledList.Add(CreateRawPointerPoint(historyInfo));
         //                    }
@@ -870,7 +889,7 @@ namespace Modern.WindowKit.Win32
         //}
 
         private RawPointerEventArgs CreatePointerArgs(IInputDevice device, ulong timestamp, RawPointerEventType eventType, RawPointerPoint point, RawInputModifiers modifiers, uint rawPointerId)
-        {
+            {
             return device is TouchDevice
                 ? new RawTouchEventArgs(device, timestamp, _owner, eventType, point, modifiers, rawPointerId)
                 : new RawPointerEventArgs(device, timestamp, _owner, eventType, point, modifiers)
@@ -950,7 +969,7 @@ namespace Modern.WindowKit.Win32
             };
         }
         private RawPointerPoint CreateRawPointerPoint(POINTER_PEN_INFO info)
-        {
+            {
             var pointerInfo = info.pointerInfo;
             var point = PointToClient(new PixelPoint(pointerInfo.ptPixelLocationX, pointerInfo.ptPixelLocationY));
             return new RawPointerPoint
@@ -1035,7 +1054,7 @@ namespace Modern.WindowKit.Win32
             return new Point((short)(ToInt32(lParam) & 0xffff), (short)(ToInt32(lParam) >> 16)) / RenderScaling;
         }
 
-        private PixelPoint PointFromLParam(IntPtr lParam)
+        private static PixelPoint PointFromLParam(IntPtr lParam)
         {
             return new PixelPoint((short)(ToInt32(lParam) & 0xffff), (short)(ToInt32(lParam) >> 16));
         }
@@ -1056,10 +1075,10 @@ namespace Modern.WindowKit.Win32
         {
             var keys = (ModifierKeys)ToInt32(wParam);
             return GetInputModifiers(keys);
-        }
+            }
 
         private static RawInputModifiers GetInputModifiers(ModifierKeys keys)
-        {
+            {
             var modifiers = WindowsKeyboardDevice.Instance.Modifiers;
 
             if (keys.HasAllFlags(ModifierKeys.MK_LBUTTON))
@@ -1088,10 +1107,10 @@ namespace Modern.WindowKit.Win32
             }
 
             return modifiers;
-        }
+            }
 
         private static RawInputModifiers GetInputModifiers(PointerFlags flags)
-        {
+            {
             var modifiers = WindowsKeyboardDevice.Instance.Modifiers;
 
             if (flags.HasAllFlags(PointerFlags.POINTER_FLAG_FIRSTBUTTON))
@@ -1102,7 +1121,7 @@ namespace Modern.WindowKit.Win32
             if (flags.HasAllFlags(PointerFlags.POINTER_FLAG_SECONDBUTTON))
             {
                 modifiers |= RawInputModifiers.RightMouseButton;
-            }
+    }
 
             if (flags.HasAllFlags(PointerFlags.POINTER_FLAG_THIRDBUTTON))
             {

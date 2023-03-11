@@ -53,7 +53,7 @@ namespace Modern.WindowKit.Controls
             return _iScreenImpl.ScreenFromPoint(point);
         }
 
-        //public Screen? ScreenFromVisual(IVisual visual)
+        //public Screen? ScreenFromVisual(Visual visual)
         //{
         //    var tl = visual.PointToScreen(visual.Bounds.TopLeft);
         //    var br = visual.PointToScreen(visual.Bounds.BottomRight);
