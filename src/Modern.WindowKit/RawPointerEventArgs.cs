@@ -53,9 +53,6 @@ namespace Modern.WindowKit.Input.Raw
             RawInputModifiers inputModifiers)
             : base(device, timestamp, root)
         {
-            //Contract.Requires<ArgumentNullException>(device != null);
-            //Contract.Requires<ArgumentNullException>(root != null);
-
             Point = new RawPointerPoint();
             Position = position;
             Type = type;
@@ -80,9 +77,6 @@ namespace Modern.WindowKit.Input.Raw
             RawInputModifiers inputModifiers)
             : base(device, timestamp, root)
         {
-            //Contract.Requires<ArgumentNullException>(device != null);
-            //Contract.Requires<ArgumentNullException>(root != null);
-
             Point = point;
             Type = type;
             InputModifiers = inputModifiers;
@@ -126,7 +120,7 @@ namespace Modern.WindowKit.Input.Raw
         /// only valid for Move and TouchUpdate
         /// </summary>
         public Lazy<IReadOnlyList<RawPointerPoint>?>? IntermediatePoints { get; set; }
-
+        
         //internal IInputElement? InputHitTestResult { get; set; }
     }
 
