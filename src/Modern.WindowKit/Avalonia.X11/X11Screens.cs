@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Modern.WindowKit.Platform;
 using static Modern.WindowKit.X11.XLib;
-//using JetBrains.Annotations;
 
 namespace Modern.WindowKit.X11
 {

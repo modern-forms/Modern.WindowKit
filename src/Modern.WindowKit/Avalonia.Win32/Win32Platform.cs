@@ -19,16 +19,14 @@ using Modern.WindowKit.Threading;
 using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Input;
 using Modern.WindowKit.Win32.Interop;
-//using JetBrains.Annotations;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit
 {
+#nullable enable
     //public static class Win32ApplicationExtensions
     //{
-    //    public static T UseWin32<T>(
-    //        this T builder) 
-    //            where T : AppBuilderBase<T>, new()
+    //    public static AppBuilder UseWin32(this AppBuilder builder)
     //    {
     //        return builder.UseWindowingSubsystem(
     //            () => Win32.Win32Platform.Initialize(
@@ -106,9 +104,10 @@ namespace Modern.WindowKit
         ///// <summary>
         ///// Provides a way to use a custom-implemented graphics context such as a custom ISkiaGpu
         ///// </summary>
-        //[CanBeNull] public IPlatformGraphics CustomPlatformGraphics { get; set; }
+        //public IPlatformGraphics? CustomPlatformGraphics { get; set; }
     }
 }
+#nullable restore
 
 namespace Modern.WindowKit.Win32
 {
@@ -258,6 +257,8 @@ namespace Modern.WindowKit.Win32
         }
 
         public bool CurrentThreadIsLoopThread => _uiThread == Thread.CurrentThread;
+
+        public TimeSpan HoldWaitDuration { get; set; } = TimeSpan.FromMilliseconds(300);
 
         public event Action<DispatcherPriority?> Signaled;
 

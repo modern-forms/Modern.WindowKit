@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-//using JetBrains.Annotations;
 using static Modern.WindowKit.X11.XLib;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace Modern.WindowKit.X11

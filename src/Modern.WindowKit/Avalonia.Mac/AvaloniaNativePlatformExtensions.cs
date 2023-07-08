@@ -6,8 +6,7 @@ namespace Modern.WindowKit
 {
     public static class AvaloniaNativePlatformExtensions
     {
-        //public static T UseAvaloniaNative<T>(this T builder)
-        //    where T : AppBuilderBase<T>, new()
+        //public static AppBuilder UseAvaloniaNative(this AppBuilder builder)
         //{
         //    builder.UseWindowingSubsystem(() =>
         //    {
@@ -39,7 +38,7 @@ namespace Modern.WindowKit
         /// Immediate re-renders the whole scene when some element is changed on the scene. Deferred re-renders only changed elements.
         /// </remarks>
         public bool UseDeferredRendering { get; set; } = true;
-
+        
         /// <summary>
         /// Enables new compositing rendering with UWP-like API
         /// </summary>
@@ -63,9 +62,9 @@ namespace Modern.WindowKit
     }
 
     // ReSharper disable once InconsistentNaming
-        /// <summary>
+    /// <summary>
     /// OSX front-end options.
-        /// </summary>
+    /// </summary>
     public class MacOSPlatformOptions
     {
         /// <summary>
@@ -92,4 +91,4 @@ namespace Modern.WindowKit
         /// </summary>
         public bool DisableAvaloniaAppDelegate { get; set; }
     }
-}
+    }
