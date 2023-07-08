@@ -25,6 +25,7 @@ CopyFile ("Avalonia.Base/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInter
 CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
 CopyFile ("Avalonia.Base/Input/DataFormats.cs", "DataFormats.cs");
 CopyFile ("Avalonia.Base/Input/DataObject.cs", "DataObject.cs");
+CopyFile ("Avalonia.Base/Platform/DefaultPlatformSettings.cs", "DefaultPlatformSettings.cs");
 CopyFile ("Avalonia.Base/Threading/Dispatcher.cs", "Dispatcher.cs");
 CopyFile ("Avalonia.Base/Threading/DispatcherPriority.cs", "DispatcherPriority.cs");
 CopyFile ("Avalonia.Base/Reactive/Disposable.cs", "Disposable.cs");
@@ -81,6 +82,7 @@ CopyFile ("Avalonia.Base/Platform/PixelFormat.cs", "PixelFormat.cs");
 CopyFile ("Avalonia.Base/PixelPoint.cs", "PixelPoint.cs");
 CopyFile ("Avalonia.Base/PixelRect.cs", "PixelRect.cs");
 CopyFile ("Avalonia.Base/PixelSize.cs", "PixelSize.cs");
+CopyFile ("Avalonia.Base/Platform/PlatformColorValues.cs", "PlatformColorValues.cs");
 CopyFile ("Avalonia.Base/Platform/PlatformHandle.cs", "PlatformHandle.cs");
 CopyFile ("Avalonia.Base/Point.cs", "Point.cs");
 CopyFile ("Avalonia.Base/Input/Pointer.cs", "Pointer.cs");
@@ -154,6 +156,7 @@ CopyFile ("Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "Avalonia.Win32/Win
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win32/WindowsKeyboardDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");
+CopyFile ("Windows/Avalonia.Win32/Win32PlatformSettings.cs", "Avalonia.Win32/Win32PlatformSettings.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32StorageProvider.cs", "Avalonia.Win32/Win32StorageProvider.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32TypeExtensions.cs", "Avalonia.Win32/Win32TypeExtensions.cs");
 //CopyFile ("Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs", "Avalonia.Win32/Interop/UnmanagedMethods.cs");
@@ -292,6 +295,10 @@ private void CopyFile (string src, string dst)
         case "IWindowImpl.cs":
             text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap");
             break;
+        case "PlatformColorValues.cs":
+            text = "using System.Drawing;\r\n" + text;
+            text = text.Replace ("new(255", "Color.FromArgb(255");
+            break;
         case "PopupImpl.cs":        // Mac
             text = text.Replace ("base(factory, opts, glFeature)", "base(factory, opts)");
             text = text.Replace ("context?.Context", "null");
@@ -324,6 +331,9 @@ private void CopyFile (string src, string dst)
             break;
         case "WindowImpl.AppWndProc.cs":    // Win
             text = text.Replace ("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
+            break;
+        case "Win32Platform.cs":    // Win
+            text = text.Replace ("AvaloniaLocator.Current.GetRequiredService", "AvaloniaGlobals.GetRequiredService");
             break;
         case "X11Platform.cs":
             text = text.Replace ("Avalonia.X11.X11Screens", "X11.X11Screens");

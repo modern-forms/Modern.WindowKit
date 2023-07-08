@@ -96,4 +96,3 @@ internal static class Disposable
         return new AnonymousDisposable<TState>(state, dispose);
     }
 }
-

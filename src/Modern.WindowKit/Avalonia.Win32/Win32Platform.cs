@@ -11,6 +11,7 @@ using Modern.WindowKit.Controls.ApplicationLifetimes;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
+//using Modern.WindowKit.Media;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
@@ -19,6 +20,7 @@ using Modern.WindowKit.Threading;
 using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Input;
 using Modern.WindowKit.Win32.Interop;
+using Modern.WindowKit.Win32.WinRT;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit
@@ -111,7 +113,7 @@ namespace Modern.WindowKit
 
 namespace Modern.WindowKit.Win32
 {
-    public class Win32Platform : IPlatformThreadingInterface, IPlatformSettings, IWindowingPlatform //, IPlatformIconLoader, IPlatformLifetimeEventsImpl
+    public class Win32Platform : IPlatformThreadingInterface, IWindowingPlatform //, IPlatformIconLoader, IPlatformLifetimeEventsImpl
     {
         private static readonly Win32Platform s_instance = new Win32Platform();
         private static Thread _uiThread;
@@ -126,6 +128,7 @@ namespace Modern.WindowKit.Win32
         }
 
         internal static Win32Platform Instance => s_instance;
+        internal static IPlatformSettings PlatformSettings => AvaloniaGlobals.GetRequiredService<IPlatformSettings>();
 
         internal IntPtr Handle => _hwnd;
 
@@ -153,7 +156,7 @@ namespace Modern.WindowKit.Win32
             //    .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
             //    .Bind<ICursorFactory>().ToConstant(CursorFactory.Instance)
             //    .Bind<IKeyboardDevice>().ToConstant(WindowsKeyboardDevice.Instance)
-            //    .Bind<IPlatformSettings>().ToConstant(s_instance)
+            //    .Bind<IPlatformSettings>().ToSingleton<Win32PlatformSettings>()
             //    .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
             //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
             //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
@@ -180,7 +183,7 @@ namespace Modern.WindowKit.Win32
             //    AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToSingleton<DragSource>();
 
             //if (Options.UseCompositor)
-            //    Compositor = new Compositor(AvaloniaLocator.Current.GetRequiredService<IRenderLoop>(), platformGraphics);
+            //    Compositor = new Compositor(AvaloniaGlobals.GetRequiredService<IRenderLoop>(), platformGraphics);
             //else
             //    RenderInterface = new PlatformRenderInterfaceContextManager(platformGraphics);
         }
@@ -258,8 +261,6 @@ namespace Modern.WindowKit.Win32
 
         public bool CurrentThreadIsLoopThread => _uiThread == Thread.CurrentThread;
 
-        public TimeSpan HoldWaitDuration { get; set; } = TimeSpan.FromMilliseconds(300);
-
         public event Action<DispatcherPriority?> Signaled;
 
         public event EventHandler<ShutdownRequestedEventArgs> ShutdownRequested;
@@ -284,6 +285,17 @@ namespace Modern.WindowKit.Win32
                     {
                         return IntPtr.Zero;
                     }
+                }
+            }
+            
+            if (msg == (uint)WindowsMessage.WM_SETTINGCHANGE 
+                && PlatformSettings is Win32PlatformSettings win32PlatformSettings)
+            {
+                var changedSetting = Marshal.PtrToStringAuto(lParam);
+                if (changedSetting == "ImmersiveColorSet" // dark/light mode
+                    || changedSetting == "WindowsThemeElement") // high contrast mode
+                {
+                    win32PlatformSettings.OnColorValuesChanged();   
                 }
             }
             
@@ -403,25 +415,5 @@ namespace Modern.WindowKit.Win32
 
             SetProcessDPIAware();
         }
-
-        Size IPlatformSettings.GetTapSize(PointerType type)
-        {
-            return type switch
-            {
-                PointerType.Touch => new(10, 10),
-                _ => new(GetSystemMetrics(SystemMetric.SM_CXDRAG), GetSystemMetrics(SystemMetric.SM_CYDRAG)),
-            };
-        }
-
-        Size IPlatformSettings.GetDoubleTapSize(PointerType type)
-        {
-            return type switch
-            {
-                PointerType.Touch => new(16, 16),
-                _ => new(GetSystemMetrics(SystemMetric.SM_CXDOUBLECLK), GetSystemMetrics(SystemMetric.SM_CYDOUBLECLK)),
-            };
-    }
-
-        TimeSpan IPlatformSettings.GetDoubleTapTime(PointerType type) => TimeSpan.FromMilliseconds(GetDoubleClickTime());
     }
 }
