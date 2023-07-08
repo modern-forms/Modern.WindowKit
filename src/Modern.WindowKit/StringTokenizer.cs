@@ -63,7 +63,7 @@ namespace Modern.WindowKit.Utilities
             }
             else
             {
-                result = default(Int32);
+                result = default;
                 return false;
             }
         }
@@ -87,7 +87,7 @@ namespace Modern.WindowKit.Utilities
             }
             else
             {
-                result = default(double);
+                result = default;
                 return false;
             }
         }

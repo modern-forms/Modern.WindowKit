@@ -27,6 +27,7 @@ CopyFile ("Avalonia.Base/Input/DataFormats.cs", "DataFormats.cs");
 CopyFile ("Avalonia.Base/Input/DataObject.cs", "DataObject.cs");
 CopyFile ("Avalonia.Base/Threading/Dispatcher.cs", "Dispatcher.cs");
 CopyFile ("Avalonia.Base/Threading/DispatcherPriority.cs", "DispatcherPriority.cs");
+CopyFile ("Avalonia.Base/Reactive/Disposable.cs", "Disposable.cs");
 CopyFile ("Avalonia.Controls/Platform/ExtendClientAreaChromeHints.cs", "ExtendClientAreaChromeHints.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/FilePickerFileType.cs", "FilePickerFileType.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/FilePickerFileTypes.cs", "FilePickerFileTypes.cs");

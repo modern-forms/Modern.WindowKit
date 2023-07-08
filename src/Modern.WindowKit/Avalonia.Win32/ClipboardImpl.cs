@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Reactive.Disposables;
+using Modern.WindowKit.Reactive;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Modern.WindowKit.Input;

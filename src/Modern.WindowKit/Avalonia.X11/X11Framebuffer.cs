@@ -25,7 +25,7 @@ namespace Modern.WindowKit.X11
             RowBytes = width * 4;
             Dpi = new Vector(96, 96) * factor;
             Format = PixelFormat.Bgra8888;
-            _blob = AvaloniaGlobals.GetService<IRuntimePlatform>().AllocBlob(RowBytes * height);
+            _blob = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>().AllocBlob(RowBytes * height);
             Address = _blob.Address;
         }
         
