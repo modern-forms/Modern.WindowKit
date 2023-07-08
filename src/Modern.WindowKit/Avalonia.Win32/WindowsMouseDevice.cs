@@ -1,7 +1,6 @@
 ﻿using System;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
-//using Modern.WindowKit.VisualTree;
 using Modern.WindowKit.Win32.Interop;
 
 namespace Modern.WindowKit.Win32.Input
@@ -34,7 +33,7 @@ namespace Modern.WindowKit.Win32.Input
 
             //protected override void PlatformCapture(IInputElement element)
             //{
-            //    var hwnd = (((element as Visual)?.GetVisualRoot() as TopLevel)?.PlatformImpl as WindowImpl)
+            //    var hwnd = (TopLevel.GetTopLevel(element as Visual)?.PlatformImpl as WindowImpl)
             //        ?.Handle.Handle;
 
             //    if (hwnd.HasValue && hwnd != IntPtr.Zero)

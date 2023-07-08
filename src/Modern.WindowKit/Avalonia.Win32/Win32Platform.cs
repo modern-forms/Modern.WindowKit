@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Reactive.Disposables;
+using Modern.WindowKit.Reactive;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Modern.WindowKit.Controls;
