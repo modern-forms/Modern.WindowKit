@@ -7,7 +7,6 @@ using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Input.TextInput;
 using Modern.WindowKit.Platform.Interop;
-//using JetBrains.Annotations;
 using static Modern.WindowKit.X11.XLib;
 
 namespace Modern.WindowKit.X11

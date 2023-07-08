@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Modern.WindowKit.Platform.Interop;
-//using JetBrains.Annotations;
 
 // ReSharper disable IdentifierTypo
 namespace Modern.WindowKit.X11.NativeDialogs

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Modern.WindowKit.Compatibility;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
@@ -16,11 +17,11 @@ namespace Modern.WindowKit
         {
             var runtime = AddService<IRuntimePlatform> (new StandardRuntimePlatform());
 
-            if (runtime.GetRuntimeInfo ().OperatingSystem == OperatingSystemType.WinNT)
+            if (OperatingSystemEx.IsWindows())
                 InitializeWindows();
-            else if (runtime.GetRuntimeInfo().OperatingSystem == OperatingSystemType.Linux)
+            else if (OperatingSystemEx.IsLinux())
                 InitializeLinux();
-            else if (runtime.GetRuntimeInfo().OperatingSystem == OperatingSystemType.OSX)
+            else if (OperatingSystemEx.IsMacOS())
                 InitializeOSX();
             else
                 throw new InvalidOperationException("Unrecognized Operating System");

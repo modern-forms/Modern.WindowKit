@@ -1,4 +1,5 @@
-﻿using Modern.WindowKit.Platform;
+﻿using Modern.WindowKit.Compatibility;
+using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.WindowKit.Skia.Helpers
@@ -18,10 +19,7 @@ namespace Modern.WindowKit.Skia.Helpers
             var colorType = format?.ToSkColorType() ?? SKImageInfo.PlatformColorType;
 
             // TODO: This looks like some leftover hack
-            var runtimePlatform = AvaloniaGlobals.GetService<IRuntimePlatform>();
-            var runtime = runtimePlatform?.GetRuntimeInfo();
-
-            if (runtime?.IsDesktop == true && runtime.Value.OperatingSystem == OperatingSystemType.Linux)
+            if (OperatingSystemEx.IsLinux())
             {
                 colorType = SKColorType.Bgra8888;
             }
@@ -29,4 +27,4 @@ namespace Modern.WindowKit.Skia.Helpers
             return colorType;
         }
     }
-}
+        }

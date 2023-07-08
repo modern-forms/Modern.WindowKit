@@ -69,6 +69,7 @@ CopyFile ("Avalonia.Base/Threading/JobRunner.cs", "JobRunner.cs");
 CopyFile ("Avalonia.Base/Input/Key.cs", "Key.cs");
 CopyFile ("Avalonia.Base/Input/KeyboardDevice.cs", "KeyboardDevice.cs");
 CopyFile ("Avalonia.Base/Platform/LockedFramebuffer.cs", "LockedFramebuffer.cs");
+CopyFile ("Avalonia.Base/Compatibility/OperatingSystem.cs", "OperatingSystem.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositioner.cs", "ManagedPopupPositioner.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/ManagedPopupPositionerPopupImplHelper.cs", "ManagedPopupPositionerPopupImplHelper.cs");
 CopyFile ("Avalonia.Base/Utilities/MathUtilities.cs", "MathUtilities.cs");
