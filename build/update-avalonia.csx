@@ -62,7 +62,7 @@ CopyFile ("Avalonia.Base/Platform/Storage/IStorageFolder.cs", "IStorageFolder.cs
 CopyFile ("Avalonia.Base/Platform/Storage/IStorageItem.cs", "IStorageItem.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/IStorageProvider.cs", "IStorageProvider.cs");
 CopyFile ("Avalonia.Controls/Platform/ITopLevelImpl.cs", "ITopLevelImpl.cs");
-CopyFile ("Avalonia.Controls/Platform/ITopLevelImplWithStorageProvider.cs", "ITopLevelImplWithStorageProvider.cs");
+//CopyFile ("Avalonia.Controls/Platform/ITopLevelImplWithStorageProvider.cs", "ITopLevelImplWithStorageProvider.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowBaseImpl.cs", "IWindowBaseImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowImpl.cs", "IWindowImpl.cs");
 CopyFile ("Avalonia.Controls/Platform/IWindowingPlatform.cs", "IWindowingPlatform.cs");
@@ -102,6 +102,7 @@ CopyFile ("Avalonia.Controls/ApplicationLifetimes/ShutdownRequestedEventArgs.cs"
 CopyFile ("Avalonia.Base/Size.cs", "Size.cs");
 CopyFile ("Avalonia.Base/Platform/StandardRuntimePlatform.cs", "StandardRuntimePlatform.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/StorageItemProperties.cs", "StorageItemProperties.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/StorageProviderExtensions.cs", "StorageProviderExtensions.cs");
 CopyFile ("Avalonia.Base/Platform/Storage/FileIO/StorageProviderHelpers.cs", "StorageProviderHelpers.cs");
 CopyFile ("Avalonia.Base/Utilities/StringBuilderCache.cs", "StringBuilderCache.cs");
 CopyFile ("Avalonia.Base/Utilities/StringTokenizer.cs", "StringTokenizer.cs");
@@ -110,6 +111,7 @@ CopyFile ("Avalonia.Base/Input/TouchDevice.cs", "TouchDevice.cs");
 CopyFile ("Avalonia.Base/Platform/Internal/UnmanagedBlob.cs", "UnmanagedBlob.cs");
 CopyFile ("Avalonia.Base/Metadata/UnstableAttribute.cs", "UnstableAttribute.cs");
 CopyFile ("Avalonia.Base/Vector.cs", "Vector.cs");
+CopyFile ("Avalonia.Base/Platform/Storage/WellKnownFolder.cs", "WellKnownFolder.cs");
 CopyFile ("Avalonia.Controls/WindowEdge.cs", "WindowEdge.cs");
 CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");
 CopyFile ("Avalonia.Base/Platform/ICursorFactory.cs", "ICursorFactory.cs");
@@ -354,6 +356,12 @@ private void CopyFile (string src, string dst)
             break;
         case "ScreenImpl.cs":
             text = text.Replace ("ref Rect", "ref Modern.WindowKit.Win32.Interop.Rect");
+            break;
+        case "BclStorageFolder.cs":
+            text = text.Replace ("internal class Bcl", "public class Bcl");
+            break;
+        case "StorageProviderExtensions.cs":
+            text = text.Replace ("internal static string? Try", "public static string? Try");
             break;
     }
 

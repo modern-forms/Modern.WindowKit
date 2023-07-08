@@ -196,10 +196,10 @@ namespace Modern.WindowKit.X11.NativeDialogs
                 gtk_dialog_add_button(dlg, open, GtkResponseType.Cancel);
             }
 
-            Uri? folderPath = null;
-            if (initialFolder?.TryGetUri(out folderPath) == true)
+            var folderLocalPath = initialFolder?.TryGetFullPath();
+            if (folderLocalPath is not null)
             {
-                using var dir = new Utf8Buffer(folderPath.LocalPath);
+                using var dir = new Utf8Buffer(folderLocalPath);
                 gtk_file_chooser_set_current_folder(dlg, dir);
             }
 
@@ -207,7 +207,7 @@ namespace Modern.WindowKit.X11.NativeDialogs
             {
                 // gtk_file_chooser_set_filename() expects full path
                 using var fn = action == GtkFileChooserAction.Open
-                    ? new Utf8Buffer(Path.Combine(folderPath?.LocalPath ?? "", initialFileName))
+                    ? new Utf8Buffer(Path.Combine(folderLocalPath ?? "", initialFileName))
                     : new Utf8Buffer(initialFileName);
 
                 if (action == GtkFileChooserAction.Save)
