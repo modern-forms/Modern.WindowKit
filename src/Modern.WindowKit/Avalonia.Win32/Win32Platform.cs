@@ -6,12 +6,10 @@ using System.IO;
 using Modern.WindowKit.Reactive;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.ApplicationLifetimes;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
-//using Modern.WindowKit.Media;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
@@ -20,7 +18,6 @@ using Modern.WindowKit.Threading;
 using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Input;
 using Modern.WindowKit.Win32.Interop;
-using Modern.WindowKit.Win32.WinRT;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 
 namespace Modern.WindowKit
@@ -68,6 +65,7 @@ namespace Modern.WindowKit
 
         /// <summary>
         /// Render Avalonia to a Texture inside the Windows.UI.Composition tree.
+        /// This setting is true by default.
         /// </summary>
         /// <remarks>
         /// Supported on Windows 10 build 16299 and above. Ignored on other versions.
@@ -89,8 +87,18 @@ namespace Modern.WindowKit
         /// and stylings / blurrings offered by <see cref="UseWindowsUIComposition"/><br/>
         /// This is mutually exclusive with 
         /// <see cref="UseWindowsUIComposition"/> which if active will override this setting. 
+        /// This setting is false by default.
         /// </summary>
-        public bool UseLowLatencyDxgiSwapChain { get; set; } = false;
+        public bool UseLowLatencyDxgiSwapChain { get; set; }
+
+        /// <summary>
+        /// Render directly on the UI thread instead of using a dedicated render thread.
+        /// Only applicable if both <see cref="UseWindowsUIComposition"/> and <see cref="UseLowLatencyDxgiSwapChain"/>
+        /// are false.
+        /// This setting is only recommended for interop with systems that must render on the UI thread, such as WPF.
+        /// This setting is false by default.
+        /// </summary>
+        public bool ShouldRenderOnUIThread { get; set; }
         
         ///// <summary>
         ///// Provides a way to use a custom-implemented graphics context such as a custom ISkiaGpu
@@ -139,6 +147,8 @@ namespace Modern.WindowKit.Win32
         public static void Initialize(Win32PlatformOptions options)
         {
             Options = options;
+            //var renderTimer = options.ShouldRenderOnUIThread ? new UiThreadRenderTimer(60) : new DefaultRenderTimer(60);
+
             //AvaloniaLocator.CurrentMutable
             //    .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
             //    .Bind<ICursorFactory>().ToConstant(CursorFactory.Instance)
@@ -146,10 +156,10 @@ namespace Modern.WindowKit.Win32
             //    .Bind<IPlatformSettings>().ToSingleton<Win32PlatformSettings>()
             //    .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
             //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
-            //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
+            //    .Bind<IRenderTimer>().ToConstant(renderTimer)
             //    .Bind<IWindowingPlatform>().ToConstant(s_instance)
             //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control)
-            //    {
+            //        {
             //        OpenContextMenu =
             //        {
             //            // Add Shift+F10
