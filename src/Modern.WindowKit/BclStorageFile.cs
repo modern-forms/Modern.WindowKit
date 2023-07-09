@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Modern.WindowKit.Platform.Storage.FileIO;
 
-internal class BclStorageFile : IStorageBookmarkFile
+public class BclStorageFile : IStorageBookmarkFile
 {
     public BclStorageFile(string fileName)
     {
@@ -18,10 +18,6 @@ internal class BclStorageFile : IStorageBookmarkFile
     }
 
     public FileInfo FileInfo { get; }
-
-    public bool CanOpenRead => true;
-
-    public bool CanOpenWrite => true;
 
     public string Name => FileInfo.Name;
 

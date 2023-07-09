@@ -8,9 +8,9 @@ using Modern.WindowKit.Threading;
 using static Modern.WindowKit.X11.XLib;
 namespace Modern.WindowKit.X11
 {
-    partial class X11Window
+    internal partial class X11Window
     {
-        class XimInputMethod //: ITextInputMethodImpl, IX11InputMethodControl
+        private class XimInputMethod //: ITextInputMethodImpl, IX11InputMethodControl
         {
             private readonly X11Window _parent;
             private bool _windowActive, _imeActive;

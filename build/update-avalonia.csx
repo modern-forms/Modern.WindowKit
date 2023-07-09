@@ -314,6 +314,7 @@ private void CopyFile (string src, string dst)
             // Win
             text = text.Replace ("ShowInTaskbar = false", "ShowInTaskbar = true");
             text = text.Replace ("if (!_shown)", "if ((Handle?.Handle ?? IntPtr.Zero) == IntPtr.Zero)");
+            text = text.Replace ("_owner ?? throw", "_owner; // ?? throw");
             // Mac
             text = text.Replace (", AvaloniaNativePlatformOptions opts,", ", AvaloniaNativePlatformOptions opts");
             text = text.Replace ("AvaloniaNativeGlPlatformGraphics glFeature) : base(factory, opts, glFeature)", ") : base(factory, opts)");
@@ -363,6 +364,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("ref Rect", "ref Modern.WindowKit.Win32.Interop.Rect");
             break;
         case "BclStorageFolder.cs":
+        case "BclStorageFile.cs":
             text = text.Replace ("internal class Bcl", "public class Bcl");
             break;
         case "StorageProviderExtensions.cs":
