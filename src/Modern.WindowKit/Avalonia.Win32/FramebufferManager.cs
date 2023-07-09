@@ -4,8 +4,6 @@ using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Interop;
 
-#nullable enable
-
 namespace Modern.WindowKit.Win32
 {
     internal class FramebufferManager : IFramebufferPlatformSurface, IDisposable

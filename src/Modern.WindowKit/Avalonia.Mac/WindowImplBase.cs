@@ -63,6 +63,7 @@ namespace Modern.WindowKit.Native
         //private GlPlatformSurface _glSurface;
         //private NativeControlHostImpl _nativeControlHost;
         private IStorageProvider _storageProvider;
+        //private PlatformBehaviorInhibition _platformBehaviorInhibition;
 
         internal WindowBaseImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts)
             //AvaloniaNativeGlPlatformGraphics glFeature)
@@ -88,6 +89,7 @@ namespace Modern.WindowKit.Native
             _savedScaling = RenderScaling;
             //_nativeControlHost = new NativeControlHostImpl(_native.CreateNativeControlHost());
             _storageProvider = new SystemDialogs(this, _factory.CreateSystemDialogs());
+            //_platformBehaviorInhibition = new PlatformBehaviorInhibition(_factory.CreatePlatformBehaviorInhibition());
 
             var monitor = Screen.AllScreens.OrderBy(x => x.Scaling)
                     .FirstOrDefault(m => m.Bounds.Contains(Position));
@@ -520,6 +522,11 @@ namespace Modern.WindowKit.Native
             {
                 return _storageProvider;
             }
+
+            //if (featureType == typeof(IPlatformBehaviorInhibition))
+            //{
+            //    return _platformBehaviorInhibition;
+            //}
 
             return null;
         }

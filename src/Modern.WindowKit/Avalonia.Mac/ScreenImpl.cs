@@ -5,7 +5,7 @@ using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Native
 {
-    class ScreenImpl : IScreenImpl, IDisposable
+    internal class ScreenImpl : IScreenImpl, IDisposable
     {
         private IAvnScreens _native;
 

@@ -6,7 +6,7 @@ using static Modern.WindowKit.X11.XLib;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace Modern.WindowKit.X11
 {
-    unsafe class X11Info
+    internal unsafe class X11Info
     {
         public IntPtr Display { get; }
         public IntPtr DeferredDisplay { get; }

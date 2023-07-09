@@ -6,7 +6,7 @@ using Modern.WindowKit.MicroCom;
 
 namespace Modern.WindowKit.Native
 {
-    public abstract class NativeCallbackBase : CallbackBase, IMicroComExceptionCallback
+    internal abstract class NativeCallbackBase : CallbackBase, IMicroComExceptionCallback
     {
         public void RaiseException(Exception e)
         {

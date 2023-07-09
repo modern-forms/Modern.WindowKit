@@ -7,7 +7,7 @@ using Modern.WindowKit.Win32.Interop;
 
 namespace Modern.WindowKit.Win32
 {
-    public partial class WindowImpl
+    internal partial class WindowImpl
     {
         public IEnumerable<object> Surfaces => new object[] { Handle, /* _gl, */ _framebuffer };
 
