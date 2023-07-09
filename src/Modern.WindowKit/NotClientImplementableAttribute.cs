@@ -11,7 +11,7 @@ namespace Modern.WindowKit.Metadata
     /// may be added to its API.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Interface)]
-    public class NotClientImplementableAttribute : Attribute
+    public sealed class NotClientImplementableAttribute : Attribute
     {
     }
 }
