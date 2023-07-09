@@ -51,7 +51,7 @@ namespace Modern.WindowKit.Platform
     /// <see cref="IPopupImpl"/>.
     /// </remarks>
     [Unstable]
-    public interface ITopLevelImpl : IDisposable
+    public partial interface ITopLevelImpl : IOptionalFeatureProvider, IDisposable
     {
         /// <summary>
         /// Gets the client size of the toplevel.
@@ -112,11 +112,6 @@ namespace Modern.WindowKit.Platform
         //IRenderer CreateRenderer(IRenderRoot root);
 
         /// <summary>
-        /// Invalidates a rect on the toplevel.
-        /// </summary>
-        void Invalidate(Rect rect);
-
-        /// <summary>
         /// Sets the <see cref="IInputRoot"/> for the toplevel.
         /// </summary>
         void SetInputRoot(IInputRoot inputRoot);
@@ -128,14 +123,14 @@ namespace Modern.WindowKit.Platform
         /// <returns>The point in client coordinates.</returns>
         Point PointToClient(PixelPoint point);
 
-        /// <summary>
+        /// </summary>
         /// Converts a point from client to screen coordinates.
         /// </summary>
         /// <param name="point">The point in client coordinates.</param>
         /// <returns>The point in screen coordinates.</returns>
         PixelPoint PointToScreen(Point point);
 
-        /// <summary>
+        /// </summary>
         /// Sets the cursor associated with the toplevel.
         /// </summary>
         /// <param name="cursor">The cursor. Use null for default cursor</param>
@@ -145,15 +140,15 @@ namespace Modern.WindowKit.Platform
         /// Gets or sets a method called when the underlying implementation is destroyed.
         /// </summary>
         Action? Closed { get; set; }
-        
+
         /// <summary>
         /// Gets or sets a method called when the input focus is lost.
         /// </summary>
         Action? LostFocus { get; set; }
-
+        
         IPopupImpl? CreatePopup();
 
-        /// <summary>
+        /// </summary>
         /// Sets the <see cref="WindowTransparencyLevel"/> hint of the TopLevel.
         /// </summary>
         void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel);
