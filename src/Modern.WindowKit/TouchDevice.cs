@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
+#pragma warning disable CS0618
 
 namespace Modern.WindowKit.Input
 {
