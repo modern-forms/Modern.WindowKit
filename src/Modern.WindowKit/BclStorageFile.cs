@@ -7,11 +7,6 @@ namespace Modern.WindowKit.Platform.Storage.FileIO;
 
 public class BclStorageFile : IStorageBookmarkFile
 {
-    public BclStorageFile(string fileName)
-    {
-        FileInfo = new FileInfo(fileName);
-    }
-
     public BclStorageFile(FileInfo fileInfo)
     {
         FileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));

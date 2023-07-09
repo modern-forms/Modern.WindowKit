@@ -184,9 +184,10 @@ namespace Modern.WindowKit.Input
 
         //        source?.RaiseEvent(e);
         //        _pointer.Capture(null);
+        //        _lastMouseDownButton = default;
         //        return e.Handled;
         //    }
-
+        //
         //    return false;
         //}
 
@@ -280,6 +281,6 @@ namespace Modern.WindowKit.Input
         public IPointer? TryGetPointer(RawPointerEventArgs ev)
         {
             return _pointer;
+        }
     }
-}
 }

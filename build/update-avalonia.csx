@@ -22,6 +22,7 @@ CopyFile ("Avalonia.Base/Platform/Storage/FileIO/BclStorageFolder.cs", "BclStora
 CopyFile ("Avalonia.Base/Platform/Storage/FileIO/BclStorageProvider.cs", "BclStorageProvider.cs");
 CopyFile ("Avalonia.Base/Media/Imaging/BitmapInterpolationMode.cs", "BitmapInterpolationMode.cs");
 //CopyFile ("Avalonia.Input/Cursors.cs", "Cursors.cs");
+CopyFile ("Avalonia.Base/Input/DataObjectExtensions.cs", "DataObjectExtensions.cs");
 CopyFile ("Avalonia.Base/EnumExtensions.cs", "EnumExtensions.cs");
 CopyFile ("Avalonia.Base/Input/DataFormats.cs", "DataFormats.cs");
 CopyFile ("Avalonia.Base/Input/DataObject.cs", "DataObject.cs");
