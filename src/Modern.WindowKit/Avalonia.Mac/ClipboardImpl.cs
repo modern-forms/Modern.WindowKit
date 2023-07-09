@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Mac.Interop;
-using Modern.WindowKit.Platform.Interop;
+using Modern.WindowKit.Platform.Storage;
+using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.WindowKit.Native
 {
@@ -57,10 +57,15 @@ namespace Modern.WindowKit.Native
                          if(fmt.String == NSPasteboardTypeString)
                              rv.Add(DataFormats.Text);
                          if(fmt.String == NSFilenamesPboardType)
-                             rv.Add(DataFormats.FileNames);
-                    }
-                    }
+                         {
+#pragma warning disable CS0618 // Type or member is obsolete
+                            rv.Add(DataFormats.FileNames);
+#pragma warning restore CS0618 // Type or member is obsolete
+                            rv.Add(DataFormats.Files);
+                         }
+        }
                 }
+            }
 
             return rv;
         }
@@ -74,7 +79,13 @@ namespace Modern.WindowKit.Native
         public IEnumerable<string> GetFileNames()
         {
             using (var strings = _native.GetStrings(NSFilenamesPboardType))
-                return strings.ToStringArray();
+                return strings?.ToStringArray();
+        }
+
+        public IEnumerable<IStorageItem> GetFiles()
+        {
+            return GetFileNames()?.Select(f => StorageProviderHelpers.TryCreateBclStorageItem(f)!)
+                .Where(f => f is not null);
         }
 
         public unsafe Task SetDataObjectAsync(IDataObject data)
@@ -102,12 +113,16 @@ namespace Modern.WindowKit.Native
         {
             if (format == DataFormats.Text)
                 return await GetTextAsync();
+#pragma warning disable CS0618 // Type or member is obsolete
             if (format == DataFormats.FileNames)
                 return GetFileNames();
+#pragma warning restore CS0618 // Type or member is obsolete
+            if (format == DataFormats.Files)
+                return GetFiles();
             using (var n = _native.GetBytes(format))
                 return n.Bytes;
         }
-        }
+    }
     
     class ClipboardDataObject : IDataObject, IDisposable
     {
@@ -131,20 +146,16 @@ namespace Modern.WindowKit.Native
 
         public bool Contains(string dataFormat) => Formats.Contains(dataFormat);
 
-        public string GetText()
-        {
-            // bad idea in general, but API is synchronous anyway
-            return _clipboard.GetTextAsync().Result;
-        }
-
-        public IEnumerable<string> GetFileNames() => _clipboard.GetFileNames();
-
         public object Get(string dataFormat)
         {
             if (dataFormat == DataFormats.Text)
-                return GetText();
+                return _clipboard.GetTextAsync().Result;
+            if (dataFormat == DataFormats.Files)
+                return _clipboard.GetFiles();
+#pragma warning disable CS0618
             if (dataFormat == DataFormats.FileNames)
-                return GetFileNames();
+#pragma warning restore CS0618
+                return _clipboard.GetFileNames();
             return null;
         }
         }

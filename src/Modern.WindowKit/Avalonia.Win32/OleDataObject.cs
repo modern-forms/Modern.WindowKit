@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization.Formatters.Binary;
 using Modern.WindowKit.Input;
+using Modern.WindowKit.Platform.Storage.FileIO;
 using Modern.WindowKit.Utilities;
 using Modern.WindowKit.Win32.Interop;
 using Modern.WindowKit.MicroCom;
@@ -34,16 +35,6 @@ namespace Modern.WindowKit.Win32
             return GetDataFormatsCore().Distinct();
         }
 
-        public string? GetText()
-        {
-            return (string?)GetDataFromOleHGLOBAL(DataFormats.Text, DVASPECT.DVASPECT_CONTENT);
-        }
-
-        public IEnumerable<string>? GetFileNames()
-        {
-            return (IEnumerable<string>?)GetDataFromOleHGLOBAL(DataFormats.FileNames, DVASPECT.DVASPECT_CONTENT);
-        }
-
         public object? Get(string dataFormat)
         {
             return GetDataFromOleHGLOBAL(dataFormat, DVASPECT.DVASPECT_CONTENT);
@@ -67,13 +58,20 @@ namespace Modern.WindowKit.Win32
                     {
                         if (format == DataFormats.Text)
                             return ReadStringFromHGlobal(medium.unionmember);
+#pragma warning disable CS0618
                         if (format == DataFormats.FileNames)
+#pragma warning restore CS0618
                             return ReadFileNamesFromHGlobal(medium.unionmember);
+                        if (format == DataFormats.Files)
+                            return ReadFileNamesFromHGlobal(medium.unionmember)
+                                .Select(f => StorageProviderHelpers.TryCreateBclStorageItem(f)!)
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+                                .Where(f => f is not null);
 
                         byte[] data = ReadBytesFromHGlobal(medium.unionmember);
 
                         if (IsSerializedObject(data))
-                            {
+                        {
                             using (var ms = new MemoryStream(data))
                             {
                                 ms.Position = DataObject.SerializedObjectGUID.Length;
