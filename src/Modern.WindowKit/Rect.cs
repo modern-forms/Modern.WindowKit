@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Numerics;
 //using Modern.WindowKit.Animation.Animators;
 using Modern.WindowKit.Utilities;
 
@@ -441,6 +442,32 @@ namespace Modern.WindowKit
 
         //    return new Rect(new Point(left, top), new Point(right, bottom));
         //}
+
+        internal Rect TransformToAABB(Matrix4x4 matrix)
+        {
+            ReadOnlySpan<Point> points = stackalloc Point[4]
+            {
+                TopLeft.Transform(matrix),
+                TopRight.Transform(matrix),
+                BottomRight.Transform(matrix),
+                BottomLeft.Transform(matrix)
+            };
+
+            var left = double.MaxValue;
+            var right = double.MinValue;
+            var top = double.MaxValue;
+            var bottom = double.MinValue;
+
+            foreach (var p in points)
+            {
+                if (p.X < left) left = p.X;
+                if (p.X > right) right = p.X;
+                if (p.Y < top) top = p.Y;
+                if (p.Y > bottom) bottom = p.Y;
+            }
+
+            return new Rect(new Point(left, top), new Point(right, bottom));
+        }
 
         /// <summary>
         /// Translates the rectangle by an offset.

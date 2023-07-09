@@ -11,14 +11,14 @@ using Modern.WindowKit.Platform.Interop;
 
 namespace Modern.WindowKit.Native
 {
-    internal partial class WindowImpl : WindowBaseImpl, IWindowImpl//, ITopLevelImplWithNativeMenuExporter
+    internal partial class WindowImpl : WindowBaseImpl, IWindowImpl
     {
         private readonly AvaloniaNativePlatformOptions _opts;
         //private readonly AvaloniaNativeGlPlatformGraphics _glFeature;
         IAvnWindow _native;
         private double _extendTitleBarHeight = -1;
         //private DoubleClickHelper _doubleClickHelper;
-        
+        //private readonly ITopLevelNativeMenuExporter _nativeMenuExporter;
         
         internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts
             ) : base(factory, opts)
@@ -32,7 +32,7 @@ namespace Modern.WindowKit.Native
                 Init(_native = factory.CreateWindow(e, null), factory.CreateScreens());
             }
 
-            //NativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
+            //_nativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
         }
 
         class WindowEvents : WindowBaseEvents, IAvnWindowEvents
@@ -209,8 +209,6 @@ namespace Modern.WindowKit.Native
 
         public Func<WindowCloseReason, bool> Closing { get; set; }
 
-        //public ITopLevelNativeMenuExporter NativeMenuExporter { get; }
-
         public void Move(PixelPoint point) => Position = point;
 
         //public override IPopupImpl CreatePopup() =>
@@ -227,5 +225,15 @@ namespace Modern.WindowKit.Native
         {
             _native.SetEnabled(enable.AsComBool());
         }
+
+        public override object TryGetFeature(Type featureType)
+        {
+            //if (featureType == typeof(ITopLevelNativeMenuExporter))
+            //{
+            //    return _nativeMenuExporter;
+            //}
+            
+            return base.TryGetFeature(featureType);
         }
     }
+}

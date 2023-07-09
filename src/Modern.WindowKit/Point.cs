@@ -252,7 +252,13 @@ namespace Modern.WindowKit
         ///// <returns>The transformed point.</returns>
         //public Point Transform(Matrix transform) => transform.Transform(this);
 
-        ///// </summary>
+        internal Point Transform(Matrix4x4 matrix)
+        {
+            var vec = Vector2.Transform(new Vector2((float)X, (float)Y), matrix);
+            return new Point(vec.X, vec.Y);
+        }
+
+        /// <summary>
         /// Returns a new point with the specified X coordinate.
         /// </summary>
         /// <param name="x">The X coordinate.</param>

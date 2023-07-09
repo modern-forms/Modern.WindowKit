@@ -45,6 +45,7 @@ CopyFile ("Avalonia.Base/Input/IInputDevice.cs", "IInputDevice.cs");
 CopyFile ("Avalonia.Base/Input/IKeyboardDevice.cs", "IKeyboardDevice.cs");
 CopyFile ("Avalonia.Base/Platform/ILockedFramebuffer.cs", "ILockedFramebuffer.cs");
 CopyFile ("Avalonia.Base/Input/IMouseDevice.cs", "IMouseDevice.cs");
+CopyFile ("Avalonia.Base/Platform/IOptionalFeatureProvider.cs", "IOptionalFeatureProvider.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformHandle.cs", "IPlatformHandle.cs");
 CopyFile ("Avalonia.Controls/Platform/IPlatformNativeSurfaceHandle.cs", "IPlatformNativeSurfaceHandle.cs");
 CopyFile ("Avalonia.Base/Platform/IPlatformSettings.cs", "IPlatformSettings.cs");
@@ -53,6 +54,7 @@ CopyFile ("Avalonia.Base/Input/IPointer.cs", "IPointer.cs");
 CopyFile ("Avalonia.Base/Input/IPointerDevice.cs", "IPointerDevice.cs");
 CopyFile ("Avalonia.Controls/Platform/IPopupImpl.cs", "IPopupImpl.cs");
 CopyFile ("Avalonia.Controls/Primitives/PopupPositioning/IPopupPositioner.cs", "IPopupPositioner.cs");
+CopyFile ("Avalonia.Base/Platform/IReadableBitmapImpl.cs", "IReadableBitmapImpl.cs");
 CopyFile ("Avalonia.Base/Platform/IRuntimePlatform.cs", "IRuntimePlatform.cs");
 CopyFile ("Avalonia.Controls/Platform/IScreenImpl.cs", "IScreenImpl.cs");
 //CopyFile ("Avalonia.Input/Platform/IStandardCursorFactory.cs", "IStandardCursorFactory.cs");
@@ -345,6 +347,9 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("_inputRoot, text),", "_inputRoot, text, (RawInputModifiers)ev.KeyEvent.state),");
             text = text.Replace ("[NotNull] ", "");
             break;
+        case "X11Window.Xim.cs":
+            text = text.Replace ("_windowActive && IsActive;", "_windowActive; // && IsActive;");
+            break;
         case "RawEventGrouper.cs":
             text = text.Replace ("PooledList", "List");
             break;
@@ -362,6 +367,9 @@ private void CopyFile (string src, string dst)
             break;
         case "StorageProviderExtensions.cs":
             text = text.Replace ("internal static string? Try", "public static string? Try");
+            break;
+        case "ITopLevelImpl.cs":
+            text = text.Replace ("public interface ITopLevelImpl", "public partial interface ITopLevelImpl");
             break;
     }
 
