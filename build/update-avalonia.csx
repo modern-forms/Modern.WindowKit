@@ -294,9 +294,6 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("IWindowImpl parentWindow", "IWindowBaseImpl parentWindow");
             text = text.Replace ("string title, IWindowImpl parent", "string title, IWindowBaseImpl parent");
             break;
-        case "KeyInterop.cs":
-            text = text.Replace ("static class", "public static class");
-            break;
         case "IWindowImpl.cs":
             text = text.Replace ("IWindowIconImpl", "SkiaSharp.SKBitmap");
             break;
@@ -336,7 +333,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("AvaloniaLocator.Current.GetService<IKeyboardDevice>()", "AvaloniaNativePlatform.KeyboardDevice");
             break;
         case "WindowImpl.AppWndProc.cs":    // Win
-            text = text.Replace ("new string((char)ToInt32(wParam), 1));", "new string((char)ToInt32(wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);");
+            text = text.Replace ("new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, Owner, text);", "new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, Owner, text, WindowsKeyboardDevice.Instance.Modifiers);");
             break;
         case "Win32Platform.cs":    // Win
             text = text.Replace ("AvaloniaLocator.Current.GetRequiredService", "AvaloniaGlobals.GetRequiredService");

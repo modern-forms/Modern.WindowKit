@@ -4,6 +4,7 @@ using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Raw;
+//using Modern.WindowKit.Input.TextInput;
 using Modern.WindowKit.Mac.Interop;
 //using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
@@ -19,7 +20,8 @@ namespace Modern.WindowKit.Native
         private double _extendTitleBarHeight = -1;
         //private DoubleClickHelper _doubleClickHelper;
         //private readonly ITopLevelNativeMenuExporter _nativeMenuExporter;
-        
+        //private readonly AvaloniaNativeTextInputMethod _inputMethod;
+
         internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts
             ) : base(factory, opts)
         {
@@ -33,6 +35,8 @@ namespace Modern.WindowKit.Native
             }
 
             //_nativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
+
+            //_inputMethod = new AvaloniaNativeTextInputMethod(_native);
         }
 
         class WindowEvents : WindowBaseEvents, IAvnWindowEvents
@@ -67,7 +71,7 @@ namespace Modern.WindowKit.Native
             }
             }
 
-        public IAvnWindow Native => _native;
+        public new IAvnWindow Native => _native;
 
         public void CanResize(bool value)
         {
@@ -229,6 +233,11 @@ namespace Modern.WindowKit.Native
 
         public override object TryGetFeature(Type featureType)
         {
+            //if(featureType == typeof(ITextInputMethodImpl))
+            //{
+            //    return _inputMethod;
+            //}
+            
             //if (featureType == typeof(ITopLevelNativeMenuExporter))
             //{
             //    return _nativeMenuExporter;

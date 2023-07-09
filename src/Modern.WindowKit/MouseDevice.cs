@@ -4,6 +4,7 @@ using Modern.WindowKit.Reactive;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Utilities;
+#pragma warning disable CS0618
 
 namespace Modern.WindowKit.Input
 {
