@@ -9,6 +9,7 @@ using Modern.WindowKit.Mac.Interop;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
 //using Modern.WindowKit.Rendering.Composition;
+using Modern.WindowKit.Threading;
 using Modern.WindowKit.MicroCom;
 #nullable enable
 
@@ -98,8 +99,8 @@ namespace Modern.WindowKit.Native
             //}
 
             //AvaloniaLocator.CurrentMutable
-            //    .Bind<IPlatformThreadingInterface>()
-            //    .ToConstant(new PlatformThreadingInterface(_factory.CreatePlatformThreadingInterface()))
+            //    .Bind<IDispatcherImpl>()
+            //    .ToConstant(new DispatcherImpl(_factory.CreatePlatformThreadingInterface()))
             //    .Bind<ICursorFactory>().ToConstant(new CursorFactory(_factory.CreateCursorFactory()))
             //    .Bind<IPlatformIconLoader>().ToSingleton<IconLoader>()
             //    .Bind<IKeyboardDevice>().ToConstant(KeyboardDevice)
