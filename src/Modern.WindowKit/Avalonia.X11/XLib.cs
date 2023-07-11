@@ -376,6 +376,9 @@ namespace Modern.WindowKit.X11
         public static extern void XSetWMHints(IntPtr display, IntPtr window, ref XWMHints wmhints);
 
         [DllImport(libX11)]
+        public static extern IntPtr XGetWMHints(IntPtr display, IntPtr window);
+
+        [DllImport(libX11)]
         public static extern int XGetIconSizes(IntPtr display, IntPtr window, out IntPtr size_list, out int count);
 
         [DllImport(libX11)]
