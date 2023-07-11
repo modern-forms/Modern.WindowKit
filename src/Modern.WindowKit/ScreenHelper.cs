@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Modern.WindowKit.Controls;
 using Modern.WindowKit.Utilities;
 
 #nullable enable
 
 namespace Modern.WindowKit.Platform
 {
-    public static class ScreenHelper
+    internal static class ScreenHelper
     {
         public static Screen? ScreenFromPoint(PixelPoint point, IReadOnlyList<Screen> screens)
         {
