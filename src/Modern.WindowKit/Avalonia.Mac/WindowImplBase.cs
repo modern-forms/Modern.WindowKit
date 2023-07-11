@@ -7,6 +7,7 @@ using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Input;
+using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Mac.Interop;
 //using Modern.WindowKit.OpenGL;
@@ -527,6 +528,11 @@ namespace Modern.WindowKit.Native
             //{
             //    return _platformBehaviorInhibition;
             //}
+
+            if (featureType == typeof(IClipboard))
+            {
+                return AvaloniaLocator.Current.GetRequiredService<IClipboard>();
+            }
 
             return null;
         }

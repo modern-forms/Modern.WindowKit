@@ -24,6 +24,7 @@ using Modern.WindowKit.Win32.Interop;
 //using Modern.WindowKit.Win32.WinRT.Composition;
 using Modern.WindowKit.Win32.WinRT;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
+using Modern.WindowKit.Input.Platform;
 
 namespace Modern.WindowKit.Win32
     {
@@ -330,6 +331,11 @@ namespace Modern.WindowKit.Win32
             if (featureType == typeof(IStorageProvider))
             {
                 return _storageProvider;
+            }
+
+            if (featureType == typeof(IClipboard))
+            {
+                return AvaloniaLocator.Current.GetRequiredService<IClipboard>();
             }
 
             return null;

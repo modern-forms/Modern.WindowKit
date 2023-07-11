@@ -4,6 +4,7 @@ using Modern.WindowKit.Compatibility;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Threading;
 using Modern.WindowKit.Win32;
 using Modern.WindowKit.X11;
 
@@ -56,7 +57,7 @@ namespace Modern.WindowKit
             x11.Initialize(new X11PlatformOptions());
 
             AddService<IWindowingPlatform>(x11);
-            AddService<IPlatformThreadingInterface>(new X11PlatformThreading(x11));
+            AddService<IDispatcherImpl>(new X11PlatformThreading(x11));
             AddService<ICursorFactory>(new X11CursorFactory(x11.Display));
             AddService<IClipboard>(new X11Clipboard(x11));
         }
@@ -66,7 +67,7 @@ namespace Modern.WindowKit
             var platform = Native.AvaloniaNativePlatform.Initialize();
             
             AddService<IWindowingPlatform>(platform);
-            AddService<IPlatformThreadingInterface>(new Native.PlatformThreadingInterface(platform.Factory.CreatePlatformThreadingInterface()));
+            AddService<IDispatcherImpl>(new Native.DispatcherImpl(platform.Factory.CreatePlatformThreadingInterface()));
             AddService<ICursorFactory>(new Native.CursorFactory(platform.Factory.CreateCursorFactory()));
             AddService<IClipboard>(new Native.ClipboardImpl(platform.Factory.CreateClipboard()));
         }
@@ -76,9 +77,23 @@ namespace Modern.WindowKit
             Win32Platform.Initialize();
 
             AddService<IWindowingPlatform>(Win32Platform.Instance);
-            AddService<IPlatformThreadingInterface>(Win32Platform.Instance);
+            AddService<IDispatcherImpl>(Win32Platform.Instance._dispatcher);
             AddService<ICursorFactory>(CursorFactory.Instance);
             AddService<IClipboard>(new ClipboardImpl());
+        }
+    }
+
+    static class AvaloniaLocator
+    {
+        public static AvaloniaInstance Current = new AvaloniaInstance();
+
+        public class AvaloniaInstance
+        {
+            public T GetRequiredService<T>() where T : class 
+                => AvaloniaGlobals.GetRequiredService<T>();
+
+            public T? GetService<T>() where T : class 
+                => AvaloniaGlobals.GetService<T>();
         }
     }
 }

@@ -23,6 +23,7 @@ using Modern.WindowKit.Threading;
 //using Modern.WindowKit.X11.Glx;
 using Modern.WindowKit.X11.NativeDialogs;
 using static Modern.WindowKit.X11.XLib;
+using Modern.WindowKit.Input.Platform;
 // ReSharper disable IdentifierTypo
 // ReSharper disable StringLiteralTypo
 
@@ -190,7 +191,7 @@ namespace Modern.WindowKit.X11
             UpdateMotifHints();
             UpdateSizeHints(null);
 
-            _rawEventGrouper = new RawEventGrouper(DispatchInput);
+            _rawEventGrouper = new RawEventGrouper(DispatchInput, platform.EventGrouperDispatchQueue);
             
             _transparencyHelper = new TransparencyHelper(_x11, _handle, platform.Globals);
             _transparencyHelper.SetTransparencyRequest(WindowTransparencyLevel.None);
@@ -515,7 +516,6 @@ namespace Modern.WindowKit.X11
                         if (changedSize && !updatedSizeViaScaling && !_popup)
                             Resized?.Invoke(ClientSize, PlatformResizeReason.Unspecified);
 
-                        Dispatcher.UIThread.RunJobs(DispatcherPriority.Layout);
                     }, DispatcherPriority.Layout);
                 if (_useRenderWindow)
                     XConfigureResizeWindow(_x11.Display, _renderHandle, ev.ConfigureEvent.width,
@@ -828,6 +828,11 @@ namespace Modern.WindowKit.X11
             //{
             //    return _nativeControlHost;
             //}
+
+            if (featureType == typeof(IClipboard))
+            {
+                return AvaloniaLocator.Current.GetRequiredService<IClipboard>();
+            }
 
             return null;
         }

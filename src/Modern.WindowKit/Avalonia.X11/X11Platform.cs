@@ -14,6 +14,7 @@ using Modern.WindowKit.Input.Platform;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
 //using Modern.WindowKit.Rendering.Composition;
+using Modern.WindowKit.Threading;
 using Modern.WindowKit.X11;
 //using Modern.WindowKit.X11.Glx;
 using static Modern.WindowKit.X11.XLib;
@@ -34,6 +35,7 @@ namespace Modern.WindowKit.X11
         public X11PlatformOptions Options { get; private set; }
         public IntPtr OrphanedWindow { get; private set; }
         public X11Globals Globals { get; private set; }
+        public ManualRawEventGrouperDispatchQueue EventGrouperDispatchQueue { get; } = new();
         [DllImport("libc")]
         private static extern void setlocale(int type, string s);
         public void Initialize(X11PlatformOptions options)
@@ -72,7 +74,7 @@ namespace Modern.WindowKit.X11
 
             //AvaloniaLocator.CurrentMutable.BindToSelf(this)
             //    .Bind<IWindowingPlatform>().ToConstant(this)
-            //    .Bind<IPlatformThreadingInterface>().ToConstant(new X11PlatformThreading(this))
+            //    .Bind<IDispatcherImpl>().ToConstant(new X11PlatformThreading(this))
             //    .Bind<IRenderTimer>().ToConstant(new SleepLoopRenderTimer(60))
             //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
             //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control))
