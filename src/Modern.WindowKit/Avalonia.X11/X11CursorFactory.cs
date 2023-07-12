@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Internal;
 //using Modern.WindowKit.SourceGenerator;
 using Modern.WindowKit.Utilities;
 
@@ -92,18 +93,17 @@ namespace Modern.WindowKit.X11
         //private unsafe class XImageCursor : CursorImpl, IFramebufferPlatformSurface, IPlatformHandle
         //{
         //    private readonly PixelSize _pixelSize;
-        //    private readonly IUnmanagedBlob _blob;
+        //    private readonly UnmanagedBlob _blob;
 
         //    public XImageCursor(IntPtr display, IBitmapImpl bitmap, PixelPoint hotSpot)
         //    {
         //        var size = Marshal.SizeOf<XcursorImage>() +
         //            (bitmap.PixelSize.Width * bitmap.PixelSize.Height * 4);
-        //        var runtimePlatform = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>();
         //        var platformRenderInterface = AvaloniaLocator.Current.GetRequiredService<IPlatformRenderInterface>();
 
         //        _pixelSize = bitmap.PixelSize;
-        //        _blob = runtimePlatform.AllocBlob(size);
-
+        //        _blob = new UnmanagedBlob(size);
+                
         //        var image = (XcursorImage*)_blob.Address;
         //        image->version = 1;
         //        image->size = Marshal.SizeOf<XcursorImage>();
@@ -117,7 +117,7 @@ namespace Modern.WindowKit.X11
         //        using (var renderTarget = cpuContext.CreateRenderTarget(new[] { this }))
         //        using (var ctx = renderTarget.CreateDrawingContext())
         //        {
-        //            var r = new Rect(_pixelSize.ToSize(1));
+        //            var r = new Rect(_pixelSize.ToSize(1)); 
         //            ctx.DrawBitmap(bitmap, 1, r, r);
         //        }
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using Modern.WindowKit.Media.Imaging;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Internal;
 using Modern.WindowKit.Skia.Helpers;
 using SkiaSharp;
 
@@ -97,21 +98,12 @@ namespace Modern.WindowKit.Skia
             SKColorType colorType = format.ToSkColorType();
             SKAlphaType alphaType = alphaFormat.ToSkAlphaType();
             
-            var runtimePlatform = AvaloniaGlobals.GetService<IRuntimePlatform>();
+            _bitmap = new SKBitmap();
             
-            if (runtimePlatform != null)
-            {
-                _bitmap = new SKBitmap();
+            var nfo = new SKImageInfo(size.Width, size.Height, colorType, alphaType);
+            var blob = new UnmanagedBlob(nfo.BytesSize);
 
-                var nfo = new SKImageInfo(size.Width, size.Height, colorType, alphaType);
-                var blob = runtimePlatform.AllocBlob(nfo.BytesSize);
-
-                _bitmap.InstallPixels(nfo, blob.Address, nfo.RowBytes, s_releaseDelegate, blob);
-            }
-            else
-            {
-                _bitmap = new SKBitmap(size.Width, size.Height, colorType, alphaType);
-            }
+            _bitmap.InstallPixels(nfo, blob.Address, nfo.RowBytes, s_releaseDelegate, blob);
 
             _bitmap.Erase(SKColor.Empty);
         }
@@ -176,7 +168,7 @@ namespace Modern.WindowKit.Skia
         /// <param name="ctx">Blob.</param>
         private static void ReleaseProc(IntPtr address, object ctx)
         {
-            ((IUnmanagedBlob)ctx).Dispose();
+            ((UnmanagedBlob)ctx).Dispose();
         }
 
         /// <summary>

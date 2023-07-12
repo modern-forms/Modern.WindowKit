@@ -9,7 +9,9 @@ namespace Modern.WindowKit
     {
         //public static AppBuilder UseAvaloniaNative(this AppBuilder builder)
         //{
-        //    builder.UseWindowingSubsystem(() =>
+        //    builder
+        //        .UseStandardRuntimePlatformSubsystem()
+        //        .UseWindowingSubsystem(() =>
         //    {
         //        var platform = AvaloniaNativePlatform.Initialize(
         //            AvaloniaLocator.Current.GetService<AvaloniaNativePlatformOptions>() ??
@@ -28,7 +30,7 @@ namespace Modern.WindowKit
 
     public enum AvaloniaNativeRenderingMode
     {
-    /// </summary>
+        /// <summary>
         /// Avalonia would try to use native OpenGL with GPU rendering.
         /// </summary>
         OpenGl = 1,
@@ -43,7 +45,7 @@ namespace Modern.WindowKit
         Metal = 3
     }
     
-    /// <summary>
+    /// </summary>
     /// OSX backend options.
     /// </summary>
     public class AvaloniaNativePlatformOptions

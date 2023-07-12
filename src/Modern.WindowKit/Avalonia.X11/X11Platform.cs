@@ -344,7 +344,9 @@ namespace Modern.WindowKit
     {
         //public static AppBuilder UseX11(this AppBuilder builder)
         //{
-        //    builder.UseWindowingSubsystem(() =>
+        //    builder
+        //        .UseStandardRuntimePlatformSubsystem()
+        //        .UseWindowingSubsystem(() =>
         //        new AvaloniaX11Platform().Initialize(AvaloniaLocator.Current.GetService<X11PlatformOptions>() ??
         //                                             new X11PlatformOptions()));
         //    return builder;
@@ -353,5 +355,4 @@ namespace Modern.WindowKit
         public static void InitializeX11Platform(X11PlatformOptions options = null) =>
             new AvaloniaX11Platform().Initialize(options ?? new X11PlatformOptions());
     }
-
 }
