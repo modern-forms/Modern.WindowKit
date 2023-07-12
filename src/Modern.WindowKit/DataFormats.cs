@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Modern.WindowKit.Input
 {
@@ -17,7 +18,7 @@ namespace Modern.WindowKit.Input
         /// <summary>
         /// Dataformat for one or more filenames
         /// </summary>
-        [Obsolete("Use DataFormats.Files, this format is supported only on desktop platforms.")]
+        [Obsolete("Use DataFormats.Files, this format is supported only on desktop platforms."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly string FileNames = nameof(FileNames);
     }
 }
