@@ -3,7 +3,7 @@ using Modern.WindowKit.Threading;
 
 namespace Modern.WindowKit.Utilities
 {
-    public class NonPumpingLockHelper
+    internal class NonPumpingLockHelper
     {
         public interface IHelperImpl
         {

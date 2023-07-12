@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Modern.WindowKit.Input.Raw;
+//using Modern.WindowKit.Interactivity;
+using Modern.WindowKit.Metadata;
 using Modern.WindowKit.Platform;
+//using Modern.WindowKit.VisualTree;
+
 #pragma warning disable CS0618
 
 namespace Modern.WindowKit.Input
@@ -14,6 +18,7 @@ namespace Modern.WindowKit.Input
     /// <remarks>
     /// This class is supposed to be used on per-toplevel basis, don't use a shared one
     /// </remarks>
+    [PrivateApi]
     public class TouchDevice : IPointerDevice, IDisposable
     {
         private readonly Dictionary<long, Pointer> _pointers = new Dictionary<long, Pointer>();
@@ -47,6 +52,7 @@ namespace Modern.WindowKit.Input
             //}
 
             //var target = pointer.Captured ?? args.Root;
+            //var gestureTarget = pointer.CapturedGestureRecognizer?.Target;
             //var updateKind = args.Type.ToUpdateKind();
             //var keyModifier = args.InputModifiers.ToKeyModifiers();
 
@@ -60,20 +66,24 @@ namespace Modern.WindowKit.Input
             //    }
             //    else
             //    {
-            //        var settings = AvaloniaLocator.Current.GetRequiredService<IPlatformSettings>();
-                //    var doubleClickTime = settings.GetDoubleTapTime(PointerType.Touch).TotalMilliseconds;
-                //    var doubleClickSize = settings.GetDoubleTapSize(PointerType.Touch);
+            //        var settings = ((IInputRoot?)(target as Interactive)?.GetVisualRoot())?.PlatformSettings;
+            //        if (settings is not null)
+            //        {
+            //            var doubleClickTime = settings.GetDoubleTapTime(PointerType.Touch).TotalMilliseconds;
+            //            var doubleClickSize = settings.GetDoubleTapSize(PointerType.Touch);
 
-                //    if (!_lastClickRect.Contains(args.Position)
-                //        || ev.Timestamp - _lastClickTime > doubleClickTime)
-                //    {
-                //        _clickCount = 0;
-                //    }
-                //    ++_clickCount;
-                //    _lastClickTime = ev.Timestamp;
-                //    _lastClickRect = new Rect(args.Position, new Size())
-                //        .Inflate(new Thickness(doubleClickSize.Width / 2, doubleClickSize.Height / 2));
-                //}
+            //            if (!_lastClickRect.Contains(args.Position)
+            //                || ev.Timestamp - _lastClickTime > doubleClickTime)
+            //            {
+            //                _clickCount = 0;
+            //            }
+
+            //            ++_clickCount;
+            //            _lastClickTime = ev.Timestamp;
+            //            _lastClickRect = new Rect(args.Position, new Size())
+            //                .Inflate(new Thickness(doubleClickSize.Width / 2, doubleClickSize.Height / 2));
+            //        }
+            //    }
 
             //    target.RaiseEvent(new PointerPressedEventArgs(target, pointer,
             //        (Visual)args.Root, args.Position, ev.Timestamp,
@@ -86,28 +96,50 @@ namespace Modern.WindowKit.Input
             //    _pointers.Remove(args.RawPointerId);
             //    using (pointer)
             //    {
-            //        target.RaiseEvent(new PointerReleasedEventArgs(target, pointer,
-            //            (Visual)args.Root, args.Position, ev.Timestamp,
-            //            new PointerPointProperties(GetModifiers(args.InputModifiers, false), updateKind),
-            //            keyModifier, MouseButton.Left));
+            //        target = gestureTarget ?? target;
+            //        var e = new PointerReleasedEventArgs(target, pointer,
+            //                (Visual)args.Root, args.Position, ev.Timestamp,
+            //                new PointerPointProperties(GetModifiers(args.InputModifiers, false), updateKind),
+            //                keyModifier, MouseButton.Left);
+            //        if (gestureTarget != null)
+            //        {
+            //            pointer?.CapturedGestureRecognizer?.PointerReleasedInternal(e);
+            //        }
+            //        else
+            //        {
+            //            target.RaiseEvent(e);
+            //        }
             //    }
             //}
 
-            //if (args.Type == RawPointerEventType.TouchCancel)
-            //{
-                //_pointers.Remove(args.RawPointerId);
-            //    using (pointer)
-            //        pointer.Capture(null);
-            //}
+//            if (args.Type == RawPointerEventType.TouchCancel)
+//            {
+//                _pointers.Remove(args.RawPointerId);
+//                using (pointer)
+//            {
+//                    pointer?.Capture(null);
+//                    pointer?.CaptureGestureRecognizer(null);
+//                }
+//            }
 
-            //if (args.Type == RawPointerEventType.TouchUpdate)
-            //{
-                 //target.RaiseEvent(new PointerEventArgs(InputElement.PointerMovedEvent, target, pointer, (Visual)args.Root,
-                //    args.Position, ev.Timestamp,
-                //    new PointerPointProperties(GetModifiers(args.InputModifiers, true), updateKind),
-                //    keyModifier, args.IntermediatePoints));
-            }
-            //}
+//            if (args.Type == RawPointerEventType.TouchUpdate)
+//            {
+//                target = gestureTarget ?? target;
+//                var e = new PointerEventArgs(InputElement.PointerMovedEvent, target, pointer!, (Visual)args.Root,
+//                    args.Position, ev.Timestamp,
+//                    new PointerPointProperties(GetModifiers(args.InputModifiers, true), updateKind),
+//                    keyModifier, args.IntermediatePoints);
+
+//                if (gestureTarget != null)
+//                {
+//                    pointer?.CapturedGestureRecognizer?.PointerMovedInternal(e);
+//}
+//                else
+//                {
+//                    target.RaiseEvent(e);
+//                }
+//            }
+        }
 
         public void Dispose()
         {

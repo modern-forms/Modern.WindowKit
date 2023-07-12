@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
 {
+    [PrivateApi]
     public interface IManagedPopupPositionerPopup
     {
         IReadOnlyList<ManagedPopupPositionerScreenInfo> Screens { get; }
@@ -13,6 +15,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
         void MoveAndResize(Point devicePoint, Size virtualSize);
     }
 
+    [PrivateApi]
     public class ManagedPopupPositionerScreenInfo
     {
         public Rect Bounds { get; }
@@ -29,6 +32,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
     /// An <see cref="IPopupPositioner"/> implementation for platforms on which a popup can be
     /// arbitrarily positioned.
     /// </summary>
+    [PrivateApi]
     public class ManagedPopupPositioner : IPopupPositioner
     {
         private readonly IManagedPopupPositionerPopup _popup;

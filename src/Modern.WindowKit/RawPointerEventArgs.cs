@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input.Raw
 {
@@ -31,6 +32,7 @@ namespace Modern.WindowKit.Input.Raw
     /// <summary>
     /// A raw mouse event.
     /// </summary>
+    [PrivateApi]
     public class RawPointerEventArgs : RawInputEventArgs
     {
         private RawPointerPoint _point;
@@ -124,6 +126,7 @@ namespace Modern.WindowKit.Input.Raw
         //internal IInputElement? InputHitTestResult { get; set; }
     }
 
+    [PrivateApi]
     public record struct RawPointerPoint
     {
         /// <summary>

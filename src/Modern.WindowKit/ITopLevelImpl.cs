@@ -6,6 +6,7 @@ using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Layout;
 using Modern.WindowKit.Metadata;
 //using Modern.WindowKit.Rendering;
+//using Modern.WindowKit.Rendering.Composition;
 
 namespace Modern.WindowKit.Platform
 {
@@ -72,10 +73,9 @@ namespace Modern.WindowKit.Platform
         Action<WindowTransparencyLevel>? TransparencyLevelChanged { get; set; }
 
         ///// <summary>
-        ///// Creates a new renderer for the toplevel.
+        ///// Gets the compositor that's compatible with the toplevel
         ///// </summary>
-        ///// <param name="root">The toplevel.</param>
-        //IRenderer CreateRenderer(IRenderRoot root);
+        //Compositor Compositor { get; }
 
         /// <summary>
         /// Sets the <see cref="IInputRoot"/> for the toplevel.
@@ -89,14 +89,14 @@ namespace Modern.WindowKit.Platform
         /// <returns>The point in client coordinates.</returns>
         Point PointToClient(PixelPoint point);
 
-        /// </summary>
+        /// <summary>
         /// Converts a point from client to screen coordinates.
         /// </summary>
         /// <param name="point">The point in client coordinates.</param>
         /// <returns>The point in screen coordinates.</returns>
         PixelPoint PointToScreen(Point point);
 
-        /// </summary>
+        /// <summary>
         /// Sets the cursor associated with the toplevel.
         /// </summary>
         /// <param name="cursor">The cursor. Use null for default cursor</param>
@@ -114,10 +114,10 @@ namespace Modern.WindowKit.Platform
         
         IPopupImpl? CreatePopup();
 
-        /// </summary>
+        /// <summary>
         /// Sets the <see cref="WindowTransparencyLevel"/> hint of the TopLevel.
         /// </summary>
-        void SetTransparencyLevelHint(WindowTransparencyLevel transparencyLevel);
+        void SetTransparencyLevelHint(IReadOnlyList<WindowTransparencyLevel> transparencyLevels);
 
         /// <summary>
         /// Gets the current <see cref="WindowTransparencyLevel"/> of the TopLevel.

@@ -1,4 +1,5 @@
-﻿using Modern.WindowKit.Metadata;
+﻿//using Modern.WindowKit.Input.GestureRecognizers;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
     {

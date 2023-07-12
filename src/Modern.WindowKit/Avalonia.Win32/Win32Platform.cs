@@ -159,11 +159,10 @@ namespace Modern.WindowKit.Win32
             //    .Bind<IKeyboardDevice>().ToConstant(WindowsKeyboardDevice.Instance)
             //    .Bind<IPlatformSettings>().ToSingleton<Win32PlatformSettings>()
             //    .Bind<IDispatcherImpl>().ToConstant(s_instance._dispatcher)
-            //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
             //    .Bind<IRenderTimer>().ToConstant(renderTimer)
             //    .Bind<IWindowingPlatform>().ToConstant(s_instance)
             //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(KeyModifiers.Control)
-            //        {
+            //    {
             //        OpenContextMenu =
             //        {
             //            // Add Shift+F10
@@ -181,7 +180,7 @@ namespace Modern.WindowKit.Win32
             //if (OleContext.Current != null)
             //    AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToSingleton<DragSource>();
 
-            //s_compositor = new Compositor(AvaloniaGlobals.GetRequiredService<IRenderLoop>(), platformGraphics);
+            //s_compositor = new Compositor( platformGraphics);
         }
 
         public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;

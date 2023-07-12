@@ -1,5 +1,8 @@
-﻿namespace Modern.WindowKit.Input.Raw
+﻿using Modern.WindowKit.Metadata;
+
+namespace Modern.WindowKit.Input.Raw
 {
+    [PrivateApi]
     public partial class RawTextInputEventArgs : RawInputEventArgs
     {
         //public RawTextInputEventArgs(

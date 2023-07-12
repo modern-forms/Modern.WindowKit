@@ -3,7 +3,7 @@ using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
 {
-    [NotClientImplementable]
+    [NotClientImplementable, PrivateApi]
     public interface IInputDevice
     {
         /// </summary>

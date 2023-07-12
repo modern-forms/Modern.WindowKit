@@ -84,6 +84,11 @@ public partial class Dispatcher
         }
     }
     
+    internal static void ResetBeforeUnitTests()
+    {
+        s_uiThread = null;
+    }
+    
     internal static void ResetForUnitTests()
     {
         if (s_uiThread == null)

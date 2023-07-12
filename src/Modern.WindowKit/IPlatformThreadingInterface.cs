@@ -8,7 +8,7 @@ namespace Modern.WindowKit.Platform
     /// <summary>
     /// Provides platform-specific services relating to threading.
     /// </summary>
-    [Unstable]
+    [PrivateApi]
     public interface IPlatformThreadingInterface
     {
         /// <summary>

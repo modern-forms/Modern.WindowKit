@@ -1,7 +1,9 @@
 ﻿using System;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input.Raw
     {
+    [PrivateApi]
     public class RawTouchEventArgs : RawPointerEventArgs
     {
         public RawTouchEventArgs(IInputDevice device, ulong timestamp, IInputRoot root,
