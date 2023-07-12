@@ -75,7 +75,7 @@ public class Program
         // Get the framebuffer for the window
         var skia_framebuffer = window.Surfaces.OfType<IFramebufferPlatformSurface>().First();
 
-        using var framebuffer = skia_framebuffer.Lock();
+        using var framebuffer = skia_framebuffer.CreateFramebufferRenderTarget ().Lock();
 
         var framebufferImageInfo = new SKImageInfo(framebuffer.Size.Width, framebuffer.Size.Height,
             framebuffer.Format.ToSkColorType(), framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
@@ -145,17 +145,22 @@ public class Program
             anchor_rect = new SKRect(300, 300, 301, 301);
 
             var popup = window.CreatePopup();
-            var ppp = new PopupPositionerParameters
+
+            if (popup is not null)
             {
-                AnchorRectangle = anchor_rect.Value.ToAvaloniaRect(),
-                Anchor = PopupAnchor.TopLeft,
-                Gravity = PopupGravity.BottomRight,
-                Size = new Size(200, 200),
-                ConstraintAdjustment = PopupPositionerConstraintAdjustment.None,
-                
-            };
-            popup.PopupPositioner.Update(ppp);
-            popup.Show(true, true);
+                var ppp = new PopupPositionerParameters
+                {
+                    AnchorRectangle = anchor_rect.Value.ToAvaloniaRect(),
+                    Anchor = PopupAnchor.TopLeft,
+                    Gravity = PopupGravity.BottomRight,
+                    Size = new Size(200, 200),
+                    ConstraintAdjustment = PopupPositionerConstraintAdjustment.None,
+
+                };
+                popup.PopupPositioner?.Update(ppp);
+                popup.Show(true, true);
+            }
+
             //show_diagnostics = !show_diagnostics;
             e.Handled = true;
         }

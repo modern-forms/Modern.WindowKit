@@ -103,7 +103,7 @@ namespace Modern.WindowKit.X11
 
         //        _pixelSize = bitmap.PixelSize;
         //        _blob = runtimePlatform.AllocBlob(size);
-                
+
         //        var image = (XcursorImage*)_blob.Address;
         //        image->version = 1;
         //        image->size = Marshal.SizeOf<XcursorImage>();
@@ -112,33 +112,35 @@ namespace Modern.WindowKit.X11
         //        image->xhot = hotSpot.X;
         //        image->yhot = hotSpot.Y;
         //        image->pixels = (IntPtr)(image + 1);
-               
-            //    using (var cpuContext = platformRenderInterface.CreateBackendContext(null))
-            //    using (var renderTarget = cpuContext.CreateRenderTarget(new[] { this }))
-            //    using (var ctx = renderTarget.CreateDrawingContext())
-            //    {
-            //        var r = new Rect(_pixelSize.ToSize(1)); 
-            //        ctx.DrawBitmap(bitmap, 1, r, r);
-            //    }
 
-            //    Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
-            //}
+        //        using (var cpuContext = platformRenderInterface.CreateBackendContext(null))
+        //        using (var renderTarget = cpuContext.CreateRenderTarget(new[] { this }))
+        //        using (var ctx = renderTarget.CreateDrawingContext())
+        //        {
+        //            var r = new Rect(_pixelSize.ToSize(1));
+        //            ctx.DrawBitmap(bitmap, 1, r, r);
+        //        }
 
-            //public string HandleDescriptor => "XCURSOR";
+        //        Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
+        //    }
 
-            //public override void Dispose()
-            //{
-            //    XLib.XcursorImageDestroy(Handle);
-            //    _blob.Dispose();
-            //}
+        //    public string HandleDescriptor => "XCURSOR";
 
-            //public ILockedFramebuffer Lock()
-            //{
-            //    return new LockedFramebuffer(
-            //        _blob.Address + Marshal.SizeOf<XcursorImage>(),
-            //        _pixelSize, _pixelSize.Width * 4,
-            //        new Vector(96, 96), PixelFormat.Bgra8888, null);
-        //}
+        //    public override void Dispose()
+        //    {
+        //        XLib.XcursorImageDestroy(Handle);
+        //        _blob.Dispose();
+        //    }
+
+        //    public ILockedFramebuffer Lock()
+        //    {
+        //        return new LockedFramebuffer(
+        //            _blob.Address + Marshal.SizeOf<XcursorImage>(),
+        //            _pixelSize, _pixelSize.Width * 4,
+        //            new Vector(96, 96), PixelFormat.Bgra8888, null);
+        //    }
+
+        //    public IFramebufferRenderTarget CreateFramebufferRenderTarget() => new FuncFramebufferRenderTarget(Lock);
         //}
     }
 
@@ -148,5 +150,5 @@ namespace Modern.WindowKit.X11
         public CursorImpl(IntPtr handle) => Handle = handle;
         public IntPtr Handle { get; protected set; }
         public virtual void Dispose() { }
-}
+    }
 }

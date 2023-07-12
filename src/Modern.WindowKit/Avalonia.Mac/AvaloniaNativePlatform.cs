@@ -19,7 +19,7 @@ namespace Modern.WindowKit.Native
     {
         private readonly IAvaloniaNativeFactory _factory;
         private AvaloniaNativePlatformOptions? _options;
-        //private AvaloniaNativeGlPlatformGraphics? _platformGl;
+        //private IPlatformGraphics? _platformGraphics;
 
         [DllImport("libAvaloniaNative")]
         static extern IntPtr CreateAvaloniaNative();
@@ -93,7 +93,7 @@ namespace Modern.WindowKit.Native
             if (_factory.MacOptions != null)
                 _factory.MacOptions.SetDisableAppDelegate(macOpts.DisableAvaloniaAppDelegate ? 1 : 0);
 
-            _factory.Initialize(new GCHandleDeallocator(), applicationPlatform);
+            _factory.Initialize(new GCHandleDeallocator(), applicationPlatform, new AvnDispatcher());
             
             if (_factory.MacOptions != null)
             {
@@ -124,22 +124,45 @@ namespace Modern.WindowKit.Native
 
             //AvaloniaLocator.CurrentMutable.Bind<PlatformHotkeyConfiguration>().ToConstant(hotkeys);
             
-            //if (_options.UseGpu)
+            //foreach (var mode in _options.RenderingMode)
             //{
-            //    try
+            //    if (mode == AvaloniaNativeRenderingMode.OpenGl)
             //    {
-            //        _platformGl = new AvaloniaNativeGlPlatformGraphics(_factory.ObtainGlDisplay());
-            //        AvaloniaLocator.CurrentMutable
-            //            .Bind<IPlatformGraphics>().ToConstant(_platformGl);
-
+            //        try
+            //        {
+            //            _platformGraphics = new AvaloniaNativeGlPlatformGraphics(_factory.ObtainGlDisplay());
+            //            break;
             //    }
             //    catch (Exception)
             //    {
             //        // ignored
             //    }
             //}
+#pragma warning disable CS0618
+            //    else if (mode == AvaloniaNativeRenderingMode.Metal)
+#pragma warning restore CS0618
+            //    {
+            //        try
+            //        {
+            //            var metal = new MetalPlatformGraphics(_factory);
+            //            metal.CreateContext().Dispose();
+            //            _platformGraphics = metal;
+            //        }
+            //        catch
+            //        {
+            //            // Ignored
+            //        }
+            //    }
+            //    else if (mode == AvaloniaNativeRenderingMode.Software)
+            //        break;
+            //}
+
+            //if (_platformGraphics != null)
+            //    AvaloniaLocator.CurrentMutable
+            //        .Bind<IPlatformGraphics>().ToConstant(_platformGraphics);
             
-            //Compositor = new Compositor(_platformGl, true);
+
+            //Compositor = new Compositor(_platformGraphics, true);
         }
 
         //public ITrayIconImpl CreateTrayIcon()
@@ -149,7 +172,7 @@ namespace Modern.WindowKit.Native
 
         //public IWindowImpl CreateWindow()
         //{
-        //    return new WindowImpl(_factory, _options, _platformGl);
+        //    return new WindowImpl(_factory, _options);
         //}
 
         public IWindowImpl CreateEmbeddableWindow()
