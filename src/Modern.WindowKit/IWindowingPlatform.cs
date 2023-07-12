@@ -2,7 +2,7 @@
 
 namespace Modern.WindowKit.Platform
     {
-    [Unstable]
+    [Unstable, PrivateApi]
     public interface IWindowingPlatform
     {
         IWindowImpl CreateWindow();

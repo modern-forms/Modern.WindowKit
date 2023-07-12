@@ -1,4 +1,5 @@
 ﻿using System;
+using Modern.WindowKit.Controls;
 using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 using Modern.WindowKit.Platform;
 using Modern.WindowKit.Win32.Interop;
@@ -135,7 +136,7 @@ namespace Modern.WindowKit.Win32
         private void MoveResize(PixelPoint position, Size size, double scaling)
         {
             Move(position);
-            Resize(size, PlatformResizeReason.Layout);
+            Resize(size, WindowResizeReason.Layout);
             //TODO: We ignore the scaling override for now
         }
 

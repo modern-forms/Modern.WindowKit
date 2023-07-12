@@ -102,6 +102,7 @@ CopyFile ("Avalonia.Base/Platform/PlatformColorValues.cs", "PlatformColorValues.
 CopyFile ("Avalonia.Base/Platform/PlatformHandle.cs", "PlatformHandle.cs");
 CopyFile ("Avalonia.Base/Point.cs", "Point.cs");
 CopyFile ("Avalonia.Base/Input/Pointer.cs", "Pointer.cs");
+CopyFile ("Avalonia.Base/Metadata/PrivateApiAttribute.cs", "PrivateApiAttribute.cs");
 CopyFile ("Shared/RawEventGrouping.cs", "RawEventGrouper.cs");
 CopyFile ("Avalonia.Base/Input/Raw/RawInputEventArgs.cs", "RawInputEventArgs.cs");
 CopyFile ("Avalonia.Base/Input/Raw/RawKeyEventArgs.cs", "RawKeyEventArgs.cs");
@@ -134,6 +135,7 @@ CopyFile ("Avalonia.Base/Platform/ICursorFactory.cs", "ICursorFactory.cs");
 CopyFile ("Avalonia.Base/Platform/ICursorImpl.cs", "ICursorImpl.cs");
 CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLevel.cs");
 CopyFile ("Avalonia.Controls/WindowClosingEventArgs.cs", "WindowClosingEventArgs.cs");
+CopyFile ("Avalonia.Controls/WindowResizedEventArgs.cs", "WindowResizedEventArgs.cs");
 CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
 // Mac Backend
