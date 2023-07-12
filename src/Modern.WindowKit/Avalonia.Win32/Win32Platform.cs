@@ -24,10 +24,12 @@ namespace Modern.WindowKit
     //{
     //    public static AppBuilder UseWin32(this AppBuilder builder)
     //    {
-    //        return builder.UseWindowingSubsystem(
-    //            () => Win32.Win32Platform.Initialize(
-    //                AvaloniaLocator.Current.GetService<Win32PlatformOptions>() ?? new Win32PlatformOptions()),
-    //            "Win32");
+    //            return builder
+    //                .UseStandardRuntimePlatformSubsystem()
+    //                .UseWindowingSubsystem(
+    //                () => Win32.Win32Platform.Initialize(
+    //                    AvaloniaLocator.Current.GetService<Win32PlatformOptions>() ?? new Win32PlatformOptions()),
+    //                "Win32");
     //    }
     //}
 }

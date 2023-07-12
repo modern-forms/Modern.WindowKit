@@ -2,6 +2,7 @@
 using System.Threading;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Internal;
 using Modern.WindowKit.Win32.Interop;
 
 namespace Modern.WindowKit.Win32
@@ -107,8 +108,7 @@ namespace Modern.WindowKit.Win32
 
         private static FramebufferData AllocateFramebufferData(int width, int height)
         {
-            var service = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>();
-            var bitmapBlob = service.AllocBlob(width * height * _bytesPerPixel);
+            var bitmapBlob = new UnmanagedBlob(width * height * _bytesPerPixel);
 
             return new FramebufferData(bitmapBlob, width, height);
         }
@@ -157,7 +157,7 @@ namespace Modern.WindowKit.Win32
 
         private readonly struct FramebufferData
         {
-            public IUnmanagedBlob Data { get; }
+            public UnmanagedBlob Data { get; }
 
             public PixelSize Size { get; }
 
@@ -165,7 +165,7 @@ namespace Modern.WindowKit.Win32
 
             public UnmanagedMethods.BITMAPINFOHEADER Header { get; }
 
-            public FramebufferData(IUnmanagedBlob data, int width, int height)
+            public FramebufferData(UnmanagedBlob data, int width, int height)
             {
                 Data = data;
                 Size = new PixelSize(width, height);
