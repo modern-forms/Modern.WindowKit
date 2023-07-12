@@ -11,11 +11,6 @@ namespace Modern.WindowKit
     /// </summary>
     public readonly struct Rect : IEquatable<Rect>
     {
-        static Rect()
-        {
-            //Animation.Animation.RegisterAnimator<RectAnimator>(prop => typeof(Rect).IsAssignableFrom(prop.PropertyType));
-        }
-
         /// <summary>
         /// The X position.
         /// </summary>
