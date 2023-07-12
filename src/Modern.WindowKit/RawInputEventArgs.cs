@@ -1,4 +1,5 @@
 ﻿using System;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input.Raw
 {
@@ -11,6 +12,7 @@ namespace Modern.WindowKit.Input.Raw
     /// pre-processing they are consumed by the relevant <see cref="Device"/> and turned into
     /// standard Avalonia events.
     /// </remarks>
+    [PrivateApi]
     public class RawInputEventArgs : EventArgs
     {
         /// <summary>

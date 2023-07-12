@@ -1,6 +1,9 @@
 ﻿
+using Modern.WindowKit.Metadata;
+
 namespace Modern.WindowKit.Input.Raw
 {
+    [PrivateApi]
     public class RawMouseWheelEventArgs : RawPointerEventArgs
     {
         public RawMouseWheelEventArgs(

@@ -1,4 +1,6 @@
-﻿namespace Modern.WindowKit.Input.Raw
+﻿using Modern.WindowKit.Metadata;
+
+namespace Modern.WindowKit.Input.Raw
 {
     public enum RawKeyEventType
     {
@@ -6,6 +8,7 @@
         KeyUp
     }
 
+    [PrivateApi]
     public class RawKeyEventArgs : RawInputEventArgs
     {
         public RawKeyEventArgs(

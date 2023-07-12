@@ -3,9 +3,11 @@ using System.Runtime.CompilerServices;
 using Modern.WindowKit.Input.Raw;
 //using Modern.WindowKit.Input.TextInput;
 //using Modern.WindowKit.Interactivity;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Input
 {
+    [PrivateApi]
     public class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
     {
         //private IInputElement? _focusedElement;
@@ -13,7 +15,7 @@ namespace Modern.WindowKit.Input
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        //public static IKeyboardDevice? Instance => AvaloniaLocator.Current.GetService<IKeyboardDevice>();
+        //internal static KeyboardDevice? Instance => AvaloniaLocator.Current.GetService<IKeyboardDevice>() as KeyboardDevice;
 
         //public IInputManager? InputManager => AvaloniaLocator.Current.GetService<IInputManager>();
 
@@ -190,7 +192,6 @@ namespace Modern.WindowKit.Input
             //            KeyEventArgs ev = new KeyEventArgs
             //            {
             //                RoutedEvent = routedEvent,
-            //                Device = this,
             //                Key = keyInput.Key,
             //                KeyModifiers = keyInput.Modifiers.ToKeyModifiers(),
             //                Source = element,
@@ -239,7 +240,6 @@ namespace Modern.WindowKit.Input
             //{
             //    var ev = new TextInputEventArgs()
             //    {
-            //        Device = this,
             //        Text = text.Text,
             //        Source = element,
             //        RoutedEvent = InputElement.TextInputEvent

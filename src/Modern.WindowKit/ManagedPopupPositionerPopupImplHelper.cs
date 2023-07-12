@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Modern.WindowKit.Metadata;
 using Modern.WindowKit.Platform;
 
 namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
@@ -8,6 +9,7 @@ namespace Modern.WindowKit.Controls.Primitives.PopupPositioning
     /// <summary>
     /// This class is used to simplify integration of IPopupImpl implementations with popup positioner
     /// </summary>
+    [PrivateApi]
     public class ManagedPopupPositionerPopupImplHelper : IManagedPopupPositionerPopup 
     {
         private readonly IWindowBaseImpl _parent;

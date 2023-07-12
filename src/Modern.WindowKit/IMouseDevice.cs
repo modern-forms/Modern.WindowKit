@@ -5,7 +5,7 @@ namespace Modern.WindowKit.Input
     /// <summary>
     /// Represents a mouse device.
     /// </summary>
-    [NotClientImplementable]
+    [PrivateApi]
     public interface IMouseDevice : IPointerDevice
     {
     }

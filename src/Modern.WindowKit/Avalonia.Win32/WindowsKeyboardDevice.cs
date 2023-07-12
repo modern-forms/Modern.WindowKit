@@ -5,7 +5,7 @@ using Modern.WindowKit.Win32.Interop;
 
 namespace Modern.WindowKit.Win32.Input
 {
-    class WindowsKeyboardDevice : KeyboardDevice
+    internal class WindowsKeyboardDevice : KeyboardDevice
     {
         private readonly byte[] _keyStates = new byte[256];
 

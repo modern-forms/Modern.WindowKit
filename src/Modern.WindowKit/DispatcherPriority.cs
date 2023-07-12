@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using Modern.WindowKit.Metadata;
 
 namespace Modern.WindowKit.Threading
 {
-    /// </summary>
+    /// <summary>
     /// Defines the priorities with which jobs can be invoked on a <see cref="Dispatcher"/>.
     /// </summary>
     public readonly struct DispatcherPriority : IEquatable<DispatcherPriority>, IComparable<DispatcherPriority>
@@ -25,17 +26,17 @@ namespace Modern.WindowKit.Threading
 
         internal static readonly DispatcherPriority MinimumForegroundPriority = Default;
         
-        /// </summary>
+        /// <summary>
         /// The job will be processed with the same priority as input.
         /// </summary>
         public static readonly DispatcherPriority Input = new(Default - 1);
         
-        /// </summary>
+        /// <summary>
         /// The job will be processed after other non-idle operations have completed.
         /// </summary>
         public static readonly DispatcherPriority Background = new(Input - 1);
         
-        /// </summary>
+        /// <summary>
         /// The job will be processed after background operations have completed.
         /// </summary>
         public static readonly DispatcherPriority ContextIdle = new(Background - 1);
@@ -43,17 +44,17 @@ namespace Modern.WindowKit.Threading
         
         /// <summary>
         /// The job will be processed when the application is idle.
-        /// <summary>
+        /// </summary>
         public static readonly DispatcherPriority ApplicationIdle = new (ContextIdle - 1);
         
         /// <summary>
         /// The job will be processed when the system is idle.
-        /// <summary>
+        /// </summary>
         public static readonly DispatcherPriority SystemIdle = new(ApplicationIdle - 1);
 
         /// <summary>
         /// Minimum possible priority that's actually dispatched, default value
-        /// <summary>
+        /// </summary>
         internal static readonly DispatcherPriority MinimumActiveValue = new(SystemIdle);
 
         
@@ -79,30 +80,40 @@ namespace Modern.WindowKit.Threading
         public static readonly DispatcherPriority Loaded = new(Default + 1);
 
         /// <summary>
+        /// A special priority for platforms with UI render timer or for forced full rasterization requests
+        /// </summary>
+        [PrivateApi]
+        public static readonly DispatcherPriority UiThreadRender = new(Loaded + 1);
+
+        /// <summary>
+        /// A special priority to synchronize native control host positions, IME, etc
+        /// We should probably have a better API for that, so the priority is internal
+        /// </summary>
+        internal static readonly DispatcherPriority AfterRender = new(UiThreadRender + 1);
+        
+        /// <summary>
         /// The job will be processed with the same priority as render.
         /// </summary>
-        public static readonly DispatcherPriority Render = new(Loaded + 1);
-
+        public static readonly DispatcherPriority Render = new(AfterRender + 1);
+        
         /// <summary>
-        /// The job will be processed with the same priority as composition updates.
+        /// A special platform hook for jobs to be executed before the normal render cycle
         /// </summary>
-        public static readonly DispatcherPriority Composition = new(Render + 1);
-
+        [PrivateApi]
+        public static readonly DispatcherPriority BeforeRender = new(Render + 1);
+        
         /// <summary>
-        /// The job will be processed with before composition updates.
+        /// A special priority for platforms that resize the render target in asynchronous-ish matter,
+        /// should be changed into event grouping in the platform backend render
         /// </summary>
-        public static readonly DispatcherPriority PreComposition = new(Composition + 1);
-
-        /// <summary>
-        /// The job will be processed with the same priority as layout.
-        /// </summary>
-        public static readonly DispatcherPriority Layout = new(PreComposition + 1);
-
+        [PrivateApi]
+        public static readonly DispatcherPriority AsyncRenderTargetResize = new(BeforeRender + 1);
+        
         /// <summary>
         /// The job will be processed with the same priority as data binding.
         /// </summary>
-        [Obsolete("WPF compatibility"), EditorBrowsable(EditorBrowsableState.Never)] public static readonly DispatcherPriority DataBind = new(Layout);
-
+        [Obsolete("WPF compatibility"), EditorBrowsable(EditorBrowsableState.Never)] public static readonly DispatcherPriority DataBind = new(Render);
+        
         /// <summary>
         /// The job will be processed with normal priority.
         /// </summary>
@@ -183,12 +194,16 @@ namespace Modern.WindowKit.Threading
                 return nameof(Default);
             if (this == Loaded)
                 return nameof(Loaded);
+            if (this == UiThreadRender)
+                return nameof(UiThreadRender);
+            if (this == AfterRender)
+                return nameof(AfterRender);
             if (this == Render)
                 return nameof(Render);
-            if (this == Composition)
-                return nameof(Composition);
-            if (this == PreComposition)
-                return nameof(PreComposition);
+            if (this == BeforeRender)
+                return nameof(BeforeRender);
+            if (this == AsyncRenderTargetResize)
+                return nameof(AsyncRenderTargetResize);
             if (this == DataBind)
                 return nameof(DataBind);
             if (this == Normal)

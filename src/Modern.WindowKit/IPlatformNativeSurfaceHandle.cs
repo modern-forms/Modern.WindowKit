@@ -4,7 +4,7 @@ using Modern.WindowKit.Metadata;
 namespace Modern.WindowKit.Platform
 {
     [Unstable]
-    public interface IPlatformNativeSurfaceHandle : IPlatformHandle
+    public interface INativePlatformHandleSurface : IPlatformHandle
     {
         PixelSize Size { get; }
         double Scaling { get; }
