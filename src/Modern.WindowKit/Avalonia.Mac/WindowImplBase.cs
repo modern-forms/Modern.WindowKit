@@ -99,9 +99,9 @@ namespace Modern.WindowKit.Native
         public Size ClientSize 
         {
             get
-        {
-                if (_native != null)
             {
+                if (_native != null)
+                {
                     var s = _native.ClientSize;
                     return new Size(s.Width, s.Height);
                 }
@@ -113,11 +113,11 @@ namespace Modern.WindowKit.Native
         public Size? FrameSize
         {
             get
-        {
-                if (_native != null)
             {
-                    unsafe
+                if (_native != null)
                 {
+                    unsafe
+                    {
                         var s = new AvnSize { Width = -1, Height = -1 };
                         _native.GetFrameSize(&s);
                         return s.Width < 0  && s.Height < 0 ? null : new Size(s.Width, s.Height);
@@ -168,7 +168,7 @@ namespace Modern.WindowKit.Native
                 return new DeferredFramebuffer(_target, cb =>
                 {
                     lock (_parent._syncRoot)
-            {
+                    {
                         if (_parent._native != null && _target != null)
                         {
                             cb(_parent._native);
@@ -545,7 +545,7 @@ namespace Modern.WindowKit.Native
 
         public void SetFrameThemeVariant(PlatformThemeVariant themeVariant)
         {
-        //    _native.SetFrameThemeVariant((AvnPlatformThemeVariant)themeVariant);
+            _native.SetFrameThemeVariant((AvnPlatformThemeVariant)themeVariant);
         }
 
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0, 0);

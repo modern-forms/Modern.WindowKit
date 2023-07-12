@@ -178,6 +178,7 @@ CopyFile ("Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "Avalonia.Win32/Win
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win32/WindowsKeyboardDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");
+CopyFile ("Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositionShared.cs", "Avalonia.Win32/WinUiCompositionShared.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32DispatcherImpl.cs", "Avalonia.Win32/Win32DispatcherImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32PlatformOptions.cs", "Avalonia.Win32/Win32PlatformOptions.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32PlatformSettings.cs", "Avalonia.Win32/Win32PlatformSettings.cs");
