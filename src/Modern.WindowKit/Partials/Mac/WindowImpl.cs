@@ -5,7 +5,7 @@ namespace Modern.WindowKit.Native
     internal partial class WindowImpl
     {
         public override IPopupImpl CreatePopup() =>
-            _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, this);
+            _opts.OverlayPopups ? null : new PopupImpl(_factory, this);
 
         public void ShowDialog(IWindowImpl window)
         {

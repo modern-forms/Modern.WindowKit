@@ -61,6 +61,8 @@ namespace Modern.WindowKit.Win32
             }
         }
 
+        public IFramebufferRenderTarget CreateFramebufferRenderTarget() => new FuncFramebufferRenderTarget(Lock);
+
         public void Dispose()
         {
             lock (_lock)
