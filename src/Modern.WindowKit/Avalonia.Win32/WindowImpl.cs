@@ -21,7 +21,7 @@ using Modern.WindowKit.Win32.Input;
 using Modern.WindowKit.Win32.Interop;
 //using Modern.WindowKit.Win32.OpenGl.Angle;
 //using Modern.WindowKit.Win32.OpenGl;
-//using Modern.WindowKit.Win32.WinRT.Composition;
+using Modern.WindowKit.Win32.WinRT.Composition;
 using Modern.WindowKit.Win32.WinRT;
 using static Modern.WindowKit.Win32.Interop.UnmanagedMethods;
 using Modern.WindowKit.Input.Platform;
@@ -247,7 +247,7 @@ namespace Modern.WindowKit.Win32
         public double DesktopScaling => RenderScaling;
 
         public Size ClientSize
-            {
+        {
             get
                 {
                 GetClientRect(_hwnd, out var rect);
@@ -302,7 +302,7 @@ namespace Modern.WindowKit.Win32
                     ShowWindowCommand.Minimize => WindowState.Minimized,
                     _ => WindowState.Normal
                 };
-                }
+            }
 
             set
             {
@@ -313,7 +313,7 @@ namespace Modern.WindowKit.Win32
 
                 _lastWindowState = value;
                 _showWindowState = value;
-        }
+            }
         }
 
         public WindowTransparencyLevel TransparencyLevel
@@ -413,13 +413,13 @@ namespace Modern.WindowKit.Win32
             if (level == WindowTransparencyLevel.Blur)
                 return windowsVersion < PlatformConstants.Windows10;
 
-            //// Acrylic is supported on Windows >= 10.0.15063.
-            //if (level == WindowTransparencyLevel.AcrylicBlur)
-            //    return windowsVersion >= WinUiCompositionShared.MinAcrylicVersion;
+            // Acrylic is supported on Windows >= 10.0.15063.
+            if (level == WindowTransparencyLevel.AcrylicBlur)
+                return windowsVersion >= WinUiCompositionShared.MinAcrylicVersion;
 
-            //// Mica is supported on Windows >= 10.0.22000.
-            //if (level == WindowTransparencyLevel.Mica)
-            //    return windowsVersion >= WinUiCompositionShared.MinHostBackdropVersion;
+            // Mica is supported on Windows >= 10.0.22000.
+            if (level == WindowTransparencyLevel.Mica)
+                return windowsVersion >= WinUiCompositionShared.MinHostBackdropVersion;
 
             return false;
         }
@@ -460,7 +460,7 @@ namespace Modern.WindowKit.Win32
         private void SetTransparencyAcrylicBlur(Version windowsVersion)
         {
             // Acrylic blur only supported with composition on Windows >= 10.0.15063.
-            //if (!_isUsingComposition || windowsVersion < WinUiCompositionShared.MinAcrylicVersion)
+            if (!_isUsingComposition || windowsVersion < WinUiCompositionShared.MinAcrylicVersion)
                 return;
 
             SetUseHostBackdropBrush(true);
@@ -470,7 +470,7 @@ namespace Modern.WindowKit.Win32
         private void SetTransparencyMica(Version windowsVersion)
         {
             // Mica only supported with composition on Windows >= 10.0.22000.
-            //if (!_isUsingComposition || windowsVersion < WinUiCompositionShared.MinHostBackdropVersion)
+            if (!_isUsingComposition || windowsVersion < WinUiCompositionShared.MinHostBackdropVersion)
                 return;
 
             SetUseHostBackdropBrush(false);
@@ -499,7 +499,7 @@ namespace Modern.WindowKit.Win32
 
         private void SetUseHostBackdropBrush(bool useHostBackdropBrush)
         {
-            //if (Win32Platform.WindowsVersion < WinUiCompositionShared.MinHostBackdropVersion)
+            if (Win32Platform.WindowsVersion < WinUiCompositionShared.MinHostBackdropVersion)
                 return;
 
             unsafe
@@ -537,7 +537,7 @@ namespace Modern.WindowKit.Win32
                     0,
                     SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER);
             }
-                }
+        }
 
         private bool HasFullDecorations => _windowProperties.Decorations == SystemDecorations.Full;
 
@@ -593,11 +593,11 @@ namespace Modern.WindowKit.Win32
                     requestedClientWidth + (_isClientAreaExtended ? 0 : windowRect.Width - clientRect.Width),
                     requestedClientHeight + (_isClientAreaExtended ? 0 : windowRect.Height - clientRect.Height),
                     SetWindowPosFlags.SWP_RESIZE);
-            }
+                }
             }
 
         public void Activate()
-            {
+        {
             SetForegroundWindow(_hwnd);
         }
 
@@ -610,7 +610,7 @@ namespace Modern.WindowKit.Win32
                 // Detect if we are being closed programmatically - this would mean that WM_CLOSE was not called
                 // and we didn't prepare this window for destruction.
                 if (!_isCloseRequested)
-        {
+                {
                     BeforeCloseCleanup(true);
                 }
 
@@ -678,7 +678,7 @@ namespace Modern.WindowKit.Win32
             {
                 parentHwnd = OffscreenParentWindow.Handle;
                 _hiddenWindowIsParent = true;
-        }
+            }
 
             SetWindowLongPtr(_hwnd, (int)WindowLongParam.GWL_HWNDPARENT, parentHwnd);
         }
@@ -861,7 +861,7 @@ namespace Modern.WindowKit.Win32
                     out _) == 0)
                 {
                     _scaling = dpix / 96.0;
-        }
+                }
             }
         }
 
@@ -1021,9 +1021,9 @@ namespace Modern.WindowKit.Win32
                 DwmExtendFrameIntoClientArea(_hwnd, ref margins);
 
                 unsafe
-            {
-                    //int cornerPreference = (int)DwmWindowCornerPreference.DWMWCP_ROUND;
-                    //DwmSetWindowAttribute(_hwnd, (int)DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
+                {
+                    int cornerPreference = (int)DwmWindowCornerPreference.DWMWCP_ROUND;
+                    DwmSetWindowAttribute(_hwnd, (int)DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
                 }
             }
             else
@@ -1037,15 +1037,15 @@ namespace Modern.WindowKit.Win32
                 Resize(new Size(rcWindow.Width / RenderScaling, rcWindow.Height / RenderScaling), WindowResizeReason.Layout);
 
                 unsafe
-            {
-                    //int cornerPreference = (int)DwmWindowCornerPreference.DWMWCP_DEFAULT;
-                    //DwmSetWindowAttribute(_hwnd, (int)DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
+                {
+                    int cornerPreference = (int)DwmWindowCornerPreference.DWMWCP_DEFAULT;
+                    DwmSetWindowAttribute(_hwnd, (int)DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
                 }
             }
 
             if (!_isClientAreaExtended || (_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) &&
                 !_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome)))
-        {
+            {
                 EnableCloseButton(_hwnd);
             }
             else
@@ -1100,10 +1100,10 @@ namespace Modern.WindowKit.Win32
             if (command.HasValue)
             {
                 UnmanagedMethods.ShowWindow(_hwnd, command.Value);
-        }
+            }
 
             if (state == WindowState.Maximized)
-        {
+            {
                 MaximizeWithoutCoveringTaskbar();
             }
 
@@ -1115,7 +1115,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private void BeforeCloseCleanup(bool isDisposing)
-            {
+        {
             // Based on https://github.com/dotnet/wpf/blob/master/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Window.cs#L4270-L4337
             // We need to enable parent window before destroying child window to prevent OS from activating a random window behind us (or last active window).
             // This is described here: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enablewindow#remarks
@@ -1146,7 +1146,7 @@ namespace Modern.WindowKit.Win32
             {
                 UnregisterClass(_className, GetModuleHandle(null));
                 _className = null;
-        }
+            }
         }
 
         private void MaximizeWithoutCoveringTaskbar()
@@ -1154,7 +1154,7 @@ namespace Modern.WindowKit.Win32
             IntPtr monitor = MonitorFromWindow(_hwnd, MONITOR.MONITOR_DEFAULTTONEAREST);
 
             if (monitor != IntPtr.Zero)
-        {
+            {
                 var monitorInfo = MONITORINFO.Create();
 
                 if (GetMonitorInfo(monitor, ref monitorInfo))
@@ -1225,7 +1225,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private void SetExtendedStyle(WindowStyles style, bool save = true)
-            {
+        {
             if (save)
             {
                 _savedWindowInfo.ExStyle = style;
@@ -1311,7 +1311,7 @@ namespace Modern.WindowKit.Win32
             }
 
             if ((oldProperties.Decorations != newProperties.Decorations) || forceChanges)
-                    {
+            {
                 style = GetStyle();
 
                 const WindowStyles fullDecorationFlags = WindowStyles.WS_CAPTION | WindowStyles.WS_SYSMENU;
@@ -1328,7 +1328,7 @@ namespace Modern.WindowKit.Win32
                 SetStyle(style);
 
                 if (!_isFullScreenActive)
-                    {
+                {
                     var margin = newProperties.Decorations == SystemDecorations.BorderOnly ? 1 : 0;
 
                     var margins = new MARGINS
@@ -1351,12 +1351,12 @@ namespace Modern.WindowKit.Win32
                     if (newProperties.Decorations == SystemDecorations.Full)
                     {
                         AdjustWindowRectEx(ref newRect, (uint)style, false, (uint)GetExtendedStyle());
-        }
+                    }
 
                     SetWindowPos(_hwnd, IntPtr.Zero, newRect.left, newRect.top, newRect.Width, newRect.Height,
                         SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOACTIVATE |
                         SetWindowPosFlags.SWP_FRAMECHANGED);
-        }
+                }
             }
         }
 
@@ -1451,7 +1451,7 @@ namespace Modern.WindowKit.Win32
         }
 
         private struct SavedWindowInfo
-            {
+        {
             public WindowStyles Style { get; set; }
             public WindowStyles ExStyle { get; set; }
             public RECT WindowRect { get; set; }
@@ -1474,7 +1474,7 @@ namespace Modern.WindowKit.Win32
             {
                 _owner = owner;
                 _restore = restore;
-    }
+            }
 
             public void Dispose() => _owner._resizeReason = _restore;
         }

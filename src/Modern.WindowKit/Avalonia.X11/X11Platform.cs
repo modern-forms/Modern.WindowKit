@@ -355,4 +355,5 @@ namespace Modern.WindowKit
         public static void InitializeX11Platform(X11PlatformOptions options = null) =>
             new AvaloniaX11Platform().Initialize(options ?? new X11PlatformOptions());
     }
+
 }
