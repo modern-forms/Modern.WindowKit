@@ -327,7 +327,7 @@ namespace Modern.WindowKit.X11
         public Size? FrameSize
         {
             get
-                {
+            {
                 var extents = GetFrameExtents();
 
                 if(extents == null)
@@ -386,8 +386,8 @@ namespace Modern.WindowKit.X11
         
         private void OnEvent(ref XEvent ev)
         {
-            if (_inputRoot is null)
-                return;
+            //if (_inputRoot is null)
+            //    return;
 
             if (ev.type == XEventName.MapNotify)
             {
@@ -470,7 +470,7 @@ namespace Modern.WindowKit.X11
                         ref ev, ev.ButtonEvent.state);
             }
             else if (ev.type == XEventName.ConfigureNotify)
-                {
+            {
                 if (ev.ConfigureEvent.window != _handle)
                     return;
                 var needEnqueue = (_configure == null);
@@ -478,7 +478,7 @@ namespace Modern.WindowKit.X11
                 if (ev.ConfigureEvent.override_redirect != 0  || ev.ConfigureEvent.send_event != 0)
                     _configurePoint = new PixelPoint(ev.ConfigureEvent.x, ev.ConfigureEvent.y);
                 else
-                    {
+                {
                     XTranslateCoordinates(_x11.Display, _handle, _x11.RootWindow,
                         0, 0,
                         out var tx, out var ty, out _);
@@ -522,7 +522,7 @@ namespace Modern.WindowKit.X11
             }
             else if (ev.type == XEventName.DestroyNotify 
                      && ev.DestroyWindowEvent.window == _handle)
-                    {
+            {
                 Cleanup(true);
             }
             else if (ev.type == XEventName.ClientMessage)
@@ -533,17 +533,17 @@ namespace Modern.WindowKit.X11
                     {
                         if (Closing?.Invoke(WindowCloseReason.WindowClosing) != true)
                             Dispose();
-            }
+                    }
                     else if (ev.ClientMessageEvent.ptr1 == _x11.Atoms._NET_WM_SYNC_REQUEST)
-        {
+                    {
                         _xSyncValue.Lo = new UIntPtr(ev.ClientMessageEvent.ptr3.ToPointer()).ToUInt32();
                         _xSyncValue.Hi = ev.ClientMessageEvent.ptr4.ToInt32();
                         _xSyncState = XSyncState.WaitConfigure;
-            }
-        }
+                    }
+                }
             }
             else if (ev.type == XEventName.KeyPress || ev.type == XEventName.KeyRelease)
-                {
+            {
                 if (ActivateTransientChildIfNeeded())
                     return;
                 HandleKeyEvent(ref ev);
@@ -598,7 +598,7 @@ namespace Modern.WindowKit.X11
 
         private WindowState _lastWindowState;
         public WindowState WindowState
-                {
+        {
             get => _lastWindowState;
             set
             {
@@ -648,7 +648,7 @@ namespace Modern.WindowKit.X11
             {
                 WindowState state = WindowState.Normal;
                 if(hasValue)
-        {
+                {
 
                     XGetWindowProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_STATE, IntPtr.Zero, new IntPtr(256),
                         false, (IntPtr)Atom.XA_ATOM, out _, out _, out var nitems, out _,
@@ -656,7 +656,7 @@ namespace Modern.WindowKit.X11
                     int maximized = 0;
                     var pitems = (IntPtr*)prop.ToPointer();
                     for (var c = 0; c < nitems.ToInt32(); c++)
-                        {
+                    {
                         if (pitems[c] == _x11.Atoms._NET_WM_STATE_HIDDEN)
                         {
                             state = WindowState.Minimized;
@@ -678,10 +678,10 @@ namespace Modern.WindowKit.X11
                                 state = WindowState.Maximized;
                                 break;
                             }
-                }
-            }
+                        }
+                    }
                     XFree(prop);
-        }
+                }
                 if (_lastWindowState != state)
                 {
                     _lastWindowState = state;
@@ -735,8 +735,8 @@ namespace Modern.WindowKit.X11
 
         private void DispatchInput(RawInputEventArgs args)
         {
-            if (_inputRoot is null)
-                return;
+            //if (_inputRoot is null)
+            //    return;
 
             if (_disabled && args is RawPointerEventArgs pargs && pargs.Type == RawPointerEventType.Move)
                 return;
@@ -778,8 +778,8 @@ namespace Modern.WindowKit.X11
 
         private void MouseEvent(RawPointerEventType type, ref XEvent ev, XModifierMask mods)
         {
-            if (_inputRoot is null)
-                return;
+            //if (_inputRoot is null)
+            //    return;
             var mev = new RawPointerEventArgs(
                 _mouse, (ulong)ev.ButtonEvent.time.ToInt64(), _inputRoot,
                 type, new Point(ev.ButtonEvent.x, ev.ButtonEvent.y), TranslateModifiers(mods));
@@ -792,7 +792,7 @@ namespace Modern.WindowKit.X11
             {
                 _triggeredExpose = true;
                 Dispatcher.UIThread.Post(() =>
-        {
+                {
                     _triggeredExpose = false;
                     DoPaint();
                 }, DispatcherPriority.UiThreadRender);
@@ -914,7 +914,7 @@ namespace Modern.WindowKit.X11
             {
                 _renderHandle = IntPtr.Zero;
             }
-            }
+        }
 
         private bool ActivateTransientChildIfNeeded()
         {
@@ -988,7 +988,7 @@ namespace Modern.WindowKit.X11
             {
                 _realSize = pixelSize;
                 Resized?.Invoke(ClientSize, reason);
-        }
+            }
         }
         
         public void CanResize(bool value)
@@ -1003,7 +1003,7 @@ namespace Modern.WindowKit.X11
             if (cursor == null)
                 XDefineCursor(_x11.Display, _handle, _x11.DefaultCursor);
             else if (cursor is CursorImpl impl)
-        {
+            {
                 XDefineCursor(_x11.Display, _handle, impl.Handle);
             }
         }
@@ -1140,12 +1140,12 @@ namespace Modern.WindowKit.X11
             if (edge == WindowEdge.SouthWest)
                 side = NetWmMoveResize._NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT;
             BeginMoveResize(side, e);
-            }
+        }
 
         public void SetTitle(string? title)
         {
             if (string.IsNullOrEmpty(title))
-                {
+            {
                 XDeleteProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_NAME);
                 XDeleteProperty(_x11.Display, _handle, _x11.Atoms.XA_WM_NAME);
             }
