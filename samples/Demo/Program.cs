@@ -4,6 +4,7 @@ using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Controls.Primitives.PopupPositioning;
 using Modern.WindowKit.Input.Raw;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Storage;
 using Modern.WindowKit.Skia;
 using Modern.WindowKit.Threading;
 using SkiaSharp;
@@ -160,12 +161,12 @@ public class Program
             e.Handled = true;
         }
 
-        if (window is ITopLevelImplWithStorageProvider storageProvider)
+        if (window.TryGetFeature(typeof(IStorageProvider)) is IStorageProvider storageProvider)
         {
             // Use F9 key to open a File Open dialog
             if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F9)
             {
-                var result = await storageProvider.StorageProvider.OpenFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerOpenOptions { });
+                var result = await storageProvider.OpenFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerOpenOptions { });
                 open_file = result?.FirstOrDefault()?.Name;
                 e.Handled = true;
             }
@@ -173,7 +174,7 @@ public class Program
             // Use F10 key to open a Folder Open dialog
             if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F10)
             {
-                var result = await storageProvider.StorageProvider.OpenFolderPickerAsync(new Modern.WindowKit.Platform.Storage.FolderPickerOpenOptions { });
+                var result = await storageProvider.OpenFolderPickerAsync(new Modern.WindowKit.Platform.Storage.FolderPickerOpenOptions { });
                 open_folder = result?.FirstOrDefault()?.Name;
                 e.Handled = true;
             }
@@ -181,7 +182,7 @@ public class Program
             // Use F12 key to open a File Save dialog (F11 is a system key on Mac?)
             if (e.Type == RawKeyEventType.KeyDown && e.Key == Modern.WindowKit.Input.Key.F12)
             {
-                var result = await storageProvider.StorageProvider.SaveFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerSaveOptions { });
+                var result = await storageProvider.SaveFilePickerAsync(new Modern.WindowKit.Platform.Storage.FilePickerSaveOptions { });
                 save_file = result?.Name;
                 e.Handled = true;
             }
