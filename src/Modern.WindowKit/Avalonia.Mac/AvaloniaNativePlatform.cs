@@ -3,9 +3,7 @@ using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls.Platform;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Input.Platform;
-using Modern.WindowKit.MicroCom;
 using Modern.WindowKit.Mac.Interop;
-//using Modern.WindowKit.OpenGL;
 using Modern.WindowKit.Platform;
 //using Modern.WindowKit.Rendering;
 //using Modern.WindowKit.Rendering.Composition;
@@ -163,6 +161,14 @@ namespace Modern.WindowKit.Native
             
 
             //Compositor = new Compositor(_platformGraphics, true);
+
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+        }
+
+        private void OnProcessExit(object? sender, EventArgs e)
+        {
+            AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+            _factory.Dispose();
         }
 
         //public ITrayIconImpl CreateTrayIcon()
