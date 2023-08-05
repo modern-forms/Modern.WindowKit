@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Modern.WindowKit.Controls.Platform.Surfaces;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform;
+using Modern.WindowKit.Platform.Internal;
 //using Modern.WindowKit.SourceGenerator;
 using Modern.WindowKit.Utilities;
 
@@ -92,17 +93,16 @@ namespace Modern.WindowKit.X11
         //private unsafe class XImageCursor : CursorImpl, IFramebufferPlatformSurface, IPlatformHandle
         //{
         //    private readonly PixelSize _pixelSize;
-        //    private readonly IUnmanagedBlob _blob;
+        //    private readonly UnmanagedBlob _blob;
 
         //    public XImageCursor(IntPtr display, IBitmapImpl bitmap, PixelPoint hotSpot)
         //    {
         //        var size = Marshal.SizeOf<XcursorImage>() +
         //            (bitmap.PixelSize.Width * bitmap.PixelSize.Height * 4);
-        //        var runtimePlatform = AvaloniaGlobals.GetRequiredService<IRuntimePlatform>();
         //        var platformRenderInterface = AvaloniaLocator.Current.GetRequiredService<IPlatformRenderInterface>();
 
         //        _pixelSize = bitmap.PixelSize;
-        //        _blob = runtimePlatform.AllocBlob(size);
+        //        _blob = new UnmanagedBlob(size);
                 
         //        var image = (XcursorImage*)_blob.Address;
         //        image->version = 1;
@@ -112,33 +112,35 @@ namespace Modern.WindowKit.X11
         //        image->xhot = hotSpot.X;
         //        image->yhot = hotSpot.Y;
         //        image->pixels = (IntPtr)(image + 1);
-               
-            //    using (var cpuContext = platformRenderInterface.CreateBackendContext(null))
-            //    using (var renderTarget = cpuContext.CreateRenderTarget(new[] { this }))
-            //    using (var ctx = renderTarget.CreateDrawingContext())
-            //    {
-            //        var r = new Rect(_pixelSize.ToSize(1)); 
-            //        ctx.DrawBitmap(bitmap, 1, r, r);
-            //    }
 
-            //    Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
-            //}
+        //        using (var cpuContext = platformRenderInterface.CreateBackendContext(null))
+        //        using (var renderTarget = cpuContext.CreateRenderTarget(new[] { this }))
+        //        using (var ctx = renderTarget.CreateDrawingContext())
+        //        {
+        //            var r = new Rect(_pixelSize.ToSize(1)); 
+        //            ctx.DrawBitmap(bitmap, 1, r, r);
+        //        }
 
-            //public string HandleDescriptor => "XCURSOR";
+        //        Handle = XLib.XcursorImageLoadCursor(display, _blob.Address);
+        //    }
 
-            //public override void Dispose()
-            //{
-            //    XLib.XcursorImageDestroy(Handle);
-            //    _blob.Dispose();
-            //}
+        //    public string HandleDescriptor => "XCURSOR";
 
-            //public ILockedFramebuffer Lock()
-            //{
-            //    return new LockedFramebuffer(
-            //        _blob.Address + Marshal.SizeOf<XcursorImage>(),
-            //        _pixelSize, _pixelSize.Width * 4,
-            //        new Vector(96, 96), PixelFormat.Bgra8888, null);
-        //}
+        //    public override void Dispose()
+        //    {
+        //        XLib.XcursorImageDestroy(Handle);
+        //        _blob.Dispose();
+        //    }
+
+        //    public ILockedFramebuffer Lock()
+        //    {
+        //        return new LockedFramebuffer(
+        //            _blob.Address + Marshal.SizeOf<XcursorImage>(),
+        //            _pixelSize, _pixelSize.Width * 4,
+        //            new Vector(96, 96), PixelFormat.Bgra8888, null);
+        //    }
+
+        //    public IFramebufferRenderTarget CreateFramebufferRenderTarget() => new FuncFramebufferRenderTarget(Lock);
         //}
     }
 
@@ -148,5 +150,5 @@ namespace Modern.WindowKit.X11
         public CursorImpl(IntPtr handle) => Handle = handle;
         public IntPtr Handle { get; protected set; }
         public virtual void Dispose() { }
-}
+    }
 }

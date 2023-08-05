@@ -15,7 +15,7 @@ namespace Modern.WindowKit.Native
     internal partial class WindowImpl : WindowBaseImpl, IWindowImpl
     {
         private readonly AvaloniaNativePlatformOptions _opts;
-        //private readonly AvaloniaNativeGlPlatformGraphics _glFeature;
+        //private readonly AvaloniaNativeGlPlatformGraphics _graphics;
         IAvnWindow _native;
         private double _extendTitleBarHeight = -1;
         //private DoubleClickHelper _doubleClickHelper;
@@ -23,16 +23,14 @@ namespace Modern.WindowKit.Native
         //private readonly AvaloniaNativeTextInputMethod _inputMethod;
         private bool _canResize = true;
 
-        internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts
-            ) : base(factory, opts)
+        internal WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts) : base(factory)
         {
             _opts = opts;
-            //_glFeature = glFeature;
             //_doubleClickHelper = new DoubleClickHelper();
             
             using (var e = new WindowEvents(this))
             {
-                Init(_native = factory.CreateWindow(e, null), factory.CreateScreens());
+                Init(_native = factory.CreateWindow(e), factory.CreateScreens());
             }
 
             //_nativeMenuExporter = new AvaloniaNativeMenuExporter(_native, factory);
@@ -215,7 +213,7 @@ namespace Modern.WindowKit.Native
         public void Move(PixelPoint point) => Position = point;
 
         //public override IPopupImpl CreatePopup() =>
-        //    _opts.OverlayPopups ? null : new PopupImpl(_factory, _opts, _glFeature, this);
+        //    _opts.OverlayPopups ? null : new PopupImpl(_factory, this);
 
         public Action GotInputWhenDisabled { get; set; }
 

@@ -54,26 +54,22 @@ namespace Modern.WindowKit.Native
         protected IInputRoot _inputRoot;
         IAvnWindowBase _native;
         private object _syncRoot = new object();
-        private bool _gpu = false;
         private readonly MouseDevice _mouse;
         private readonly IKeyboardDevice _keyboard;
         private readonly ICursorFactory _cursorFactory;
         private Size _savedLogicalSize;
         private Size _lastRenderedLogicalSize;
         private double _savedScaling;
-        //private GlPlatformSurface _glSurface;
         //private NativeControlHostImpl _nativeControlHost;
         private IStorageProvider _storageProvider;
         //private PlatformBehaviorInhibition _platformBehaviorInhibition;
         private WindowTransparencyLevel _transparencyLevel = WindowTransparencyLevel.None;
 
-        internal WindowBaseImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts)
-            //AvaloniaNativeGlPlatformGraphics glFeature)
+        internal WindowBaseImpl(IAvaloniaNativeFactory factory)
         {
             _factory = factory;
-            //_gpu = opts.UseGpu && glFeature != null;
 
-            _keyboard = AvaloniaNativePlatform.KeyboardDevice;
+            _keyboard = AvaloniaLocator.Current.GetService<IKeyboardDevice>();
             _mouse = new MouseDevice();
             _cursorFactory = AvaloniaGlobals.GetService<ICursorFactory>();
         }
@@ -82,9 +78,8 @@ namespace Modern.WindowKit.Native
         {
             _native = window;
 
+            Surfaces = new object[] { /*new GlPlatformSurface(window), new MetalPlatformSurface(window), */ this };
             Handle = new MacOSTopLevelWindowHandle(window);
-            //if (_gpu)
-            //    _glSurface = new GlPlatformSurface(window);
             Screen = new ScreenImpl(screens);
 
             _savedLogicalSize = ClientSize;
@@ -104,9 +99,9 @@ namespace Modern.WindowKit.Native
         public Size ClientSize 
         {
             get
-        {
-                if (_native != null)
             {
+                if (_native != null)
+                {
                     var s = _native.ClientSize;
                     return new Size(s.Width, s.Height);
                 }
@@ -118,11 +113,11 @@ namespace Modern.WindowKit.Native
         public Size? FrameSize
         {
             get
-        {
-                if (_native != null)
             {
-                    unsafe
+                if (_native != null)
                 {
+                    unsafe
+                    {
                         var s = new AvnSize { Width = -1, Height = -1 };
                         _native.GetFrameSize(&s);
                         return s.Width < 0  && s.Height < 0 ? null : new Size(s.Width, s.Height);
@@ -133,30 +128,56 @@ namespace Modern.WindowKit.Native
             }
         }
 
-        public IEnumerable<object> Surfaces => new[] {
-            //(_gpu ? _glSurface : (object)null),
-            this 
-        };
+        public IEnumerable<object> Surfaces { get; private set; }
 
         //public INativeControlHostImpl NativeControlHost => _nativeControlHost;
 
-        public ILockedFramebuffer Lock()
+
+        IFramebufferRenderTarget IFramebufferPlatformSurface.CreateFramebufferRenderTarget()
         {
-            var w = _savedLogicalSize.Width * _savedScaling;
-            var h = _savedLogicalSize.Height * _savedScaling;
-            var dpi = _savedScaling * 96;
-            return new DeferredFramebuffer(cb =>
+            //if (!Dispatcher.UIThread.CheckAccess())
+            //    throw new RenderTargetNotReadyException();
+            return new FramebufferRenderTarget(this, _native.CreateSoftwareRenderTarget());
+        }
+
+        class FramebufferRenderTarget : IFramebufferRenderTarget
+        {
+            private readonly WindowBaseImpl _parent;
+            private IAvnSoftwareRenderTarget? _target;
+
+            public FramebufferRenderTarget(WindowBaseImpl parent, IAvnSoftwareRenderTarget target)
             {
-                lock (_syncRoot)
+                _parent = parent;
+                _target = target;
+            }
+
+            public void Dispose()
             {
-                    if (_native == null)
-                        return false;
-                    cb(_native);
-                    _lastRenderedLogicalSize = _savedLogicalSize;
-                    return true;
+                lock (_parent._syncRoot)
+                {
+                    _target?.Dispose();
+                    _target = null;
                 }
-            }, (int)w, (int)h, new Vector(dpi, dpi));
-                }
+            }
+            
+            public ILockedFramebuffer Lock()
+            {
+                var w = _parent._savedLogicalSize.Width * _parent._savedScaling;
+                var h = _parent._savedLogicalSize.Height * _parent._savedScaling;
+                var dpi = _parent._savedScaling * 96;
+                return new DeferredFramebuffer(_target, cb =>
+                {
+                    lock (_parent._syncRoot)
+                    {
+                        if (_parent._native != null && _target != null)
+                        {
+                            cb(_parent._native);
+                            _parent._lastRenderedLogicalSize = _parent._savedLogicalSize;
+                        }
+                    }
+                }, (int)w, (int)h, new Vector(dpi, dpi));
+            }
+        }
 
         public Action LostFocus { get; set; }
 
@@ -524,7 +545,7 @@ namespace Modern.WindowKit.Native
 
         public void SetFrameThemeVariant(PlatformThemeVariant themeVariant)
         {
-        //    _native.SetFrameThemeVariant((AvnPlatformThemeVariant)themeVariant);
+            _native.SetFrameThemeVariant((AvnPlatformThemeVariant)themeVariant);
         }
 
         public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; } = new AcrylicPlatformCompensationLevels(1, 0, 0);

@@ -142,6 +142,7 @@ CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlat
 CopyFile ("Avalonia.Native/AvaloniaNativeApplicationPlatform.cs", "Avalonia.Mac/AvaloniaNativeApplicationPlatform.cs");
 CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
 CopyFile ("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
+CopyFile ("Avalonia.Native/AvnDispatcher.cs", "Avalonia.Mac/AvnDispatcher.cs");
 CopyFile ("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
 CopyFile ("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
 CopyFile ("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
@@ -177,7 +178,9 @@ CopyFile ("Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "Avalonia.Win32/Win
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs", "Avalonia.Win32/WindowsKeyboardDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/WindowsMouseDevice.cs", "Avalonia.Win32/WindowsMouseDevice.cs");
 CopyFile ("Windows/Avalonia.Win32/WinScreen.cs", "Avalonia.Win32/WinScreen.cs");
+CopyFile ("Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositionShared.cs", "Avalonia.Win32/WinUiCompositionShared.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32DispatcherImpl.cs", "Avalonia.Win32/Win32DispatcherImpl.cs");
+CopyFile ("Windows/Avalonia.Win32/Win32PlatformOptions.cs", "Avalonia.Win32/Win32PlatformOptions.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32PlatformSettings.cs", "Avalonia.Win32/Win32PlatformSettings.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32StorageProvider.cs", "Avalonia.Win32/Win32StorageProvider.cs");
 CopyFile ("Windows/Avalonia.Win32/Win32TypeExtensions.cs", "Avalonia.Win32/Win32TypeExtensions.cs");
@@ -347,7 +350,7 @@ private void CopyFile (string src, string dst)
             text = text.Replace ("AvaloniaNativePlatformOptions opts,", "AvaloniaNativePlatformOptions opts)");
             text = text.Replace ("IAvnScreens screens, IGlContext glContext", "IAvnScreens screens");
             text = text.Replace ("_inputRoot, text)", "_inputRoot, text, RawInputModifiers.None)");
-            text = text.Replace ("AvaloniaLocator.Current.GetService<IKeyboardDevice>()", "AvaloniaNativePlatform.KeyboardDevice");
+            text = text.Replace ("{ new GlPlatformSurface(window), new MetalPlatformSurface(window), this };", "{ /*new GlPlatformSurface(window), new MetalPlatformSurface(window), */ this };");
             break;
         case "WindowImpl.AppWndProc.cs":    // Win
             text = text.Replace ("new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, Owner, text);", "new RawTextInputEventArgs(WindowsKeyboardDevice.Instance, timestamp, Owner, text, WindowsKeyboardDevice.Instance.Modifiers);");

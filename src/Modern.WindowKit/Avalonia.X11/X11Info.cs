@@ -35,6 +35,9 @@ namespace Modern.WindowKit.X11
         public bool HasXSync { get; set; }
         public IntPtr DefaultFontSet { get; set; }
         
+        [DllImport("libc")]
+        private static extern void setlocale(int type, string s);
+
         public unsafe X11Info(IntPtr display, IntPtr deferredDisplay, bool useXim)
         {
             Display = display;
@@ -49,6 +52,9 @@ namespace Modern.WindowKit.X11
             DefaultFontSet = XCreateFontSet(Display, "-*-*-*-*-*-*-*-*-*-*-*-*-*-*",
                 out var _, out var _, IntPtr.Zero);
             
+            // We have problems with text input otherwise
+            setlocale(0, "");
+
             if (useXim)
             {
                 XSetLocaleModifiers("");
@@ -59,7 +65,15 @@ namespace Modern.WindowKit.X11
 
             if (Xim == IntPtr.Zero)
             {
-                XSetLocaleModifiers("@im=none");
+                if (XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+                {
+                    setlocale(0, "en_US.UTF-8");
+                    if (XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+                    {
+                        setlocale(0, "C.UTF-8");
+                        XSetLocaleModifiers("@im=none");
+                    }
+                }
                 Xim = XOpenIM(display, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
             }
 
