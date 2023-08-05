@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <PackageId>Modern.WindowKit</PackageId>
-    <Version>0.4.0-alpha01</Version>
+    <Version>0.4.0-alpha02</Version>
     <Description>Cross-platform library for creating and interacting with OS windows.</Description>
     <PackageTags>Modern;WindowKit;GUI;UI;Cross;Platform</PackageTags>
     <PackageOutputPath>../../nupkg</PackageOutputPath>
